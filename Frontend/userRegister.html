@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<body>
+
+<div class='modal-dialog' ng-app="userModel" ng-controller="myCtrl">
+    <div class='modal-content'>
+        <div class='modal-header'>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h1 class='modal-title'>Register</h1>
+        </div>
+        <div class='modal-body'>
+            <div class='container'>
+                <span>name</span>
+                <br>
+                <input id='username' ng-model='username' placeholder='Input your name' required/>
+                <br>
+                <span>password</span>
+                <br>
+                <input id='password' ng-model='password' placeholder='Input your name' required/>
+                <br>
+                <button id='submit' ng-click='submit()'>Submits</button>
+                <button id='cancel' ng-click='cancel()'>Cancel</button>
+            </div>
+        </div>
+        <div class='modal-footer'></div>
+    </div>
+</div>
+
+<script>
+var app = angular.module('userModel', []);
+app.controller('myCtrl', function($scope, $http) {
+    $scope.submit = function submit() {
+        console.log('click submit');
+        $http.post('/users', {
+            type: 'user',
+            name: $scope.username,
+            password: $scope.password
+        }).then(function submitSuccess(response) {
+            console.log(response);
+        });
+    }
+    $scope.cancel = function cancel() {
+        console.log('click cancel');
+        $scope.username = '';
+        $scope.password = '';
+    }
+});
+</script>
+
+</body>
+</html>

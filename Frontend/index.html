@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<body>
+
+<div ng-app="userModel" ng-controller="myCtrl"> 
+<h1>User</h1>
+<div class='container'>
+    <button ng-click='Register()'>Register</button>
+</div>
+
+<script>
+var app = angular.module('userModel', []);
+app.controller('myCtrl', function($scope, $http, $window) {
+    $scope.Register = function() {
+        $window.location.href = '/register'
+    }
+});
+</script>
+
+</body>
+</html>
