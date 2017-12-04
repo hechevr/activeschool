@@ -43,8 +43,7 @@ exports.add = function(obj, callback) {
 
 exports.get = function(type, callback) {
     if (type === 'user') {
-        mongoClient.connect
-        (url, function(err, db) {
+        mongoClient.connect(url, function(err, db) {
             if (err) throw err;
             db.collection('user').find({}).toArray(function(err, result) {
                 if (err) throw err;
@@ -72,6 +71,18 @@ exports.get = function(type, callback) {
     }
     callback({feedback: 'Failure'});
     return;
+}
+exports.getOne = function(condition, callback) {
+    console.log(condition);
+    mongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        db.collection('user').findOne(condition, function(err, result) {
+            if (err) throw err;
+            db.close();
+            callback({feedback: 'Success', data: result});
+            return;
+        });
+    });
 }
 
 exports.drop = function(type) {

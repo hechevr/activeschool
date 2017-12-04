@@ -1,13 +1,16 @@
 var express = require('express');
 var fs = require('fs');
-var app = express()
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var app = express();
+
+app.use(bodyParser());
+app.use(cookieParser('secret'));
+app.use(session());
 
 var databaseIO = require('./databaseIO');
-
-var item1 = {
-    type: 'item',
-    name: 'shit'
-};
+var check_login = require('./control.js').check_login;
 
 app.get('/', function(req, res) {
     fs.readFile('Frontend/index.html', function(err, data) {
@@ -19,6 +22,14 @@ app.get('/', function(req, res) {
 
 app.get('/register', function(req, res) {
     fs.readFile('Frontend/userRegister.html', function(err, data){
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.write(data);
+        res.end();
+    })
+});
+
+app.get('/login', function(req, res) {
+    fs.readFile('Frontend/userLogin.html', function(err, data) {
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(data);
         res.end();
@@ -47,7 +58,8 @@ app.post('/users', function(req, res) {
     console.log('post user');
     var newuser = {
         type: 'user',
-        name: req.params.name
+        name: req.body.name,
+        password: req.body.password
     };
     databaseIO.add(newuser, function(feedback) {
         if (feedback.feedback === 'Success') {
@@ -62,12 +74,14 @@ app.post('/users', function(req, res) {
 
 app.post('/items', function(req, res) {
     console.log('post item');
+    
+    if (!check_login(req, res)) return;
     var newitem = {
         type: 'item',
         name: req.params.name
     };
     databaseIO.add(newitem, function(feedback) {
-        if (feedback.feedback == 'Success') {
+        if (feedback.feedback === 'Success') {
             return res.send({feedback: feedback});
         }
         else {
@@ -77,5 +91,37 @@ app.post('/items', function(req, res) {
     return;
 });
 
+app.post('/users/login', function(req, res) {
+    console.log(req.body);
+    var username = req.body.name;
+    var password = req.body.password;
+
+    console.log(username);
+    console.log(password);
+    
+    var condition;
+    if (username) {
+        condition = {type: 'user', name: username, password: password};
+    }
+    else { 
+        return res.send({feedback: 'Failure', msg: 'Fail to login'});
+    }
+    databaseIO.getOne(condition, function(feedback) {
+        console.log(feedback);
+        if (feedback.feedback !== 'Success') return res.send({feedback: 'Failure 1', msg: 'Fail to login'});
+        if (!feedback.data) return res.send({feedback: 'Failure 2', msg: 'Fail to login'});
+        req.session.uid = feedback.data._id;
+        return res.send({feedback: 'Success'});
+    });
+});
+
+app.post('/users/logout', function(req, res) {
+    console.log(req.session);
+    if (!check_login(req, res)) return res.send({feedback:'Failure', msg:'Not logged in'});
+    req.session.destroy(function(err) {
+        if (err) return res.send({feedback:'Failure', msg:'Error occurs when logout'});
+        return res.send({feedback:'Success'});
+    });
+});
 
 app.listen(3000);

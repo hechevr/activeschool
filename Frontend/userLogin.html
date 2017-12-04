@@ -9,7 +9,7 @@
     <div class='modal-content'>
         <div class='modal-header'>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h1 class='modal-title'>Register</h1>
+            <h1 class='modal-title'>Login</h1>
         </div>
         <div class='modal-body'>
             <div class='container'>
@@ -30,16 +30,20 @@
 </div>
 
 <script>
-var app = angular.module('userModel', []);
-app.controller('myCtrl', function($scope, $http) {
+var app = angular.module('userModel', ['ngCookies']);
+app.controller('myCtrl', function($scope, $http, $window, $cookies) {
     $scope.submit = function submit() {
         console.log('click submit');
-        $http.post('/users', {
+        $http.post('/users/login', {
             type: 'user',
             name: $scope.username,
             password: $scope.password
         }).then(function submitSuccess(response) {
             console.log(response);
+            if (response.data.feedback === 'Success') {
+                $window.location.href = '/';
+                $cookies.put('uid', 'Success');
+            }
         });
     }
     $scope.cancel = function cancel() {
