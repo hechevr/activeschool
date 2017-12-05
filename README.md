@@ -2,26 +2,28 @@
 TODO:
 Backend:
 [] RESTfull api
-   Get /items
-   Get /user/credential
-   Post /users
-   Post /user/uid
-   Post /item
-   Post /item/iid
-   Delete /item/iid
-   Delete /user/uid
+    # register
+    [x] Post /users 
+    # login
+    [x] Post /users/Login
+    # add items
+    [x] Post /item
+
+    [] Delete /item/iid
+    [] Delete /user/uid
 
 Frontend:
-[] login
-   name, password check
-   create credential
+[x] login
+    [x] name, password check
+    [x] create credential
 
 [] activity list
-   show items
-   select items
+    [x] show items
+    select items
 
 [] admin
-   show items
-   show selection info
-   show stat
-   modify items
+    [x] add items
+    [] show items
+    [] show selection info
+    [] show stat
+    [] modify items

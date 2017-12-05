@@ -44,7 +44,25 @@ app.get('/item', function(req, res) {
     })
 });
 
+app.get('/itemlist', function(req, res) {
+    fs.readFile('Frontend/itemlist.html', function(err, data) {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.write(data);
+        res.end();
+    })
+});
+
+app.get('/css/style.css', function(req, res) {
+    fs.readFile('Frontend/css/style.css', function(err, data) {
+        res.writeHead(200, {'Content-Type': 'text/css'});
+        res.write(data);
+        res.end();
+    })
+})
+
+
 app.get('/items', function(req, res) {
+    if (!check_login(req, res)) reutrn;
     console.log('request for item');
     databaseIO.get('item', function(result) {
         if (result.feedback === 'Success') {
@@ -54,6 +72,7 @@ app.get('/items', function(req, res) {
 });
 
 app.get('/users', function(req, res) {
+    if (!check_login(req, res)) reutrn;
     console.log('request for user');
     databaseIO.get('user', function(feedback) {
         if (feedback.feedback === 'Success') {
@@ -63,6 +82,7 @@ app.get('/users', function(req, res) {
 });
 
 app.post('/users', function(req, res) {
+    if (!check_login(req, res)) reutrn;
     console.log('post user');
     var newuser = {
         type: 'user',
@@ -82,7 +102,6 @@ app.post('/users', function(req, res) {
 
 app.post('/items', function(req, res) {
     console.log('post item');
-    
     if (!check_login(req, res)) return;
     var newitem = {
         type: 'item',
@@ -93,6 +112,7 @@ app.post('/items', function(req, res) {
         maxteacher: req.body.itemmaxteacher,
         ratio: req.body.itemratio,
         date: req.body.itemdate,
+        time: req.body.time,
         options: req.body.itemoptions
     };
     databaseIO.add(newitem, function(feedback) {
@@ -104,6 +124,16 @@ app.post('/items', function(req, res) {
         }
     });
     return;
+});
+
+app.post('/itemlistdata', function(req, res) {
+    console.log('get itemlist');
+    if (!check_login(req, res)) return res.send({feedback: "Failure", msg: "Not login"});
+    databaseIO.get("item", function(feedback) {
+        console.log(feedback);
+        if (feedback.feedback === "Failure") return res.send({feedback:'Failure', msg: 'Fail to get itemlist'});
+        return res.send({feedback: 'Success', itemlist: feedback.data});
+    })
 });
 
 app.post('/users/login', function(req, res) {

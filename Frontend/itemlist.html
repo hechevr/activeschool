@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>Activity</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
+    
+    <link rel="stylesheet" href="./css/style.css" type="text/css">
+
+</head>
+
+<body>
+  <h1>動感校園 <span> 2017/18 (2017年10月9日至2018年2月23日) </span>活動 / 課程時間表</h1>
+
+<table class="responstable" ng-app="userModel" ng-controller="itemlistController">
+  
+  <tr>
+    <th>选择</th>
+    <th>活動組織</th>
+    <th>No.</th>
+    <th>活動課程</th>
+    <th>對象</th>
+    <th>導師人數上限</th>
+    <th>師生比例:學生人數上限</th>
+    <th>日期</th>
+    <th>備註</th>
+  </tr>
+
+  <tr ng-repeat="item in itemlist">
+    <td><input type="radio"/></td>
+    <td ng-bind="item.organization"></td>
+    <td ng-bind="item.No"></td>
+    <td ng-bind="item.activity"></td>
+    <td ng-bind="item.target"></td>
+    <td ng-bind="item.maxteacher"></td>
+    <td ng-bind="item.ratio"></td>
+    <td ng-bind="item.date"></td>
+    <td ng-bind="item.time"></td>
+    <td ng-bind="item.options"></td>
+  </tr>
+  
+</table>
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js'></script>
+
+  <script>
+      var app = angular.module("userModel", []);
+      app.controller("itemlistController", function($scope, $http, $window){
+        $scope.itemlist = [];
+        $http.post("/itemlistdata", {})
+        .then(function(response) {
+            console.log(response);
+            $scope.itemlist = response.data.itemlist;
+        })
+      });
+  </script>
+  
+</body>
+</html>

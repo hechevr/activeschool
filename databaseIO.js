@@ -67,7 +67,6 @@ exports.get = function(type, callback) {
             db.collection('user').find({}).toArray(function(err, result) {
                 if (err) throw err;
                 console.log('extract user');
-                console.log(result);
                 db.close();
                 callback({feedback: 'Success', data: result});
                 return;
@@ -77,19 +76,16 @@ exports.get = function(type, callback) {
     }
     else if (type === 'item') {
         mongoClient.connect(url, function(err, db) {
-            if (err) throw err;
+            if (err) throw err;``
             db.collection('item').find({}).toArray(function(err, result) {
                 if (err) throw err;
                 console.log('extract item');
-                console.log(result);
                 db.close();
                 callback({feedback: 'Success', data: result});
                 return;
             });
         });
     }
-    callback({feedback: 'Failure'});
-    return;
 }
 exports.getOne = function(condition, callback) {
     console.log(condition);

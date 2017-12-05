@@ -12,6 +12,7 @@
     <button ng-click='Register()'>Register</button>
     <button ng-click='Login()'>Login</button>
     <button ng-click='Logout()'>Logout</button>
+    <button ng-click="Itemlist()">Itemlist</button>
 </div>
 
 <script>
@@ -36,7 +37,10 @@ app.controller('myCtrl', function($scope, $http, $window, $cookies) {
             console.log(response);
             $cookies.remove('uid');
             $window.location.href = '/';
-        })
+        });
+    };
+    $scope.Itemlist = function() {
+        $window.location.href = '/itemlist';
     }
 });
 </script>
