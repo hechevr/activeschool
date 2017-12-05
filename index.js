@@ -34,7 +34,15 @@ app.get('/login', function(req, res) {
         res.write(data);
         res.end();
     })
-})
+});
+
+app.get('/item', function(req, res) {
+    fs.readFile('Frontend/item.html', function(err, data) {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.write(data);
+        res.end();
+    })
+});
 
 app.get('/items', function(req, res) {
     console.log('request for item');
@@ -78,7 +86,14 @@ app.post('/items', function(req, res) {
     if (!check_login(req, res)) return;
     var newitem = {
         type: 'item',
-        name: req.params.name
+        organization: req.body.itemorgan,
+        No: req.body.itemno,
+        activity: req.body.itemactivity,
+        target: req.body.target,
+        maxteacher: req.body.itemmaxteacher,
+        ratio: req.body.itemratio,
+        date: req.body.itemdate,
+        options: req.body.itemoptions
     };
     databaseIO.add(newitem, function(feedback) {
         if (feedback.feedback === 'Success') {
@@ -123,5 +138,6 @@ app.post('/users/logout', function(req, res) {
         return res.send({feedback:'Success'});
     });
 });
+
 
 app.listen(3000);

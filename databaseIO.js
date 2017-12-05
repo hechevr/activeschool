@@ -1,6 +1,25 @@
 var mongoClient = require('mongodb').MongoClient;
-var url = 'mongodb://localhost:27017/test'
+// var url = 'mongodb://localhost:27017/test'
 
+exports.initializeDB = function(callback) {
+    mongoClient.connect(url, function(err, db) {
+        db.createCollection("user", function(err, res) {
+            if (err) throw err;
+            console.log("user created");
+        });
+        db.createCollection('item', function(err, res) {
+            if (err) throw err;
+            console.log('item created');
+        });
+        db.close();
+        if (err) {
+            callback({feedback:'Faulure'});
+            return;
+        }
+        callback({feedback:'Success'});
+        return;
+    });
+}
 exports.add = function(obj, callback) {
     if (obj.hasOwnProperty('type')) {
         if (obj.type === 'user') {
@@ -76,6 +95,7 @@ exports.getOne = function(condition, callback) {
     console.log(condition);
     mongoClient.connect(url, function(err, db) {
         if (err) throw err;
+        console.log("WTF");
         db.collection('user').findOne(condition, function(err, result) {
             if (err) throw err;
             db.close();
