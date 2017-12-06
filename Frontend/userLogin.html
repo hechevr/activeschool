@@ -1,31 +1,29 @@
 <!DOCTYPE html>
 <html>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+                    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+                    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+                    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
+</head>
 <body>
-
-<div class='modal-dialog' ng-app="userModel" ng-controller="myCtrl">
-    <div class='modal-content'>
-        <div class='modal-header'>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h1 class='modal-title'>Login</h1>
-        </div>
-        <div class='modal-body'>
-            <div class='container'>
-                <span>name</span>
-                <br>
-                <input id='username' ng-model='username' placeholder='Input your name' required/>
-                <br>
-                <span>password</span>
-                <br>
-                <input id='password' ng-model='password' placeholder='Input your name' required/>
-                <br>
-                <button id='submit' ng-click='submit()'>Submits</button>
-                <button id='cancel' ng-click='cancel()'>Cancel</button>
-            </div>
-        </div>
-        <div class='modal-footer'></div>
+<div ng-app="userModel" ng-controller="myCtrl" align="center" border="0" width="300" cellpadding="2">
+    <div >
+        <h1>Login</h1>
+        <input id='username' ng-model='username' placeholder='Input your name' special-char-directive required/>
+        <br>
+        <br>
+        <input id='password' ng-model='password' placeholder='Input your password' special-char-directive required/>
+        <br>
+        <br>
+        <button class="btn btn-success" ng-click='submit()'>Submits</button>
+        <button class="btn btn-default" ng-click='cancel()'>Cancel</button>
     </div>
 </div>
 
@@ -51,7 +49,28 @@ app.controller('myCtrl', function($scope, $http, $window, $cookies) {
         $scope.username = '';
         $scope.password = '';
     }
+})
+.directive('specialCharDirective', function() {
+    function link(scope, elem, attrs, ngModel) {
+        ngModel.$parsers.push(function(viewValue) {
+            var reg = /^[a-zA-Z0-9]*$/;
+            if (viewValue.match(reg)) {
+                return viewValue;
+            }
+            var transformedValue = ngModel.$modelValue;
+            ngModel.$setViewValue(transformedValue);
+            ngModel.$render();
+            return transformedValue;
+        });
+    }
+
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: link
+    };
 });
+
 </script>
 
 </body>

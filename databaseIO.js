@@ -1,5 +1,6 @@
 var mongoClient = require('mongodb').MongoClient;
 // var url = 'mongodb://localhost:27017/test'
+var url = "mongodb://hechevr:CRWZTDZsgmsYcleW@activeschool-shard-00-00-itwoi.mongodb.net:27017,activeschool-shard-00-01-itwoi.mongodb.net:27017,activeschool-shard-00-02-itwoi.mongodb.net:27017/test?ssl=true&replicaSet=ActiveSchool-shard-0&authSource=admin";
 
 exports.initializeDB = function(callback) {
     mongoClient.connect(url, function(err, db) {

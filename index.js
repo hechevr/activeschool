@@ -82,7 +82,6 @@ app.get('/users', function(req, res) {
 });
 
 app.post('/users', function(req, res) {
-    if (!check_login(req, res)) reutrn;
     console.log('post user');
     var newuser = {
         type: 'user',
@@ -105,15 +104,15 @@ app.post('/items', function(req, res) {
     if (!check_login(req, res)) return;
     var newitem = {
         type: 'item',
-        organization: req.body.itemorgan,
-        No: req.body.itemno,
-        activity: req.body.itemactivity,
+        organization: req.body.organization,
+        No: req.body.No,
+        activity: req.body.activity,
         target: req.body.target,
-        maxteacher: req.body.itemmaxteacher,
-        ratio: req.body.itemratio,
-        date: req.body.itemdate,
+        maxteacher: req.body.maxteacher,
+        ratio: req.body.ratio,
+        date: req.body.date,
         time: req.body.time,
-        options: req.body.itemoptions
+        options: req.body.options
     };
     databaseIO.add(newitem, function(feedback) {
         if (feedback.feedback === 'Success') {
