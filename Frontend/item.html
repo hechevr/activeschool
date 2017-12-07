@@ -107,7 +107,7 @@ app.controller('itemCtrl', function($scope, $http, $window) {
             maxteacher: $scope.itemmaxteacher,
             ratio: $scope.itemratio,
             date: $scope.itemdate,
-            time: JSON.stringify(itemtime),
+            time: itemtime,
             options: $scope.itemoptions
         }).then(function(response) {
             console.log(response);
@@ -122,7 +122,7 @@ app.controller('itemCtrl', function($scope, $http, $window) {
         $scope.itemmaxteacher = "";
         $scope.itemratio = "";
         $scope.itemdate = "";
-        $scope.times = [{show: false, index: count}];
+        $scope.times = [{show: false, index: count, school: "None"}];
         $scope.itemoptions = "";
     }
 })

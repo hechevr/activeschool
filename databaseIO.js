@@ -1,6 +1,6 @@
 var mongoClient = require('mongodb').MongoClient;
-// var url = 'mongodb://localhost:27017/test'
-var url = "mongodb://hechevr:CRWZTDZsgmsYcleW@activeschool-shard-00-00-itwoi.mongodb.net:27017,activeschool-shard-00-01-itwoi.mongodb.net:27017,activeschool-shard-00-02-itwoi.mongodb.net:27017/test?ssl=true&replicaSet=ActiveSchool-shard-0&authSource=admin";
+var url = 'mongodb://localhost:27017/test'
+// var url = "mongodb://hechevr:FA4CnS63sgxEVWlq@activeschool-shard-00-00-itwoi.mongodb.net:27017,activeschool-shard-00-01-itwoi.mongodb.net:27017,activeschool-shard-00-02-itwoi.mongodb.net:27017/test?ssl=true&replicaSet=ActiveSchool-shard-0&authSource=admin";
 
 exports.initializeDB = function(callback) {
     mongoClient.connect(url, function(err, db) {
@@ -77,7 +77,7 @@ exports.get = function(type, callback) {
     }
     else if (type === 'item') {
         mongoClient.connect(url, function(err, db) {
-            if (err) throw err;``
+            if (err) throw err;
             db.collection('item').find({}).toArray(function(err, result) {
                 if (err) throw err;
                 console.log('extract item');
@@ -125,27 +125,44 @@ exports.drop = function(type) {
     }
 }
 
-exports.update = function(objOld, objNew) {
+exports.update = function(objOld, objNew, callback) {
     if (objOld.type === 'user') {
         mongoClient.connect(url, function(err, db) {
-            if (err) throw err;
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                return;
+            }
             db.collection('user').updateOne(objOld, objNew, function(err, res) {
-                if (err) throw err;
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to update data'});
+                    return;
+                }
                 console.log('update user');
                 console.log(objOld);
                 console.log(objNew);
                 db.close();
+                callback({feedback: 'Success'});
+                return;
             });
         });
     }
     else if(objOld.type === 'item') {
         mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                return;
+            } 
             db.collection('item').updateOne(objOld, objNew, function(err, res) {
-                if (err) throw err;
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to update data'});
+                    return;
+                }
                 console.log('update item');
                 console.log(objOld);
                 console.log(objNew);
                 db.close();
+                callback({feedback: 'Success'});
+                return;
             });
         });
     }

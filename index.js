@@ -11,7 +11,11 @@ app.use(session());
 
 var databaseIO = require('./databaseIO');
 var check_login = require('./control.js').check_login;
-
+/*
+databaseIO.initializeDB(function(feedback) {
+    console.log(feedback);
+});
+*/
 app.get('/', function(req, res) {
     fs.readFile('Frontend/index.html', function(err, data) {
         res.writeHead(200, {'Content-Type': 'text/html'});
@@ -101,7 +105,7 @@ app.post('/users', function(req, res) {
 
 app.post('/items', function(req, res) {
     console.log('post item');
-    if (!check_login(req, res)) return;
+    if (!check_login(req, res)) return res.send({feedback: "Failure", msg: "Not Login"});
     var newitem = {
         type: 'item',
         organization: req.body.organization,
@@ -123,6 +127,29 @@ app.post('/items', function(req, res) {
         }
     });
     return;
+});
+
+app.post('/item/:iid', function(req, res) {
+    if (!check_login(req, res)) reutrn;
+    var iid = req.params.iid;
+    var content = req.body.content;
+    var uid = req.session.uid;
+    var newitem = {
+        _id: iid,
+        type: 'item',
+        organization: req.body.organization,
+        No: req.body.No,
+        activity: req.body.activity,
+        target: req.body.target,
+        maxteacher: req.body.maxteacher,
+        ratio: req.body.ratio,
+        date: req.body.date,
+        time: req.body.time,
+        options: req.body.options
+    };
+    databaseIO.update({_id: iid}, newitem, function(feedback) {
+        return feedback;
+    });
 });
 
 app.post('/itemlistdata', function(req, res) {

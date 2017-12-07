@@ -17,51 +17,100 @@
 
 <body>
   <h1>動感校園 <span> 2017/18 (2017年10月9日至2018年2月23日) </span>活動 / 課程時間表</h1>
-
-<table class="responstable" ng-app="userModel" ng-controller="itemlistController">
-  
-  <tr>
-    <th>选择</th>
-    <th>活動組織</th>
-    <th>No.</th>
-    <th>活動課程</th>
-    <th>對象</th>
-    <th>導師人數上限</th>
-    <th>師生比例:學生人數上限</th>
-    <th>日期</th>
-    <th>備註</th>
-  </tr>
-  
-  <tr ng-repeat="item in itemlist" ng-click="showdetail()">
-    <td><input type="radio"/></td>
-    <td ng-bind="item.organization"></td>
-    <td ng-bind="item.No"></td>
-    <td ng-bind="item.activity"></td>
-    <td ng-bind="item.target"></td>
-    <td ng-bind="item.maxteacher"></td>
-    <td ng-bind="item.ratio"></td>
-    <td ng-bind="item.date"></td>
-    <td ng-bind="item.options"></td>
-    <td rowspan ng-repeat="time in item.time" ng-bind="time.value"></td>
-  </tr>
-
-  
-</table>
+<div ng-app="userModel" ng-controller="itemlistController">
+  <table class="responstable">
+    
+    <tr>
+      <th>活動組織</th>
+      <th>No.</th>
+      <th>活動課程</th>
+      <th>對象</th>
+      <th>導師人數上限</th>
+      <th>師生比例:學生人數上限</th>
+      <th>日期</th>
+      <th>備註</th>
+    </tr>
+    
+    <tr ng-repeat-start="item in itemlist" ng-click="showdetail(item)">
+      <td ng-bind="item.organization"></td>
+      <td ng-bind="item.No"></td>
+      <td ng-bind="item.activity"></td>
+      <td ng-bind="item.target"></td>
+      <td ng-bind="item.maxteacher"></td>
+      <td ng-bind="item.ratio"></td>
+      <td ng-bind="item.date"></td>
+      <td ng-bind="item.options"></td>
+    </tr>
+    <tr ng-repeat-end ng-repeat="t in item.time" ng-show="item.show">
+        <td><input type="checkbox" ng-disabled="t.disable" ng-model="t.checked"/></td>
+        <td colspan="7" ng-bind="t.value"></td>
+    </tr>
+  </table>
+  <button class="btn btn-success" ng-click="submit()">Submit</button>
+  <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+</div>
   <script src='http://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js'></script>
 
   <script>
-      var app = angular.module("userModel", []);
-      app.controller("itemlistController", function($scope, $http, $window){
-        $scope.showtime = false;
+      var app = angular.module("userModel", ['ngCookies']);
+      app.controller("itemlistController", function($scope, $http, $window, $cookies){
         $scope.itemlist = [];
         $http.post("/itemlistdata", {})
         .then(function(response) {
             console.log(response);
             $scope.itemlist = response.data.itemlist;
+            for (item in $scope.itemlist) {
+              item.show = false;
+              for (t in item.time) {
+                if (t.school === "None" || t.school == undefined) {
+                  t.disable = false;
+                }
+                else {
+                  t.disable = true;
+                }
+              }
+            }
         });
-        $scope.showdetail = function() {
-          $scope.showtime = true;
+        $scope.showdetail = function(item) {
+          item.show = !item.show
           console.log("show detail");
+        }
+        $scope.cancel = function() {
+          $window.location.href = "/";
+        }
+        $scope.submit = function() {
+          console.log("click submit");
+          for (i in $scope.itemlist) {
+            var time = [];
+            var item = $scope.itemlist[i];
+            for (t in item.time) {
+              if (t.checked) {
+                time.push({
+                  value: t.value,
+                  school: $cookies.get("uid")
+                });
+              }
+              else {
+                time.push({
+                  value: t.value,
+                  school: "None"
+                });
+              }
+            }
+            console.log("/item/"+item._id);
+            $http.post("/item/"+item._id, {
+              No: item.No,
+              activity: item.activity,
+              date: item.date,
+              maxteacher: item.maxteacher,
+              options: item.options,
+              ratio: item.ratio,
+              target: item.target,
+              time: time
+            }).then(function(response) {
+              console.log(response);
+            });
+          }
         }
       });
   </script>
