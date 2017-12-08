@@ -1,5 +1,5 @@
 var mongoClient = require('mongodb').MongoClient;
-// var url = 'mongodb://localhost:27017/test'
+var url = 'mongodb://localhost:27017/test'
 
 exports.DB = {
     initialize: function(callback) {
