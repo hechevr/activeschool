@@ -13,6 +13,7 @@
     <button ng-click='Login()'>Login</button>
     <button ng-click='Logout()'>Logout</button>
     <button ng-click="Itemlist()">Itemlist</button>
+    <button ng-click="CreateItem()">CreateItem</button>
 </div>
 
 <script>
@@ -41,6 +42,9 @@ app.controller('myCtrl', function($scope, $http, $window, $cookies) {
     };
     $scope.Itemlist = function() {
         $window.location.href = '/itemlist';
+    }
+    $scope.CreateItem = function() {
+        $window.location.href = '/item';
     }
 });
 </script>

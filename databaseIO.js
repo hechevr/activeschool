@@ -1,33 +1,54 @@
 var mongoClient = require('mongodb').MongoClient;
-var url = 'mongodb://localhost:27017/test'
-// var url = "mongodb://hechevr:FA4CnS63sgxEVWlq@activeschool-shard-00-00-itwoi.mongodb.net:27017,activeschool-shard-00-01-itwoi.mongodb.net:27017,activeschool-shard-00-02-itwoi.mongodb.net:27017/test?ssl=true&replicaSet=ActiveSchool-shard-0&authSource=admin";
+// var url = 'mongodb://localhost:27017/test'
 
-exports.initializeDB = function(callback) {
-    mongoClient.connect(url, function(err, db) {
-        db.createCollection("user", function(err, res) {
-            if (err) throw err;
-            console.log("user created");
-        });
-        db.createCollection('item', function(err, res) {
-            if (err) throw err;
-            console.log('item created');
-        });
-        db.close();
-        if (err) {
-            callback({feedback:'Faulure'});
+exports.DB = {
+    initialize: function(callback) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect mongo'});
+                return;
+            }
+            db.collection('item').drop();
+            db.collection('user').drop();
+            db.collection('selection').drop();
+            db.createCollection('item', function(err, res) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to create item collection'});
+                    return;
+                }
+            });
+            db.createCollection('user', function(err, res) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to create user collection'});
+                    return;
+                }
+            });
+            db.createCollection('selection', function(err, res) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to create selection collection'});
+                    return;
+                }
+            });
+            callback({feedback: 'Success'});
             return;
-        }
-        callback({feedback:'Success'});
-        return;
-    });
+        });
+    }
 }
-exports.add = function(obj, callback) {
-    if (obj.hasOwnProperty('type')) {
+
+exports.user = {
+    // add user
+    add: function(obj, callback) {
         if (obj.type === 'user') {
             mongoClient.connect(url, function(err, db) {
-                if (err) throw err;
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to connect to mongo'});
+                    return;
+                }
                 db.collection('user').insertOne(obj, function(err, res) {
-                    if (err) throw err;
+                    if (err) {
+                        callback({feedback:'Failure', msg: 'Fail to add user'});
+                        return;
+                    }
                     console.log('insert user');
                     console.log(obj);
                     db.close();
@@ -36,12 +57,121 @@ exports.add = function(obj, callback) {
                 });
             });
         }
-
-        else if (obj.type === 'item') {
+        else {
+            callback({feedback: 'Failure'});
+            return;
+        }
+    },
+    // get all users
+    get: function(type, callback) {
+        if (type === 'user') {
             mongoClient.connect(url, function(err, db) {
-                if (err) throw err;
+                if (err) {
+                    callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
+                    return;
+                }
+                db.collection('user').find({}).toArray(function(err, result) {
+                    if (err) {
+                        callback({feedback:'Failure', msg: 'Fail to get'});
+                        return;
+                    }
+                    console.log('extract user');
+                    db.close();
+                    callback({feedback: 'Success', data: result});
+                    return;
+                });
+            });
+        }
+        else {
+            callback({feedback: 'Failure'});
+            return;
+        }
+    },
+    // get one user (for login)
+    getOne: function(condition, callback) {
+        console.log(condition);
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
+                return;
+            }
+            db.collection('user').findOne(condition, function(err, result) {
+                if (err) {
+                    callback({feedback:'Failure', msg: 'Fail to get'});
+                    return;
+                }
+                db.close();
+                callback({feedback: 'Success', data: result});
+                return;
+            });
+        });
+    },
+    // drop user collection
+    drop: function(type) {
+        if (type === 'user') {
+            mongoClient.connect(url, function(err, db) {
+                if (err) {
+                    callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
+                    return;
+                }
+                db.collection('user').drop(function(err, delOK) {
+                    if (err) {
+                        callback({feedback:'Failure', msg: 'Fail to drop'});
+                        return;
+                    }
+                    if (delOK) console.log('Collection user deleted');
+                    db.close();
+                });
+            });
+        }
+        else {
+            callback({feedback: 'Failure'});
+            return;
+        }
+    }, 
+    // update user info
+    update: function(objOld, objNew, callback) {
+        if (objOld.type === 'user') {
+            mongoClient.connect(url, function(err, db) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                    return;
+                }
+                db.collection('user').updateOne(objOld, objNew, function(err, res) {
+                    if (err) {
+                        callback({feedback: 'Failure', msg: 'Fail to update data'});
+                        return;
+                    }
+                    console.log('update user');
+                    console.log(objOld);
+                    console.log(objNew);
+                    db.close();
+                    callback({feedback: 'Success'});
+                    return;
+                });
+            });
+        }
+        else {
+            callback({feedback: 'Failure'});
+            return;
+        }
+    }
+};
+
+exports.item = {
+    // add item
+    add: function(obj, callback) {
+        if (obj.type === 'item') {
+            mongoClient.connect(url, function(err, db) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to connect to mongo'});
+                    return;
+                }
                 db.collection('item').insertOne(obj, function(err, res) {
-                    if (err) throw err;
+                    if (err) {
+                        callback({feedback:'Failure', msg: 'Fail to add item'});
+                        return;
+                    }
                     console.log('insert item');
                     console.log(obj);
                     db.close();
@@ -54,116 +184,155 @@ exports.add = function(obj, callback) {
             callback({feedback: 'Failure'});
             return;
         }
-    }
-    else{
-        callback({feedback: 'Failure'});
-        return;
-    }
-}
-
-exports.get = function(type, callback) {
-    if (type === 'user') {
-        mongoClient.connect(url, function(err, db) {
-            if (err) throw err;
-            db.collection('user').find({}).toArray(function(err, result) {
-                if (err) throw err;
-                console.log('extract user');
-                db.close();
-                callback({feedback: 'Success', data: result});
-                return;
+    },
+    // get all items
+    get: function(type, callback) {
+        if (type === 'item') {
+            mongoClient.connect(url, function(err, db) {
+                if (err) {
+                    callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
+                    return;
+                }
+                db.collection('item').find({}).toArray(function(err, result) {
+                    if (err) {
+                        callback({feedback:'Failure', msg: 'Fail to get'});
+                        return;
+                    }
+                    console.log('extract item');
+                    db.close();
+                    callback({feedback: 'Success', data: result});
+                    return;
+                });
             });
-        });
-
-    }
-    else if (type === 'item') {
-        mongoClient.connect(url, function(err, db) {
-            if (err) throw err;
-            db.collection('item').find({}).toArray(function(err, result) {
-                if (err) throw err;
-                console.log('extract item');
-                db.close();
-                callback({feedback: 'Success', data: result});
-                return;
-            });
-        });
-    }
-}
-exports.getOne = function(condition, callback) {
-    console.log(condition);
-    mongoClient.connect(url, function(err, db) {
-        if (err) throw err;
-        console.log("WTF");
-        db.collection('user').findOne(condition, function(err, result) {
-            if (err) throw err;
-            db.close();
-            callback({feedback: 'Success', data: result});
+        }
+        else {
+            callback({feedback: 'Failure'});
             return;
-        });
-    });
-}
-
-exports.drop = function(type) {
-    if (type === 'user') {
-        mongoClient.connect(url, function(err, db) {
-            if (err) throw err;
-            db.collection('user').drop(function(err, delOK) {
-                if (err) throw err;
-                if (delOK) console.log('Collection user deleted');
-                db.close();
-            });
-        });
-    }
-    else if(type === 'item') {
-        mongoClient.connect(url, function(err, db) {
-            if (err) throw err;
-            db.collection('item').drop(function(err, delOK) {
-                if (err) throw err;
-                if (delOK) console.log('Collection item delted');
-                db.close();
-            });
-        });
-    }
-}
-
-exports.update = function(objOld, objNew, callback) {
-    if (objOld.type === 'user') {
+        }
+    },
+    // get one item (for itemlist)
+    getOne: function(condition, callback) {
+        console.log(condition);
         mongoClient.connect(url, function(err, db) {
             if (err) {
-                callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
                 return;
             }
-            db.collection('user').updateOne(objOld, objNew, function(err, res) {
+            db.collection('item').findOne(condition, function(err, result) {
                 if (err) {
-                    callback({feedback: 'Failure', msg: 'Fail to update data'});
+                    callback({feedback:'Failure', msg: 'Fail to get'});
                     return;
                 }
-                console.log('update user');
-                console.log(objOld);
-                console.log(objNew);
                 db.close();
-                callback({feedback: 'Success'});
+                callback({feedback: 'Success', data: result});
                 return;
             });
         });
+    },
+    // drop item collection
+    drop: function(type) {
+        if (type === 'item') {
+            mongoClient.connect(url, function(err, db) {
+                if (err) {
+                    callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
+                    return;
+                }
+                db.collection('item').drop(function(err, delOK) {
+                    if (err) {
+                        callback({feedback:'Failure', msg: 'Fail to drop'});
+                        return;
+                    }
+                    if (delOK) console.log('Collection item deleted');
+                    db.close();
+                });
+            });
+        }
+        else {
+            callback({feedback: 'Failure'});
+            return;
+        }
+    }, 
+    // update item info
+    update: function(objOld, objNew, callback) {
+        if (objOld.type === 'item') {
+            mongoClient.connect(url, function(err, db) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                    return;
+                }
+                db.collection('item').updateOne(objOld, objNew, function(err, res) {
+                    if (err) {
+                        callback({feedback: 'Failure', msg: 'Fail to update data'});
+                        return;
+                    }
+                    console.log('update item');
+                    db.close();
+                    callback({feedback: 'Success'});
+                    return;
+                });
+            });
+        }
+        else {
+            callback({feedback: 'Failure'});
+            return;
+        }
     }
-    else if(objOld.type === 'item') {
+};
+
+exports.selection = {
+    add: function(obj, callback) {
         mongoClient.connect(url, function(err, db) {
             if (err) {
-                callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                callback({feedback: 'Failure', msg: 'Fail to connect to mongo'});
                 return;
-            } 
-            db.collection('item').updateOne(objOld, objNew, function(err, res) {
+            }
+            db.collection('selection').insertOne(obj, function(err, res) {
                 if (err) {
-                    callback({feedback: 'Failure', msg: 'Fail to update data'});
+                    callback({feedback:'Failure', msg: 'Fail to add selection'});
                     return;
                 }
-                console.log('update item');
-                console.log(objOld);
-                console.log(objNew);
                 db.close();
                 callback({feedback: 'Success'});
                 return;
             });
         });
+    },
+    get: function(callback) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect to mongo'});
+                return;
+            }
+            db.collection('selection').find({}).toArray(function(err, result) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Cannot extract selection'});
+                    return;
+                }
+                db.close();
+                callback({feedback: 'Success', data: result});
+                return;
+            });
+        });
+    },
+    // get all items in collection that
+    getObj: function(obj, callback) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect to mongo'});
+                return;
+            }
+            db.collection('selection').find(obj).toArray(function(err, result) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Cannot get selection'});
+                    return;
+                }
+                db.close();
+                callback({feedback: 'Success', data: result});
+                return;
+            });
+        });
     }
+    
 }
+
+

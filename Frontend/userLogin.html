@@ -40,7 +40,7 @@ app.controller('myCtrl', function($scope, $http, $window, $cookies) {
             console.log(response);
             if (response.data.feedback === 'Success') {
                 $window.location.href = '/';
-                $cookies.put('uid', 'Success');
+                $cookies.put('uid', response.data._id);
             }
         });
     }

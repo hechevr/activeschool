@@ -39,6 +39,9 @@ app.controller('myCtrl', function($scope, $http) {
             password: $scope.password
         }).then(function submitSuccess(response) {
             console.log(response);
+            if (response.feedback === 'Success') {
+                $window.location.href = '/'
+            }
         });
     }
     $scope.cancel = function cancel() {

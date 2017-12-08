@@ -42,7 +42,7 @@
       <td ng-bind="item.options"></td>
     </tr>
     <tr ng-repeat-end ng-repeat="t in item.time" ng-show="item.show">
-        <td><input type="checkbox" ng-disabled="t.disable" ng-model="t.checked"/></td>
+        <td><input type="checkbox" ng-model="t.checked"/></td>
         <td colspan="7" ng-bind="t.value"></td>
     </tr>
   </table>
@@ -59,16 +59,8 @@
         .then(function(response) {
             console.log(response);
             $scope.itemlist = response.data.itemlist;
-            for (item in $scope.itemlist) {
-              item.show = false;
-              for (t in item.time) {
-                if (t.school === "None" || t.school == undefined) {
-                  t.disable = false;
-                }
-                else {
-                  t.disable = true;
-                }
-              }
+            for (idx in itemlist) {
+              $scope.itemlist[idx].show = true;
             }
         });
         $scope.showdetail = function(item) {
@@ -80,37 +72,23 @@
         }
         $scope.submit = function() {
           console.log("click submit");
+          var selection = [];
           for (i in $scope.itemlist) {
-            var time = [];
             var item = $scope.itemlist[i];
-            for (t in item.time) {
+            for (tt in item.time) {
+              t = item.time[tt];
               if (t.checked) {
-                time.push({
-                  value: t.value,
-                  school: $cookies.get("uid")
-                });
-              }
-              else {
-                time.push({
-                  value: t.value,
-                  school: "None"
-                });
+                selection.push(t._id);
               }
             }
-            console.log("/item/"+item._id);
-            $http.post("/item/"+item._id, {
-              No: item.No,
-              activity: item.activity,
-              date: item.date,
-              maxteacher: item.maxteacher,
-              options: item.options,
-              ratio: item.ratio,
-              target: item.target,
-              time: time
-            }).then(function(response) {
-              console.log(response);
-            });
           }
+          console.log("/item/"+item._id);
+          console.log('selection/'+$cookies.get('uid'));
+          $http.post("/selection/"+$cookies.get("uid"), function(response) {
+            if (response.feedback === 'Success') {
+              $window.location.href = "/";
+            }
+          });
         }
       });
   </script>

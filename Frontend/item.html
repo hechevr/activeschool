@@ -44,7 +44,7 @@
             <input class="form-control" ng-model='itemmaxteacher' special-char-directive required/>
         </div>
         <div class="form-group">
-            <label>Student:Teachers</label>
+            <label>Teachers : Student</label>
             <div class="form-inline">
                 <div class="form-group">
                     <input class="form-control" placeholder="1" disabled/>
@@ -111,19 +111,12 @@ app.controller('itemCtrl', function($scope, $http, $window) {
             options: $scope.itemoptions
         }).then(function(response) {
             console.log(response);
+            $window.location.href = '/item';
         });
     };
 
     $scope.cancel = function() {
-        $scope.itemorgan = "";
-        $scope.itemno = "";
-        $scope.itemactivity = "";
-        $scope.itemtarget = "";
-        $scope.itemmaxteacher = "";
-        $scope.itemratio = "";
-        $scope.itemdate = "";
-        $scope.times = [{show: false, index: count, school: "None"}];
-        $scope.itemoptions = "";
+        $window.location.href = '/';
     }
 })
 .directive('specialCharDirective', function() {
