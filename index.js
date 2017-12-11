@@ -130,6 +130,38 @@ app.post('/items', function(req, res) {
     return;
 });
 
+app.post('/items/selection', function(req, res) {
+    console.log('get item selection');
+    if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Not login'});
+    var obj = {
+        item: req.body.item
+    };
+    databaseIO.selection.getObj(obj, function(feedback) {
+        if (feedback.feedback === 'Success') {
+            return res.send({feedback: feedback.feedback, data: feedback.data});
+        }
+        else {
+            return res.send({feedback: feedback});
+        }
+    });
+});
+
+app.post('users/selection', function(req, res) {
+    console.log('get user selection');
+    if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Not Login'});
+    var obj = {
+        user: req.body.user
+    };
+    databaseIO.selection.getObj(obj, function(feedback) {
+        if (feedback.feedback === 'Success') {
+            return res.send({feedback: feedback.feedback, data:feedback.data});
+        }
+        else {
+            return res.send({feedback: feedback});
+        }
+    });
+});
+
 app.post('/item/:iid', function(req, res) {
     if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Fail to login'});
     var iid = req.params.iid;
@@ -217,7 +249,9 @@ app.post('/selection/:uid', function(req, res) {
     return res.send({feedback: 'Success'});
 });
 
+/*
 databaseIO.DB.initialize(function(feedback) {
     console.log(feedback);
 });
+*/
 app.listen(3000);

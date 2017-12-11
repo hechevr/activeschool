@@ -30,7 +30,7 @@
 
 <script>
 var app = angular.module('userModel', []);
-app.controller('myCtrl', function($scope, $http) {
+app.controller('myCtrl', function($scope, $http, $window) {
     $scope.submit = function submit() {
         console.log('click submit');
         $http.post('/users', {
@@ -39,8 +39,11 @@ app.controller('myCtrl', function($scope, $http) {
             password: $scope.password
         }).then(function submitSuccess(response) {
             console.log(response);
-            if (response.feedback === 'Success') {
+            if (response.data.feedback.feedback === 'Success') {
                 $window.location.href = '/'
+            }
+            else {
+                $scope.cancel();
             }
         });
     }
