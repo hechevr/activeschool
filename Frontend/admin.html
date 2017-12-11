@@ -42,8 +42,9 @@
       <td ng-bind="item.options"></td>
     </tr>
     <tr ng-repeat-end ng-repeat="t in item.time" ng-show="item.show">
-        <td><input type="checkbox" ng-model="t.checked" ng-show="t.show"/></td>
-        <td colspan="7" ng-bind="t.value"></td>
+        <td></td>
+        <td ng-bind="t.value"></td>
+        <td colspan='6' ng-bind='t.user'></td>
     </tr>
   </table>
   <button class="btn btn-success" ng-click="submit()">Submit</button>
@@ -57,6 +58,9 @@
         $scope.itemlist = [];
         $http.post("/itemlistdata", {})
         .then(function(response) {
+            if (response.feedback === 'Failure') {
+                $window.location.href = '/login';
+            }
             console.log(response);
             $scope.itemlist = response.data.itemlist;
             for (idx in $scope.itemlist) {

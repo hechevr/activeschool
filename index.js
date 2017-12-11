@@ -12,6 +12,7 @@ app.use(session());
 
 var databaseIO = require('./databaseIO');
 var check_login = require('./control.js').check_login;
+var check_admin = require('./control.js').check_admin;
 /*
 databaseIO.initializeDB(function(feedback) {
     console.log(feedback);
@@ -35,6 +36,15 @@ app.get('/register', function(req, res) {
 
 app.get('/login', function(req, res) {
     fs.readFile('Frontend/userLogin.html', function(err, data) {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.write(data);
+        res.end();
+    })
+});
+
+app.get('/admin', function(req, res) {
+    if (!check_admin(req, res, '5a2e9fbb94a417221c9de82f')) return res.send({feedback: 'Failure', msg: 'Not admin'});
+    fs.readFile('Frontend/admin.html', function(err, data) {
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(data);
         res.end();
@@ -234,7 +244,7 @@ app.post('/users/logout', function(req, res) {
         return res.send({feedback:'Success'});
     });
 });
-
+/*
 app.post('/selection/:uid', function(req, res) {
     if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Not logged in'});
     for (iid in req.body.iids) {
@@ -247,6 +257,20 @@ app.post('/selection/:uid', function(req, res) {
         });
     }
     return res.send({feedback: 'Success'});
+});
+*/
+app.post('/selection', function(req, res) {
+    if (!check_login(req, res)) return res.send({feedback:'Failure', msg:'Fail to Login'});
+    var items = req.body;
+    for (idx in items) {
+        var updateditem = {
+            _id: mongo.ObjectID(items[idx]._id)
+        };
+        databaseIO.item.update(updateditem, {time: items[idx].time}, function(feedback) {
+            if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure', msg: 'Fail to update item'});
+            return res.send({feedback: 'Success'});
+        });
+    }
 });
 
 /*

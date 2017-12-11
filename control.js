@@ -4,3 +4,9 @@ exports.check_login = function(req, res) {
     }
     return true;
 }
+exports.check_admin = function(req, res, adminid) {
+    if (! (req.session.uid === adminid)) {
+        return false;
+    }
+    return true;
+}

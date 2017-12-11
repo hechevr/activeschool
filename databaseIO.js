@@ -254,28 +254,24 @@ exports.item = {
     }, 
     // update item info
     update: function(objOld, objNew, callback) {
-        if (objOld.type === 'item') {
-            mongoClient.connect(url, function(err, db) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                return;
+            }
+            console.log(objOld);
+            console.log(objNew);
+            db.collection('item').updateOne(objOld, {$set: {time: objNew.time}}, function(err, res) {
                 if (err) {
-                    callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                    callback({feedback: 'Failure', msg: 'Fail to update data'});
                     return;
                 }
-                db.collection('item').updateOne(objOld, objNew, function(err, res) {
-                    if (err) {
-                        callback({feedback: 'Failure', msg: 'Fail to update data'});
-                        return;
-                    }
-                    console.log('update item');
-                    db.close();
-                    callback({feedback: 'Success'});
-                    return;
-                });
+                console.log('update item');
+                db.close();
+                callback({feedback: 'Success'});
+                return;
             });
-        }
-        else {
-            callback({feedback: 'Failure'});
-            return;
-        }
+        });
     }
 };
 
