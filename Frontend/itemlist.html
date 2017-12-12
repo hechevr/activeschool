@@ -46,6 +46,10 @@
         <td colspan="7" ng-bind="t.value"></td>
     </tr>
   </table>
+
+  <div>
+    <textarea class="form-control" style="resize: none; width:100%" row="3" ng-model="comment" special-char-directive></textarea>
+  </div>
   <button class="btn btn-success" ng-click="submit()">Submit</button>
   <button class="btn btn-default" ng-click="cancel()">Cancel</button>
 </div>
@@ -54,6 +58,7 @@
   <script>
       var app = angular.module("userModel", ['ngCookies']);
       app.controller("itemlistController", function($scope, $http, $window, $cookies){
+        var uid = $cookies.get("uid");
         $scope.itemlist = [];
         $http.post("/itemlistdata", {})
         .then(function(response) {
@@ -62,7 +67,11 @@
             for (idx in $scope.itemlist) {
               $scope.itemlist[idx].show = false;
               for (t in $scope.itemlist[idx].time) {
-                if ($scope.itemlist[idx].time[t].user !== undefined && $scope.itemlist[idx].time[t].user != "") {
+                if ($scope.itemlist[idx].time[t].user === uid) {
+                  $scope.itemlist[idx].time[t].show = true;
+                  $scope.itemlist[idx].time[t].checked = true;
+                }
+                else if ($scope.itemlist[idx].time[t].user !== undefined && $scope.itemlist[idx].time[t].user != "") {
                   $scope.itemlist[idx].time[t].show = false;
                 }
                 else {
@@ -70,6 +79,11 @@
                 }
               }
             }
+        });
+        $http.post("/comment/"+uid, {})
+        .then(function(response) {
+          console.log(response);
+          $scope.comment = response.data.comment;
         });
         $scope.showdetail = function(item) {
           item.show = !item.show
@@ -86,8 +100,12 @@
             var time = [];
             var selected = false;
             for (t in item.time) {
-              if (item.time[t].checked) {
-                item.time[t].user = $cookies.get('uid');
+              if (item.time[t].checked && item.time[t].user !== uid) {
+                item.time[t].user = uid;
+                selected = true;
+              }
+              else if (!item.time[t].checked && item.time[t].user === uid) {
+                item.time[t].user = "";
                 selected = true;
               }
               time.push({value: item.time[t].value, user: item.time[t].user});
@@ -96,8 +114,7 @@
               items.push({_id: item._id, time});
             }
           }
-          console.log(items);
-          $http.post('/selection', items)
+          $http.post('/selection/'+uid, {items:items, comment: $scope.comment})
           .then(function(response) {
             console.log(response);
             if (response.data.feedback === 'Success') {
@@ -108,6 +125,25 @@
             }
           })
         }
+      })
+      .directive('specialCharDirective', function() {
+      function link(scope, elem, attrs, ngModel) {
+          ngModel.$parsers.push(function(viewValue) {
+              var reg = /^[a-zA-Z0-9-:,.]*$/;
+              if (viewValue.match(reg)) {
+                  return viewValue;
+              }
+              var transformedValue = ngModel.$modelValue;
+              ngModel.$setViewValue(transformedValue);
+              ngModel.$render();
+              return transformedValue;
+          });
+        }
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: link
+        };
       });
   </script>
   

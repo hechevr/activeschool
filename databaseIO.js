@@ -64,28 +64,22 @@ exports.user = {
     },
     // get all users
     get: function(type, callback) {
-        if (type === 'user') {
-            mongoClient.connect(url, function(err, db) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
+                return;
+            }
+            db.collection('user').find({}).toArray(function(err, result) {
                 if (err) {
-                    callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
+                    callback({feedback:'Failure', msg: 'Fail to get'});
                     return;
                 }
-                db.collection('user').find({}).toArray(function(err, result) {
-                    if (err) {
-                        callback({feedback:'Failure', msg: 'Fail to get'});
-                        return;
-                    }
-                    console.log('extract user');
-                    db.close();
-                    callback({feedback: 'Success', data: result});
-                    return;
-                });
+                console.log('extract user');
+                db.close();
+                callback({feedback: 'Success', data: result});
+                return;
             });
-        }
-        else {
-            callback({feedback: 'Failure'});
-            return;
-        }
+        });
     },
     // get one user (for login)
     getOne: function(condition, callback) {
@@ -131,30 +125,24 @@ exports.user = {
     }, 
     // update user info
     update: function(objOld, objNew, callback) {
-        if (objOld.type === 'user') {
-            mongoClient.connect(url, function(err, db) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                return;
+            }
+            db.collection('user').updateOne(objOld, {$set: {comment: objNew.comment}}, function(err, res) {
                 if (err) {
-                    callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                    callback({feedback: 'Failure', msg: 'Fail to update data'});
                     return;
                 }
-                db.collection('user').updateOne(objOld, objNew, function(err, res) {
-                    if (err) {
-                        callback({feedback: 'Failure', msg: 'Fail to update data'});
-                        return;
-                    }
-                    console.log('update user');
-                    console.log(objOld);
-                    console.log(objNew);
-                    db.close();
-                    callback({feedback: 'Success'});
-                    return;
-                });
+                console.log('update user');
+                console.log(objOld);
+                console.log(objNew);
+                db.close();
+                callback({feedback: 'Success'});
+                return;
             });
-        }
-        else {
-            callback({feedback: 'Failure'});
-            return;
-        }
+        });
     }
 };
 
@@ -229,6 +217,25 @@ exports.item = {
             });
         });
     },
+    // get all items for condition
+    getAll: function(condition, callback) {
+        console.log(condition);
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect to mongo'});
+                return;
+            }
+            db.collection('item').find({condition}, function(err, result) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to get'});
+                    return;
+                }
+                db.close();
+                callback({feedback: 'Success', data: result});
+                return;
+            });
+        });
+    },
     // drop item collection
     drop: function(type) {
         if (type === 'item') {
@@ -272,6 +279,37 @@ exports.item = {
                 return;
             });
         });
+    },
+    // update item info
+    updateAll: function(objOld, objNew, callback) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                return;
+            }
+            console.log(objOld);
+            console.log(objNew);
+            db.collection('item').updateOne(objOld, {
+                $set: {
+                    organization: objNew.organization,
+                    No: objNew.No,
+                    activity: objNew.activity,
+                    target: objNew.target,
+                    maxteacher: objNew.maxteacher,
+                    ratio: objNew.ratio,
+                    date: objNew.date,
+                    time: objNew.time,
+                    options: objNew.options}}, function(err, res) {
+                        if (err) {
+                            callback({feedback: 'Failure', msg: 'Fail to update data'});
+                            return;
+                        }
+                        console.log('update item');
+                        db.close();
+                        callback({feedback: 'Success'});
+                        return;
+            });
+        })
     }
 };
 

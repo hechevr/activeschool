@@ -32,7 +32,7 @@
     </tr>
     
     <tr ng-repeat-start="item in itemlist" ng-click="showdetail(item)">
-      <td ng-bind="item.organization"></td>
+      <td ng-bind="item.organization" ng-click='update(item)'></td>
       <td ng-bind="item.No"></td>
       <td ng-bind="item.activity"></td>
       <td ng-bind="item.target"></td>
@@ -78,6 +78,9 @@
         $scope.showdetail = function(item) {
           item.show = !item.show
           console.log("show detail");
+        }
+        $scope.update = function(item) {
+          $window.location.href = '/itemUpdate?'+item._id;
         }
         $scope.cancel = function() {
           $window.location.href = "/";

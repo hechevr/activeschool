@@ -17,13 +17,13 @@ Frontend:
     [x] name, password check
     [x] create credential
 
-[] activity list
+[x] activity list
     [x] show items
-    select items
+    [x] select items
 
 [] admin
     [x] add items
-    [] show items
-    [] show selection info
-    [] show stat
+    [x] show items
+    [x] show selection info
+    [] show state
     [] modify items
