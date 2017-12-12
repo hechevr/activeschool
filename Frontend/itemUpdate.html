@@ -96,7 +96,7 @@ app.controller('itemCtrl', function($scope, $http, $window) {
     .then(function(response) {
         console.log(response);
         if (response.data.feedback === 'Failure') {
-            $window.location.href = '/login';
+            $window.location.href = '/login.html';
         }
         $scope.itemorgan = response.data.data.organization;
         $scope.itemno = response.data.data.No;
@@ -136,7 +136,7 @@ app.controller('itemCtrl', function($scope, $http, $window) {
         }).then(function(response) {
             
             if (response.data.feedback === 'Success') {
-                $window.location.href = '/itemUpdate?' + iid;
+                $window.location.href = '/itemUpdate.html?' + iid;
             }
             else {
                 $window.location.href = '/';

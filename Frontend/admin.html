@@ -80,7 +80,7 @@
           console.log("show detail");
         }
         $scope.update = function(item) {
-          $window.location.href = '/itemUpdate?'+item._id;
+          $window.location.href = '/itemUpdate.html?'+item._id;
         }
         $scope.cancel = function() {
           $window.location.href = "/";
@@ -108,7 +108,7 @@
           .then(function(response) {
             console.log(response);
             if (response.data.feedback === 'Success') {
-              $window.location.href = '/itemlist';
+              $window.location.href = '/itemlist.html';
             }
             else {
               console.log('Fail');

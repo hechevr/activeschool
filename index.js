@@ -21,7 +21,7 @@ app.get('/', function(req, res) {
         res.end();
     })
 });
-
+/*
 app.get('/register', function(req, res) {
     fs.readFile('Frontend/userRegister.html', function(err, data){
         res.writeHead(200, {'Content-Type': 'text/html'});
@@ -99,7 +99,7 @@ app.get('/users', function(req, res) {
         }
     });
 });
-
+*/
 app.post('/users', function(req, res) {
     console.log('post user');
     var newuser = {
@@ -296,4 +296,6 @@ databaseIO.DB.initialize(function(feedback) {
     console.log(feedback);
 });
 */
+
+app.use(express.static('Frontend'));
 app.listen(3000);

@@ -27,10 +27,10 @@ app.controller('myCtrl', function($scope, $http, $window, $cookies) {
         $scope.Status = 'Success';
     }
     $scope.Register = function() {
-        $window.location.href = '/register';
+        $window.location.href = '/register.html';
     };
     $scope.Login = function() {
-        $window.location.href = '/login';
+        $window.location.href = '/login.html';
     };
     $scope.Logout = function() {
         $http.post('/users/logout', {})
@@ -41,10 +41,10 @@ app.controller('myCtrl', function($scope, $http, $window, $cookies) {
         });
     };
     $scope.Itemlist = function() {
-        $window.location.href = '/itemlist';
+        $window.location.href = '/itemlist.html';
     }
     $scope.CreateItem = function() {
-        $window.location.href = '/item';
+        $window.location.href = '/item.html';
     }
 });
 </script>
