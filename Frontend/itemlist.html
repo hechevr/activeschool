@@ -63,6 +63,9 @@
         $http.post("/itemlistdata", {})
         .then(function(response) {
             console.log(response);
+            if (response.data.feedback === 'Failure') {
+              $window.location.href = '/login.html';
+            }
             $scope.itemlist = response.data.itemlist;
             for (idx in $scope.itemlist) {
               $scope.itemlist[idx].show = false;

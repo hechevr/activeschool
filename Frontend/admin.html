@@ -58,8 +58,8 @@
         $scope.itemlist = [];
         $http.post("/itemlistdata", {})
         .then(function(response) {
-            if (response.feedback === 'Failure') {
-                $window.location.href = '/login';
+            if (response.data.feedback === 'Failure') {
+                $window.location.href = '/login.html';
             }
             console.log(response);
             $scope.itemlist = response.data.itemlist;
