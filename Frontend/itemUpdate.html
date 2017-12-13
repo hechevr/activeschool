@@ -92,7 +92,7 @@ app.controller('itemCtrl', function($scope, $http, $window) {
     $scope.decreasetime = function(time) {
         $scope.times.splice(time.index, 1);
     };
-    $http.post('/item/'+iid, {})
+    $http.post('/admin/'+iid, {})
     .then(function(response) {
         console.log(response);
         if (response.data.feedback === 'Failure') {
@@ -123,7 +123,7 @@ app.controller('itemCtrl', function($scope, $http, $window) {
                 itemtime.push({value: $scope.times[time].value});
             }
         }
-        $http.post('/item/update/'+iid, {
+        $http.post('/admin/update/'+iid, {
             organization: $scope.itemorgan,
             No: $scope.itemno,
             activity: $scope.itemactivity,
@@ -136,17 +136,17 @@ app.controller('itemCtrl', function($scope, $http, $window) {
         }).then(function(response) {
             
             if (response.data.feedback === 'Success') {
-                $window.location.href = '/itemUpdate.html?' + iid;
+                $window.location.reload();
             }
             else {
-                $window.location.href = '/';
+                $window.location.href = '/admin.html';
             }
             
         });
     };
 
     $scope.cancel = function() {
-        $window.location.href = '/';
+        $window.location.href = '/admin.html';
     }
 })
 .directive('specialCharDirective', function() {

@@ -310,6 +310,23 @@ exports.item = {
                         return;
             });
         })
+    },
+    // delete item
+    delete: function(condition, callback) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect mongo'});
+                return;
+            }
+            db.collection('item').deleteOne(condition, function(err) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to delete item'});
+                    return;
+                }
+                callback({feedback: 'Success'});
+                return;
+            });
+        });
     }
 };
 

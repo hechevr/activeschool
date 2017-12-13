@@ -16,13 +16,11 @@
 </head>
 
 <body>
-  <h1>動感校園 <span> 2017/18 (2017年10月9日至2018年2月23日) </span>活動 / 課程時間表</h1>
 <div ng-app="userModel" ng-controller="itemlistController">
+    <h1 ng-bind="user.name"></h1>
   <table class="responstable">
     
     <tr>
-      <th>Delete</th>
-      <th>Edit</th>
       <th>活動組織</th>
       <th>No.</th>
       <th>活動課程</th>
@@ -34,12 +32,6 @@
     </tr>
     
     <tr ng-repeat-start="item in itemlist" ng-click="showdetail(item)">
-      <td>
-        <button ng-click="deleteItem(item)"><span class="glyphicon glyphicon-trash"></span></button>
-      </td>
-      <td>
-        <button ng-click="update(item)"><span class="glyphicon glyphicon-pencil"></span></button>
-      </td>
       <td ng-bind="item.organization"></td>
       <td ng-bind="item.No"></td>
       <td ng-bind="item.activity"></td>
@@ -50,10 +42,8 @@
       <td ng-bind="item.options"></td>
     </tr>
     <tr ng-repeat-end ng-repeat="t in item.time" ng-show="item.show">
-        <td></td>
-        <td></td>
         <td ng-bind="t.value"></td>
-        <td colspan='7' ng-bind='t.user'></td>
+        <td colspan='5' ng-bind='t.user'></td>
     </tr>
   </table>
   <button class="btn btn-success" ng-click="submit()">Submit</button>
@@ -65,7 +55,7 @@
       var app = angular.module("userModel", ['ngCookies']);
       app.controller("itemlistController", function($scope, $http, $window, $cookies){
         $scope.itemlist = [];
-        $http.post("/itemlistdata", {})
+        $http.post("/user/item/:iid", {})
         .then(function(response) {
             if (response.data.feedback === 'Failure') {
                 $window.location.href = '/login.html';
@@ -88,52 +78,7 @@
           item.show = !item.show
           console.log("show detail");
         }
-        $scope.update = function(item) {
-          $window.location.href = '/itemUpdate.html?'+item._id;
-        }
-        $scope.cancel = function() {
-          $window.location.href = '/';
-        }
-        $scope.submit = function() {
-          console.log("click submit");
-          var items = [];
-          for (i in $scope.itemlist) {
-            var item = $scope.itemlist[i];
-            var time = [];
-            var selected = false;
-            for (t in item.time) {
-              if (item.time[t].checked) {
-                item.time[t].user = $cookies.get('uid');
-                selected = true;
-              }
-              time.push({value: item.time[t].value, user: item.time[t].user});
-            }
-            if (selected) {
-              items.push({_id: item._id, time});
-            }
-          }
-          console.log(items);
-          $http.post('/selection', items)
-          .then(function(response) {
-            console.log(response);
-            if (response.data.feedback === 'Success') {
-              $window.location.href = '/itemlist.html';
-            }
-            else {
-              console.log('Fail');
-            }
-          })
-        }
-        $scope.deleteItem = function(item) {
-          $http.post('/admin/delete/' + item._id, {})
-          .then(function(response) {
-            console.log(response);
-            if (response.data.feedback === 'Success') {
-              $window.location.reload();
-            }
-          })
-        }
-      });
+    });
   </script>
   
 </body>

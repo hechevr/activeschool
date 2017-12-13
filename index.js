@@ -98,41 +98,7 @@ app.post('users/selection', function(req, res) {
     });
 });
 
-app.post('/item/:iid', function(req, res) {
-    if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Fail to login'});
-    var iid = req.params.iid;
-    
-    databaseIO.item.getOne({_id: mongo.ObjectID(iid)}, function(feedback) {
-        console.log(feedback);
-        if (feedback.feedback === 'Failure') res.send({feedback: 'Failure'});
-        else {
-            res.send({feedback: 'Success', data: feedback.data});
-        }
-    })
-});
 
-app.post('/item/update/:iid', function(req, res) {
-    if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Fail to login'});
-    var iid = req.params.iid;
-    var updateditem = {
-        _id: mongo.ObjectID(iid)
-    };
-    var newitem = {
-        organization: req.body.organization,
-        No: req.body.No,
-        activity: req.body.activity,
-        target: req.body.target,
-        maxteacher: req.body.maxteacher,
-        ratio: req.body.ratio,
-        date: req.body.date,
-        time: req.body.time,
-        options: req.body.options
-    };
-    databaseIO.item.updateAll(updateditem, newitem, function(feedback) {
-        if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure', msg: 'Fail to update item'});
-        res.send({feedback: 'Success'});
-    });
-})
 
 app.post('/itemlistdata', function(req, res) {
     console.log('get itemlist');
@@ -209,6 +175,56 @@ app.post('/comment/:uid', function(req, res) {
         }
         else {
             return res.send({feedback: 'Failure'});
+        }
+    })
+});
+
+app.post('/admin/delete/:iid', function(req, res) {
+    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid admin'});
+    var uid = req.params.iid;
+    databaseIO.item.delete({_id: mongo.ObjectID(uid)}, function(feedback) {
+        if (feedback.feedback === 'Success') {
+            console.log(feedback);
+            return res.send({feedback: 'Success'});
+        }
+        else {
+            return res.send({feedback: 'Failure'});
+        }
+    });
+});
+
+app.post('/admin/update/:iid', function(req, res) {
+    if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Fail to login'});
+    var iid = req.params.iid;
+    var updateditem = {
+        _id: mongo.ObjectID(iid)
+    };
+    var newitem = {
+        organization: req.body.organization,
+        No: req.body.No,
+        activity: req.body.activity,
+        target: req.body.target,
+        maxteacher: req.body.maxteacher,
+        ratio: req.body.ratio,
+        date: req.body.date,
+        time: req.body.time,
+        options: req.body.options
+    };
+    databaseIO.item.updateAll(updateditem, newitem, function(feedback) {
+        if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure', msg: 'Fail to update item'});
+        res.send({feedback: 'Success'});
+    });
+});
+
+app.post('/admin/:iid', function(req, res) {
+    if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Fail to login'});
+    var iid = req.params.iid;
+    
+    databaseIO.item.getOne({_id: mongo.ObjectID(iid)}, function(feedback) {
+        console.log(feedback);
+        if (feedback.feedback === 'Failure') res.send({feedback: 'Failure'});
+        else {
+            res.send({feedback: 'Success', data: feedback.data});
         }
     })
 });

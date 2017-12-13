@@ -21,9 +21,9 @@ Frontend:
     [x] show items
     [x] select items
 
-[] admin
+[x] admin
     [x] add items
     [x] show items
     [x] show selection info
-    [] show state
-    [] modify items
+    [x] show state
+    [x] modify items
