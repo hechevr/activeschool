@@ -53,7 +53,7 @@
         <td></td>
         <td></td>
         <td ng-bind="t.value"></td>
-        <td colspan='7' ng-bind='t.user'></td>
+        <td colspan='7' ng-bind='t.user' ng-click="checkUser(t.user)"></td>
     </tr>
   </table>
   <button class="btn btn-success" ng-click="submit()">Submit</button>
@@ -132,6 +132,9 @@
               $window.location.reload();
             }
           })
+        }
+        $scope.checkUser = function(iid) {
+          $window.location.href = "/profile.html?"+iid;
         }
       });
   </script>

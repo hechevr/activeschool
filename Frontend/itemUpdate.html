@@ -92,7 +92,7 @@ app.controller('itemCtrl', function($scope, $http, $window) {
     $scope.decreasetime = function(time) {
         $scope.times.splice(time.index, 1);
     };
-    $http.post('/admin/'+iid, {})
+    $http.post('/admin/item/'+iid, {})
     .then(function(response) {
         console.log(response);
         if (response.data.feedback === 'Failure') {

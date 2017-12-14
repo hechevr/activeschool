@@ -1,4 +1,4 @@
-var adminid = "5a2dfd2033e6e827f41fbc21";
+var adminid = "5a3240fc2c740139c8bbd8c0";
 exports.check_login = function(req, res) {
     if (!req.session.uid) {
         return false;

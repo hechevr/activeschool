@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>Activity</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
+</head>
+<body>
+    <div class='container' ng-app='myModel' ng-controller='adminController'>
+        <h1>Users</h1>
+        <table class='table table-bordered'>
+            <tr>
+                <th>User Name</th>
+                <th>User ID</th>
+                <th>User Password</th>
+            </tr>
+            <tr ng-repeat='user in users' ng-click="selectUser(user)">
+                <td ng-bind="user.name"></td>
+                <td ng-bind="user._id"></td>
+                <td ng-bind="user.password"></td>
+            </tr>
+        </table>
+    </div>
+
+<script>
+    var app = angular.module("myModel", []);
+    app.controller("adminController", function($scope, $window, $http) {
+        console.log("wtf");
+        $http.post('/admin/users', {})
+        .then(function(response) {
+            console.log(response);
+            $scope.users = response.data.data;
+        });
+        $scope.selectUser = function(user) {
+            $window.location.href = '/profile.html?' + user._id;
+        }
+    });
+</script>
+</body>
+</html>

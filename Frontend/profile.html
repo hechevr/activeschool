@@ -43,40 +43,67 @@
     </tr>
     <tr ng-repeat-end ng-repeat="t in item.time" ng-show="item.show">
         <td ng-bind="t.value"></td>
-        <td colspan='5' ng-bind='t.user'></td>
+        <td colspan='7' ng-bind='t.data.user'></td>
     </tr>
   </table>
-  <button class="btn btn-success" ng-click="submit()">Submit</button>
-  <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+  <textarea style="resize: none; width:100%" row="3" ng-bind="user.comment" readonly></textarea>
+  <button class="btn btn-success" ng-click="Return()">Return</button>
 </div>
   <script src='http://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js'></script>
 
   <script>
       var app = angular.module("userModel", ['ngCookies']);
       app.controller("itemlistController", function($scope, $http, $window, $cookies){
+        var uid = location.search.substring(1);
         $scope.itemlist = [];
-        $http.post("/user/item/:iid", {})
+        $http.post("/admin/user/"+uid, [])
         .then(function(response) {
-            if (response.data.feedback === 'Failure') {
-                $window.location.href = '/login.html';
-            }
-            console.log(response);
-            $scope.itemlist = response.data.itemlist;
-            for (idx in $scope.itemlist) {
-              $scope.itemlist[idx].show = false;
-              for (t in $scope.itemlist[idx].time) {
-                if ($scope.itemlist[idx].time[t].user !== undefined && $scope.itemlist[idx].time[t].user != "") {
-                  $scope.itemlist[idx].time[t].show = false;
+          if (response.data.feedback === 'Failure' || response.data.data === null) {
+            $window.location.href = '/login.html';
+          }
+          console.log(response);
+          $scope.user = response.data.data;
+
+          $http.post("/itemlistdata", {})
+          .then(function(response) {
+              if (response.data.feedback === 'Failure') {
+                  $window.location.href = '/login.html';
+              }
+              console.log(response);
+              for (idx in response.data.itemlist) {
+                response.data.itemlist[idx].show = false;
+                var hasUser = false;
+                var item = {
+                  organization: response.data.itemlist[idx].organization,
+                  No: response.data.itemlist[idx].No,
+                  activity: response.data.itemlist[idx].activity,
+                  target: response.data.itemlist[idx].target,
+                  maxteacher: response.data.itemlist[idx].maxteacher,
+                  ratio: response.data.itemlist[idx].ratio,
+                  date: response.data.itemlist[idx].date,
+                  options: response.data.itemlist[idx].options,
+                  time:[]
+                };
+                for (t in response.data.itemlist[idx].time) {
+                  if (response.data.itemlist[idx].time[t].user === uid) {
+                    response.data.itemlist[idx].time[t].show = true;
+                    hasUser = true;
+                    item.time.push(response.data.itemlist[idx].time[t]);
+                  }
                 }
-                else {
-                  $scope.itemlist[idx].time[t].show = true;
+                if (hasUser) {
+                  $scope.itemlist.push(item);
                 }
               }
-            }
-        });
+          });
+        })
+        
         $scope.showdetail = function(item) {
           item.show = !item.show
           console.log("show detail");
+        }
+        $scope.Return = function() {
+          $window.location.href = '/admin.html';
         }
     });
   </script>

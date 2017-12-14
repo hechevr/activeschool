@@ -63,7 +63,7 @@ exports.user = {
         }
     },
     // get all users
-    get: function(type, callback) {
+    get: function(callback) {
         mongoClient.connect(url, function(err, db) {
             if (err) {
                 callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
@@ -101,27 +101,21 @@ exports.user = {
         });
     },
     // drop user collection
-    drop: function(type) {
-        if (type === 'user') {
-            mongoClient.connect(url, function(err, db) {
+    drop: function() {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
+                return;
+            }
+            db.collection('user').drop(function(err, delOK) {
                 if (err) {
-                    callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
+                    callback({feedback:'Failure', msg: 'Fail to drop'});
                     return;
                 }
-                db.collection('user').drop(function(err, delOK) {
-                    if (err) {
-                        callback({feedback:'Failure', msg: 'Fail to drop'});
-                        return;
-                    }
-                    if (delOK) console.log('Collection user deleted');
-                    db.close();
-                });
+                if (delOK) console.log('Collection user deleted');
+                db.close();
             });
-        }
-        else {
-            callback({feedback: 'Failure'});
-            return;
-        }
+        });
     }, 
     // update user info
     update: function(objOld, objNew, callback) {
@@ -225,7 +219,7 @@ exports.item = {
                 callback({feedback: 'Failure', msg: 'Fail to connect to mongo'});
                 return;
             }
-            db.collection('item').find({condition}, function(err, result) {
+            db.collection('item').find({condition}).toArray(function(err, result) {
                 if (err) {
                     callback({feedback: 'Failure', msg: 'Fail to get'});
                     return;

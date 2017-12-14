@@ -42,7 +42,7 @@ app.post('/users', function(req, res) {
 
 app.post('/items', function(req, res) {
     console.log('post item');
-    if (!check_login(req, res)) return res.send({feedback: "Failure", msg: "Not Login"});
+    if (!check_admin(req, res)) return res.send({feedback: "Failure", msg: "Not Login"});
     var newitem = {
         type: 'item',
         organization: req.body.organization,
@@ -212,23 +212,45 @@ app.post('/admin/update/:iid', function(req, res) {
     };
     databaseIO.item.updateAll(updateditem, newitem, function(feedback) {
         if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure', msg: 'Fail to update item'});
-        res.send({feedback: 'Success'});
+        return res.send({feedback: 'Success'});
     });
 });
 
-app.post('/admin/:iid', function(req, res) {
-    if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Fail to login'});
+app.post('/admin/item/:iid', function(req, res) {
+    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
     var iid = req.params.iid;
-    
+    if (iid.length != 24) return res.send({feedback: 'Failure'});
     databaseIO.item.getOne({_id: mongo.ObjectID(iid)}, function(feedback) {
         console.log(feedback);
-        if (feedback.feedback === 'Failure') res.send({feedback: 'Failure'});
+        if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure'});
         else {
-            res.send({feedback: 'Success', data: feedback.data});
+            return res.send({feedback: 'Success', data: feedback.data});
         }
     })
 });
 
+app.post('/admin/user/:uid', function(req, res) {
+    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+    var uid = req.params.uid;
+    if (uid.length != 24) return res.send({feedback: 'Failure'});
+    console.log({_id: mongo.ObjectID(uid)});
+    databaseIO.user.getOne({_id: mongo.ObjectID(uid)}, function(feedback) {
+        if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure'});
+        else {
+            return res.send({feedback: 'Success', data: feedback.data});
+        }
+    })
+});
+
+app.post('/admin/users', function(req, res) {
+    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+    databaseIO.user.get(function(feedback) {
+        if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure'});
+        else {
+            return res.send({feedback: 'Success', data: feedback.data});
+        }
+    })
+})
 /*
 databaseIO.DB.initialize(function(feedback) {
     console.log(feedback);
