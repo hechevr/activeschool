@@ -20,9 +20,9 @@
                 <th>User ID</th>
                 <th>User Password</th>
             </tr>
-            <tr ng-repeat='user in users' ng-click="selectUser(user)">
+            <tr ng-repeat='user in users'>
                 <td ng-bind="user.name"></td>
-                <td ng-bind="user._id"></td>
+                <td ng-bind="user._id"  ng-click="selectUser(user)"></td>
                 <td ng-bind="user.password"></td>
             </tr>
         </table>

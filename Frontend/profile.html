@@ -4,22 +4,26 @@
     <meta charset="UTF-8">
     <title>Activity</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
     
-    <link rel="stylesheet" href="./css/style.css" type="text/css">
-
 </head>
 
-<body>
-<div ng-app="userModel" ng-controller="itemlistController">
-    <h1 ng-bind="user.name"></h1>
-  <table class="responstable">
-    
+<body class="container-fluid">
+    <div ng-app="userModel" ng-controller="itemlistController">
+        <nav class="navbar navbar-light navbar-inverse bg-inverse">
+          
+          <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">Logout</button>
+        </nav>
+        <h1 style="font-weight:700" ng-bind="user.name"></h1>
+  <table class="table table-bordered">
+    <thead class="thead thead-inverse">
     <tr>
       <th>活動組織</th>
       <th>No.</th>
@@ -30,8 +34,9 @@
       <th>日期</th>
       <th>備註</th>
     </tr>
+    </thead>
     
-    <tr ng-repeat-start="item in itemlist" ng-click="showdetail(item)">
+    <tr class="table-active" ng-repeat-start="item in itemlist" ng-click="showdetail(item)">
       <td ng-bind="item.organization"></td>
       <td ng-bind="item.No"></td>
       <td ng-bind="item.activity"></td>
@@ -41,9 +46,8 @@
       <td ng-bind="item.date"></td>
       <td ng-bind="item.options"></td>
     </tr>
-    <tr ng-repeat-end ng-repeat="t in item.time" ng-show="item.show">
-        <td ng-bind="t.value"></td>
-        <td colspan='7' ng-bind='t.data.user'></td>
+    <tr ng-repeat-end ng-repeat="t in item.time">
+        <td ng-bind="t.value" colspan='8'></td>
     </tr>
   </table>
   <textarea style="resize: none; width:100%" row="3" ng-bind="user.comment" readonly></textarea>
@@ -105,6 +109,14 @@
         $scope.Return = function() {
           $window.location.href = '/admin.html';
         }
+        $scope.Logout = function() {
+          $http.post('/users/logout', {})
+          .then(function logoutSuccess(response) {
+            console.log(response);
+            $cookies.remove('uid');
+            $window.location.href = '/';
+          });
+        };
     });
   </script>
   

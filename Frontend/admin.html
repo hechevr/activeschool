@@ -4,41 +4,44 @@
     <meta charset="UTF-8">
     <title>Activity</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
     
-    <link rel="stylesheet" href="./css/style.css" type="text/css">
-
 </head>
-
-<body>
-  <h1>動感校園 <span> 2017/18 (2017年10月9日至2018年2月23日) </span>活動 / 課程時間表</h1>
-<div ng-app="userModel" ng-controller="itemlistController">
-  <table class="responstable">
+<body class="container-fluid">
+    <div ng-app="userModel" ng-controller="itemlistController">
+        <nav class="navbar navbar-light navbar-inverse bg-inverse">
+          <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">Logout</button>
+        </nav>
+    <h2  style="color:#33a6cc">動感校園 <span style="color:Black"> 2017/18 (2017年10月9日至2018年2月23日) </span>活動 / 課程時間表</h2>
+    <table class="table table-bordered">
+      <thead class="thead thead-inverse">
+      <tr>
+        <th>Delete</th>
+        <th>Edit</th>
+        <th>活動組織</th>
+        <th>No.</th>
+        <th>活動課程</th>
+        <th>對象</th>
+        <th>導師人數上限</th>
+        <th>師生比例:學生人數上限</th>
+        <th>日期</th>
+        <th>備註</th>
+      </tr>
+      </thead>
     
-    <tr>
-      <th>Delete</th>
-      <th>Edit</th>
-      <th>活動組織</th>
-      <th>No.</th>
-      <th>活動課程</th>
-      <th>對象</th>
-      <th>導師人數上限</th>
-      <th>師生比例:學生人數上限</th>
-      <th>日期</th>
-      <th>備註</th>
-    </tr>
-    
-    <tr ng-repeat-start="item in itemlist" ng-click="showdetail(item)">
+    <tr class="table-active" ng-repeat-start="item in itemlist" ng-click="showdetail(item)">
       <td>
-        <button ng-click="deleteItem(item)"><span class="glyphicon glyphicon-trash"></span></button>
+        <button class="btn btn-sm" style="background-color: transparent; border-color: black;" ng-click="deleteItem(item)"><span class="glyphicon glyphicon-trash"></span></button>
       </td>
       <td>
-        <button ng-click="update(item)"><span class="glyphicon glyphicon-pencil"></span></button>
+        <button class="btn btn-sm" style="background-color: transparent; border-color: black;" ng-click="update(item)"><span class="glyphicon glyphicon-pencil"></span></button>
       </td>
       <td ng-bind="item.organization"></td>
       <td ng-bind="item.No"></td>
@@ -56,11 +59,8 @@
         <td colspan='7' ng-bind='t.user' ng-click="checkUser(t.user)"></td>
     </tr>
   </table>
-  <button class="btn btn-success" ng-click="submit()">Submit</button>
-  <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+  <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">Return</button>
 </div>
-  <script src='http://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js'></script>
-
   <script>
       var app = angular.module("userModel", ['ngCookies']);
       app.controller("itemlistController", function($scope, $http, $window, $cookies){
@@ -136,6 +136,14 @@
         $scope.checkUser = function(iid) {
           $window.location.href = "/profile.html?"+iid;
         }
+        $scope.Logout = function() {
+          $http.post('/users/logout', {})
+          .then(function logoutSuccess(response) {
+            console.log(response);
+            $cookies.remove('uid');
+            $window.location.href = '/';
+          });
+        };
       });
   </script>
   
