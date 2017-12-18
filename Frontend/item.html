@@ -1,145 +1,171 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
+
     <style>
-        h1 {
-            text-align: center;
-        }
+    h1 {
+        text-align: center;
+    }
     </style>
-    </head>
+</head>
 <body>
-
-<div class='container' ng-app="userModel" ng-controller="itemCtrl">
-    <h1>Activity</h1>
-    <form name="itemform">
-        <div class="form-group">
-            <label>Organization</label>
-            <input class="form-control" ng-model='itemorgan'  special-char-directive required/>
-        </div>
-        <div class="form-group">
-            <label>No.</label>
-            <input class="form-control" ng-model='itemno' special-char-directive required/>
-        </div>
-        <div class="form-group">
-            <label>Activity Course</label>
-            <input class="form-control" ng-model='itemactivity' special-char-directive required/>
-        </div>
-        <div class="form-group">
-            <label>Target Student</label>
-            <input class="form-control" ng-model='itemtarget' special-char-directive required/>
-        </div>
-        <div class="form-group">
-            <label>Maximum of teachers</label>
-            <input class="form-control" ng-model='itemmaxteacher' special-char-directive required/>
-        </div>
-        <div class="form-group">
-            <label>Teachers : Student</label>
-            <div class="form-inline">
-                <div class="form-group">
-                    <input class="form-control" placeholder="1" disabled/>
-                </div>
-                <div class="form-group">
-                    <input class="form-control" ng-model='itemratio' special-char-directive required/>
-            
+    <div ng-app="userModel" ng-controller="itemCtrl">
+        <nav class="navbar navbar-inverse bg-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header"><a class="navbar-brand" href="#">ActiveSchool</a></div>
+                <ul class="nav navbar-nav">
+                    <li><a href="#" ng-click="showItemlist()">Active list</a></li>
+                    <li class="active"><a href="#" ng-click="addItem()">New Activity</a></li>
+                </ul>
+                <div class="navbar-right">
+                    <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">Logout</button>
                 </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label>Date</label>
-            <input class="form-control" ng-model='itemdate' special-char-directive required/>
-        </div>
-            <div class="form-group">
-            <label>Suggest period</label>
-            <div ng-repeat="time in times">
-                <input class="form-control" type="text" ng-model="time.value" special-char-directive required/>
-                <button type="button" class="btn btn-default addButton" ng-click="addtime()" ng-hide="time.show"><i class="fa fa-plus"></i></button>
-                <button type="button" class="btn btn-default decreaseButton" ng-click="decreasetime(time)" ng-show="time.show"><i class="fa fa-minus" ng-show="!item.show"></i></button>
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Options</label>
-            <input class="form-control" ng-model='itemoptions' special-char-directive required/>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-success" ng-click='addItem()' ng-disabled="itemform.$invalid">Submit</button>
-            <button class="btn btn-default" ng-click='cancel()'>Cancel</button>
-        </div>
-    </form>
-</div>
+        </nav>
+        <div class="container-fluid">
+            <h1>Activity</h1>
+            <form name="itemform">
+                <div class="form-group">
+                    <label>Organization</label>
+                    <input class="form-control" ng-model='itemorgan'  special-char-directive required/>
+                </div>
+                <div class="form-group">
+                    <label>No.</label>
+                    <input class="form-control" ng-model='itemno' special-char-directive required/>
+                </div>
+                <div class="form-group">
+                    <label>Activity Course</label>
+                    <input class="form-control" ng-model='itemactivity' special-char-directive required/>
+                </div>
+                <div class="form-group">
+                    <label>Target Student</label>
+                    <input class="form-control" ng-model='itemtarget' special-char-directive required/>
+                </div>
+                <div class="form-group">
+                    <label>Maximum of teachers</label>
+                    <input class="form-control" ng-model='itemmaxteacher' special-char-directive required/>
+                </div>
+                <div class="form-group">
+                    <label>Teachers : Student</label>
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <input class="form-control" placeholder="1" disabled/>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" ng-model='itemratio' special-char-directive required/>
 
-<script>
-var app = angular.module('userModel', []);
-app.controller('itemCtrl', function($scope, $http, $window) {
-    var count = 0;
-    $scope.times = [{show: false, index: count}];
-    count ++;
-    $scope.addtime = function() {
-        $scope.times.push({show: true, index:count});
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input class="form-control" ng-model='itemdate' special-char-directive required/>
+                </div>
+                <div class="form-group">
+                    <label>Suggest period</label>
+                    <div ng-repeat="time in times">
+                        <input class="form-control" type="text" ng-model="time.value" special-char-directive required/>
+                        <button type="button" class="btn btn-default addButton" ng-click="addtime()" ng-hide="time.show"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-default decreaseButton" ng-click="decreasetime(time)" ng-show="time.show"><i class="fa fa-minus" ng-show="!item.show"></i></button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Options</label>
+                    <input class="form-control" ng-model='itemoptions' special-char-directive required/>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success" ng-click='submit()' ng-disabled="itemform.$invalid">Submit</button>
+                    <button class="btn btn-default" ng-click='cancel()'>Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    var app = angular.module('userModel', []);
+    app.controller('itemCtrl', function($scope, $http, $window) {
+        var count = 0;
+        $scope.times = [{show: false, index: count}];
         count ++;
-    };
-    $scope.decreasetime = function(time) {
-        $scope.times.splice(time.index, 1);
-    };
+        $scope.addtime = function() {
+            $scope.times.push({show: true, index:count});
+            count ++;
+        };
+        $scope.decreasetime = function(time) {
+            $scope.times.splice(time.index, 1);
+        };
 
-    $scope.addItem = function() {
-        var itemtime = [];
-        for (time in $scope.times) {
-            if ($scope.times[time].value !== "") {
-                itemtime.push({value: $scope.times[time].value});
+        $scope.submit = function() {
+            var itemtime = [];
+            for (time in $scope.times) {
+                if ($scope.times[time].value !== "") {
+                    itemtime.push({value: $scope.times[time].value});
+                }
             }
+            $http.post('/items', {
+                organization: $scope.itemorgan,
+                No: $scope.itemno,
+                activity: $scope.itemactivity,
+                target: $scope.itemtarget,
+                maxteacher: $scope.itemmaxteacher,
+                ratio: $scope.itemratio,
+                date: $scope.itemdate,
+                time: itemtime,
+                options: $scope.itemoptions
+            }).then(function(response) {
+                console.log(response);
+                $window.location.href = '/item.html';
+            });
+        };
+        $scope.showItemlist = function() {
+            $window.location.href = "/admin.html";
         }
-        $http.post('/items', {
-            organization: $scope.itemorgan,
-            No: $scope.itemno,
-            activity: $scope.itemactivity,
-            target: $scope.itemtarget,
-            maxteacher: $scope.itemmaxteacher,
-            ratio: $scope.itemratio,
-            date: $scope.itemdate,
-            time: itemtime,
-            options: $scope.itemoptions
-        }).then(function(response) {
-            console.log(response);
-            $window.location.href = '/item.html';
-        });
-    };
+        $scope.addItem = function() {
+            $window.location.href = "/item.html";
+        }
+        $scope.Logout = function() {
+            $http.post('/users/logout', {})
+            .then(function logoutSuccess(response) {
+                console.log(response);
+                $cookies.remove('uid');
+                $window.location.href = '/';
+            });
+        };
+        $scope.cancel = function() {
+            $window.location.href = '/';
+        }
+    })
+    .directive('specialCharDirective', function() {
+        function link(scope, elem, attrs, ngModel) {
+            ngModel.$parsers.push(function(viewValue) {
+                var reg = /^[a-zA-Z0-9-:]*$/;
+                if (viewValue.match(reg)) {
+                    return viewValue;
+                }
+                var transformedValue = ngModel.$modelValue;
+                ngModel.$setViewValue(transformedValue);
+                ngModel.$render();
+                return transformedValue;
+            });
+        }
 
-    $scope.cancel = function() {
-        $window.location.href = '/';
-    }
-})
-.directive('specialCharDirective', function() {
-    function link(scope, elem, attrs, ngModel) {
-        ngModel.$parsers.push(function(viewValue) {
-            var reg = /^[a-zA-Z0-9-:]*$/;
-            if (viewValue.match(reg)) {
-                return viewValue;
-            }
-            var transformedValue = ngModel.$modelValue;
-            ngModel.$setViewValue(transformedValue);
-            ngModel.$render();
-            return transformedValue;
-        });
-    }
-
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        link: link
-    };
-});
-</script>
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: link
+        };
+    });
+    </script>
 
 </body>
 </html>

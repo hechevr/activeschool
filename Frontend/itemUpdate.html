@@ -11,7 +11,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
-    
+
     <style>
         h1 {
             text-align: center;
@@ -20,7 +20,20 @@
     </head>
 <body>
 
-<div class='container' ng-app="userModel" ng-controller="itemCtrl">
+<div ng-app="userModel" ng-controller="itemCtrl">
+    <nav class="navbar navbar-inverse bg-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header"><a class="navbar-brand" href="#">ActiveSchool</a></div>
+            <ul class="nav navbar-nav">
+                <li><a href="#" ng-click="showItemlist()">Active list</a></li>
+                <li class="active"><a href="#" ng-click="addItem()">New Activity</a></li>
+            </ul>
+            <div class="navbar-right">
+                <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
     <h1>Activity</h1>
     <form name="itemform">
         <div class="form-group">
@@ -51,7 +64,7 @@
                 </div>
                 <div class="form-group">
                     <input class="form-control" ng-model='itemratio' special-char-directive required/>
-            
+
                 </div>
             </div>
         </div>
@@ -112,10 +125,10 @@ app.controller('itemCtrl', function($scope, $http, $window) {
             if (idx > 0) {
                 $scope.addtime();
             }
-            $scope.times[idx].value = $scope.itemtime[idx].value; 
+            $scope.times[idx].value = $scope.itemtime[idx].value;
         }
     });
-    
+
     $scope.addItem = function() {
         var itemtime = [];
         for (time in $scope.times) {
@@ -134,14 +147,28 @@ app.controller('itemCtrl', function($scope, $http, $window) {
             time: itemtime,
             options: $scope.itemoptions
         }).then(function(response) {
-            
+
             if (response.data.feedback === 'Success') {
                 $window.location.reload();
             }
             else {
                 $window.location.href = '/admin.html';
             }
-            
+
+        });
+    };
+    $scope.showItemlist = function() {
+        $window.location.href = "/admin.html";
+    }
+    $scope.addItem = function() {
+        $window.location.href = "/item.html";
+    }
+    $scope.Logout = function() {
+        $http.post('/users/logout', {})
+        .then(function logoutSuccess(response) {
+            console.log(response);
+            $cookies.remove('uid');
+            $window.location.href = '/';
         });
     };
 
