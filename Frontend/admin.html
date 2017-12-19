@@ -20,8 +20,9 @@
             <div class="container-fluid">
                 <div class="navbar-header"><a class="navbar-brand" href="#">ActiveSchool</a></div>
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#" ng-click="showItemlist()">Active list</a></li>
+                    <li class="active"><a href="#" ng-click="showItemlist()">Activity list</a></li>
                     <li><a href="#" ng-click="addItem()">New Activity</a></li>
+                    <li><a href="#" ng-click="userList()">Users</a></li>
                 </ul>
                 <div class="navbar-right">
                     <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">Logout</button>
@@ -46,27 +47,27 @@
                     </tr>
                 </thead>
 
-                <tr class="table-active" ng-repeat-start="item in itemlist" ng-click="showdetail(item)">
+                <tr class="table-active" ng-repeat-start="item in itemlist" ng-click="showdetail(item)" ng-show="item.showitem">
                     <td>
                         <button class="btn btn-sm" style="background-color: transparent; border-color: black;" ng-click="deleteItem(item)"><span class="glyphicon glyphicon-trash"></span></button>
                     </td>
                     <td>
                         <button class="btn btn-sm" style="background-color: transparent; border-color: black;" ng-click="update(item)"><span class="glyphicon glyphicon-pencil"></span></button>
                     </td>
-                    <td ng-bind="item.organization"></td>
+                    <td><a href="#" ng-bind="item.organization" ng-click="showOrgan(item)"></a></td>
                     <td ng-bind="item.No"></td>
-                    <td ng-bind="item.activity"></td>
+                    <td><a href="#" ng-bind="item.activity" ng-click="showActivity(item)"></a></td>
                     <td ng-bind="item.target"></td>
                     <td ng-bind="item.maxteacher"></td>
                     <td ng-bind="item.ratio"></td>
                     <td ng-bind="item.date"></td>
                     <td ng-bind="item.options"></td>
                 </tr>
-                <tr ng-repeat-end ng-repeat="t in item.time" ng-show="item.show">
+                <tr ng-repeat-end ng-repeat="t in item.time" ng-show="item.show && item.showitem">
                     <td></td>
                     <td></td>
                     <td ng-bind="t.value"></td>
-                    <td colspan='7' ng-bind='t.user' ng-click="checkUser(t.user)"></td>
+                    <td colspan='7'><a href="#" ng-bind='t.user' ng-click="checkUser(t.user)"></a></td>
                 </tr>
             </table>
             <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">Return</button>
@@ -85,6 +86,7 @@
             $scope.itemlist = response.data.itemlist;
             for (idx in $scope.itemlist) {
                 $scope.itemlist[idx].show = false;
+                $scope.itemlist[idx].showitem = true;
                 for (t in $scope.itemlist[idx].time) {
                     if ($scope.itemlist[idx].time[t].user !== undefined && $scope.itemlist[idx].time[t].user != "") {
                         $scope.itemlist[idx].time[t].show = false;
@@ -103,7 +105,10 @@
             $window.location.href = '/itemUpdate.html?'+item._id;
         }
         $scope.cancel = function() {
-            $window.location.href = '/';
+            for (idx in $scope.itemlist) {
+                $scope.itemlist[idx].show = false;
+                $scope.itemlist[idx].showitem = true;
+            }
         }
         $scope.submit = function() {
             console.log("click submit");
@@ -144,8 +149,37 @@
                 }
             })
         }
+        $scope.showOrgan = function(item) {
+            var organ = item.organization;
+            for (idx in $scope.itemlist) {
+                if ($scope.itemlist[idx].organization !== organ) {
+                    $scope.itemlist[idx].showitem = false;
+                    $scope.itemlist[idx].show = false;
+                }
+                else {
+                    $scope.itemlist[idx].showitem = true;
+                    $scope.itemlist[idx].show = false;
+                }
+            }
+        }
+        $scope.showActivity = function(item) {
+            var activity = item.activity;
+            for(idx in $scope.itemlist) {
+                if ($scope.itemlist[idx].activity !== activity) {
+                    $scope.itemlist[idx].showitem = false;
+                    $scope.itemlist[idx].show = false;
+                }
+                else {
+                    $scope.itemlist[idx].showitem = true;
+                    $scope.itemlist[idx].show = false;
+                }
+            }
+        }
         $scope.checkUser = function(iid) {
             $window.location.href = "/profile.html?"+iid;
+        }
+        $scope.userList = function() {
+            $window.location.href = '/adminUser.html';
         }
         $scope.showItemlist = function() {
             $window.location.href = "/admin.html";

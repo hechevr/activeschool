@@ -229,7 +229,7 @@ app.post('/admin/item/:iid', function(req, res) {
     })
 });
 
-app.post('/admin/user/:uid', function(req, res) {
+app.post('/admin/user/detail/:uid', function(req, res) {
     if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
     var uid = req.params.uid;
     if (uid.length != 24) return res.send({feedback: 'Failure'});
@@ -241,6 +241,20 @@ app.post('/admin/user/:uid', function(req, res) {
         }
     })
 });
+app.post('/admin/user/delete/:uid', function(req, res) {
+    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+    var uid = req.params.uid;
+    if (uid.length != 24) return res.send({feedback: 'Failure'});
+    console.log({_id: mongo.ObjectID(uid)});
+    databaseIO.user.delete({_id: mongo.ObjectID(uid)}, function(feedback) {
+        if (feedback.feedback === 'Success') {
+            res.send({feedback: 'Success'});
+        }
+        else {
+            res.send({feedback: 'Failure'});
+        }
+    })
+})
 
 app.post('/admin/users', function(req, res) {
     if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});

@@ -137,6 +137,23 @@ exports.user = {
                 return;
             });
         });
+    },
+    // delete user
+    delete: function(condition, callback) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                return;
+            }
+            db.collection('user').deleteOne(condition, function(err) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to delete user'});
+                    return;
+                }
+                callback({feedback: 'Success'});
+                return;
+            })
+        })
     }
 };
 

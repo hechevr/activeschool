@@ -4,43 +4,173 @@
     <meta charset="UTF-8">
     <title>Activity</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
+    
 </head>
 <body>
-    <div class='container' ng-app='myModel' ng-controller='adminController'>
+    <div ng-app='myModel' ng-controller='adminController'>
+            <nav class="navbar navbar-inverse bg-inverse">
+                    <div class="container-fluid">
+                        <div class="navbar-header"><a class="navbar-brand" href="#">ActiveSchool</a></div>
+                        <ul class="nav navbar-nav">
+                            <li><a href="#" ng-click="showItemlist()">Activity list</a></li>
+                            <li><a href="#" ng-click="addItem()">New Activity</a></li>
+                            <li class="active"><a href="#" ng-click="userList()">Users</a></li>
+                        </ul>
+                        <div class="navbar-right">
+                            <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">Logout</button>
+                        </div>
+                    </div>
+                </nav>
+                <div class="container-fluid">
         <h1>Users</h1>
         <table class='table table-bordered'>
             <tr>
+                <th>Delete</th>
                 <th>User Name</th>
                 <th>User ID</th>
                 <th>User Password</th>
             </tr>
             <tr ng-repeat='user in users'>
-                <td ng-bind="user.name"></td>
-                <td ng-bind="user._id"  ng-click="selectUser(user)"></td>
+                <td><button class="btn btn-default" ng-click="deleteUser(user)"><i class="glyphicon glyphicon-trash"></i></button></td>
+                <td><a href="#" ng-bind="user.name" ng-click="selectUser(user)"></a></td>
+                <td ng-bind="user._id"></td>
                 <td ng-bind="user.password"></td>
             </tr>
         </table>
+        <button type="button" class="btn btn-default" ng-click="adduser()"><i class="fa fa-plus"></i></button>
+        <form ng-show="showAddForm">
+            <div class="form-group">
+                <input ng-model='newuser.username' placeholder='Input your name' special-char-directive required/>
+                <input ng-model='newuser.password' placeholder='Input your password' special-char-directive required/>
+                <a href="#" ng-click="randomPassword()">Generate random password</a>
+                <button class="btn" type="submit" style="background-color: transparent; color: green; border-color: green;" ng-click="submit()">Submit</button>
+                <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">Cancel</button>
+            </div>
+        </form>
+    </div>
     </div>
 
 <script>
-    var app = angular.module("myModel", []);
-    app.controller("adminController", function($scope, $window, $http) {
-        console.log("wtf");
+    var app = angular.module("myModel", ["ngCookies"]);
+    app.controller("adminController", function($scope, $window, $http, $cookies) {
+        $scope.showAddForm = false;
         $http.post('/admin/users', {})
         .then(function(response) {
-            console.log(response);
-            $scope.users = response.data.data;
+            if (response.data.feedback === 'Success') {
+                $scope.users = response.data.data;
+            }
+            else {
+                $window.location.href = '/login.html';
+            }
         });
         $scope.selectUser = function(user) {
             $window.location.href = '/profile.html?' + user._id;
         }
-    });
+        $scope.adduser = function() {
+            $scope.showAddForm = !$scope.showAddForm;
+            $scope.newuser = {username:'', password:''};
+        }
+        $scope.randomPassword = function() {
+            var stringLength = 8;
+            var pattern = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            $scope.newuser.password = "";
+            for (var i = 0; i < stringLength; i++) {
+                var rnum = Math.floor(Math.random() * pattern.length);
+                $scope.newuser.password += pattern.charAt(rnum);
+            }
+        }
+        const check_valid = function(stringInput) {
+            var pattern = /^[a-zA-Z0-9]*$/;
+            if (stringInput.match(pattern) && stringInput.length != 0) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        $scope.submit = function() {
+            console.log('click submit');
+            if (check_valid($scope.newuser.username) && check_valid($scope.newuser.password)) {
+                $http.post('/users', {
+                    type: 'user',
+                    name: $scope.newuser.username,
+                    password: $scope.newuser.password
+                }).then(function submitSuccess(response) {
+                    console.log(response);
+                    if (response.data.feedback.feedback === 'Success') {
+                        $window.location.reload();
+                    }
+                    else {
+                        $scope.cancel();
+                    }
+                });
+            }
+            else {
+
+            }
+        }
+        $scope.cancel = function() {
+            $window.location.reload();
+        }
+        $scope.userList = function() {
+            $window.location.href = '/adminUser.html';
+        }
+        $scope.showItemlist = function() {
+            $window.location.href = "/admin.html";
+        }
+        $scope.deleteUser = function(user) {
+            $http.post('/admin/user/delete/' + user._id, {})
+            .then(function(response) {
+                if (response.data.feedback === 'Success') {
+                    $window.location.reload();
+                }
+                else {
+                    console.log(response);
+                }
+            });
+        }
+        $scope.addItem = function() {
+            $window.location.href = "/item.html";
+        }
+        $scope.Logout = function() {
+            $http.post('/users/logout', {})
+            .then(function logoutSuccess(response) {
+                console.log(response);
+                $cookies.remove('uid');
+                $window.location.href = '/login.html';
+            });
+        };
+    })
+    .directive('specialCharDirective', function() {
+    function link(scope, elem, attrs, ngModel) {
+        ngModel.$parsers.push(function(viewValue) {
+            var reg = /^[a-zA-Z0-9]*$/;
+            if (viewValue.match(reg)) {
+                return viewValue;
+            }
+            var transformedValue = ngModel.$modelValue;
+            ngModel.$setViewValue(transformedValue);
+            ngModel.$render();
+            return transformedValue;
+        });
+    }
+
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: link
+    };
+});
 </script>
 </body>
 </html>

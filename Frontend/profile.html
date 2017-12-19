@@ -21,7 +21,7 @@
             <div class="container-fluid">
                 <div class="navbar-header"><a class="navbar-brand" href="#">ActiveSchool</a></div>
                 <ul class="nav navbar-nav">
-                    <li><a href="#" ng-click="showItemlist()">Active list</a></li>
+                    <li><a href="#" ng-click="showItemlist()">Activity list</a></li>
                     <li class="active"><a href="#" ng-click="showProfile()">My Selection</a></li>
                 </ul>
                 <div class="navbar-right">
@@ -60,7 +60,7 @@
                 </tr>
             </table>
             <textarea style="resize: none; width:100%" row="3" ng-bind="user.comment" readonly></textarea>
-            <button class="btn btn-success" ng-click="Return()">Return</button>
+            <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">Return</button>
         </div>
     </div>
     <script src='http://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js'></script>
@@ -70,7 +70,7 @@
     app.controller("itemlistController", function($scope, $http, $window, $cookies){
         var uid = location.search.substring(1);
         $scope.itemlist = [];
-        $http.post("/admin/user/"+uid, [])
+        $http.post("/admin/user/detail/"+uid, [])
         .then(function(response) {
             if (response.data.feedback === 'Failure' || response.data.data === null) {
                 $window.location.href = '/login.html';
@@ -116,8 +116,8 @@
             item.show = !item.show
             console.log("show detail");
         }
-        $scope.Return = function() {
-            $window.location.href = '/admin.html';
+        $scope.cancel = function() {
+            $window.history.back();
         }
         $scope.showProfile = function() {
             $window.location.href = "/profile.html?"+uid;

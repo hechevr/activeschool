@@ -1,17 +1,22 @@
 <!DOCTYPE html>
+<html lang="en" >
 <html>
-    <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Activity</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
 
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
+    
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+    
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
-
+    
+</head>
     <style>
         h1 {
             text-align: center;
@@ -25,8 +30,9 @@
         <div class="container-fluid">
             <div class="navbar-header"><a class="navbar-brand" href="#">ActiveSchool</a></div>
             <ul class="nav navbar-nav">
-                <li><a href="#" ng-click="showItemlist()">Active list</a></li>
-                <li class="active"><a href="#" ng-click="addItem()">New Activity</a></li>
+                <li><a href="#" ng-click="showItemlist()">Activity list</a></li>
+                <li><a href="#" ng-click="addItem()">New Activity</a></li>
+                <li><a href="#" ng-click="userList()">Users</a></li>
             </ul>
             <div class="navbar-right">
                 <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">Logout</button>
@@ -85,15 +91,15 @@
             <input class="form-control" ng-model='itemoptions' special-char-directive required/>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-success" ng-click='addItem()' ng-disabled="itemform.$invalid">Submit</button>
+            <button type="submit" class="btn btn-success" ng-click='updateItem()' ng-disabled="itemform.$invalid">Submit</button>
             <button class="btn btn-default" ng-click='cancel()'>Cancel</button>
         </div>
     </form>
 </div>
 
 <script>
-var app = angular.module('userModel', []);
-app.controller('itemCtrl', function($scope, $http, $window) {
+var app = angular.module('userModel', ["ngCookies"]);
+app.controller('itemCtrl', function($scope, $http, $window, $cookies) {
     var count = 0;
     var iid = location.search.substring(1);
     $scope.times = [{show: false, index: count}];
@@ -128,8 +134,10 @@ app.controller('itemCtrl', function($scope, $http, $window) {
             $scope.times[idx].value = $scope.itemtime[idx].value;
         }
     });
-
-    $scope.addItem = function() {
+    $scope.userList = function() {
+            $window.location.href = '/adminUser.html';
+        }
+    $scope.updateItem = function() {
         var itemtime = [];
         for (time in $scope.times) {
             if ($scope.times[time].value !== "") {
