@@ -62,7 +62,7 @@
             </table>
 
             <div>
-                <textarea class="form-control" style="resize: none; width:100%" row="3" ng-model="comment" special-char-directive></textarea>
+                <textarea class="form-control" style="resize: none; width:100%" row="3" ng-model="comment" maxlength=200 special-char-directive></textarea>
             </div>
             <br>
             <div>
@@ -79,6 +79,7 @@
         var uid = $cookies.get("uid");
         $scope.isActive = true;
         $scope.itemlist = [];
+        $scope.comment = "";
         $http.post("/itemlistdata", {})
         .then(function(response) {
             console.log(response);

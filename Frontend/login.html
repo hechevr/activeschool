@@ -2,7 +2,7 @@
 <html lang="en" >
 <html>
 <head>
-        <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
                     
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -13,25 +13,64 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
-</head>
-<body>
-<div ng-app="userModel" ng-controller="myCtrl" align="center" border="0" width="300" cellpadding="2">
-    <div >
-        <h1>Login</h1>
-        <input id='username' ng-model='username' placeholder='Input your name' special-char-directive required/>
-        <br>
-        <br>
-        <input id='password' ng-model='password' type='password' placeholder='Input your password' special-char-directive required/>
-        <br>
-        <br>
-        <button class="btn btn-success" ng-click='submit()'>Submits</button>
-        <button class="btn btn-default" ng-click='cancel()'>Cancel</button>
-    </div>
-</div>
 
+    <!-- CSS -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+    <link rel="stylesheet" href="css/form-elements.css">
+    <link rel="stylesheet" href="css/style-login.css">
+
+</head>
+<body style="background-image:url('image/background.jpg')">
+    <div class="top-content" ng-app="userModel" ng-controller="myCtrl">
+        <div class="inner-bg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 col-sm-offset-2 text">
+                        <h1><strong>ActiveSchool</strong> Login</h1>
+                        <div class="description">
+                            <p>香港精英运动员协会 動感校園</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3 form-box">
+                            <div class="form-top">
+                                <div class="form-top-left">
+                                    <h3>Login to ActiveSchool</h3>
+                                    <p>Enter your username and password</p>
+                                </div>
+                                <div class="form-top-right">
+                                    <i class="fa fa-key"></i>
+                                </div>
+                            </div>
+                            <div class="form-bottom">
+                                <form role="form" class="login-form">
+                                    <div class="form-group">
+                                        <label class="sr-only">Username</label>
+                                        <input ng-model='username' type="text" class="form-username form-control" placeholder='Input your name' special-char-directive required/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="sr-only">Password</label>
+                                        <input ng-model='password' type='password' class="form-password form-control" placeholder='Input your password' special-char-directive required/>
+                                    </div>
+                                    <div class="alert alert-danger" ng-show="failToLogin">
+                                        <strong>Failure</strong> Invalid username or password.
+                                    </div>
+                                    <button type="submit" class="btn" ng-click="submit()">Sign in!</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</body>
 <script>
 var app = angular.module('userModel', ['ngCookies']);
 app.controller('myCtrl', function($scope, $http, $window, $cookies) {
+    $scope.failToLogin = false;
     $scope.submit = function submit() {
         console.log('click submit');
         $http.post('/users/login', {
@@ -41,8 +80,11 @@ app.controller('myCtrl', function($scope, $http, $window, $cookies) {
         }).then(function submitSuccess(response) {
             console.log(response);
             if (response.data.feedback === 'Success') {
-                $window.location.href = '/';
+                $window.location.href = '/itemlist.html';
                 $cookies.put('uid', response.data._id);
+            }
+            else {
+                $scope.failToLogin = true;
             }
         });
     }
@@ -75,5 +117,5 @@ app.controller('myCtrl', function($scope, $http, $window, $cookies) {
 
 </script>
 
-</body>
+
 </html>

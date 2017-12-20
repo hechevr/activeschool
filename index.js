@@ -15,12 +15,23 @@ var check_login = require('./control.js').check_login;
 var check_admin = require('./control.js').check_admin;
 
 app.get('/', function(req, res) {
-    fs.readFile('Frontend/index.html', function(err, data) {
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.write(data);
-        res.end();
-    })
+    if (check_login(req, res)) {
+        fs.readFile('Frontend/itemlist.html', function(err, data) {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(data);
+            res.end();
+        });
+    }
+    else {
+        fs.readFile('Frontend/login.html', function(err, data) {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(data);
+            res.end();
+        })
+    }
+    
 });
+
 
 app.post('/users', function(req, res) {
     console.log('post user');
@@ -65,7 +76,7 @@ app.post('/items', function(req, res) {
     });
     return;
 });
-
+/*
 app.post('/items/selection', function(req, res) {
     console.log('get item selection');
     if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Not login'});
@@ -97,26 +108,26 @@ app.post('users/selection', function(req, res) {
         }
     });
 });
-
+*/
 
 
 app.post('/itemlistdata', function(req, res) {
     console.log('get itemlist');
     if (!check_login(req, res)) return res.send({feedback: "Failure", msg: "Not login"});
     databaseIO.item.get("item", function(feedback) {
-        console.log(feedback);
+        // console.log(feedback);
         if (feedback.feedback === "Failure") return res.send({feedback:'Failure', msg: 'Fail to get itemlist'});
         return res.send({feedback: 'Success', itemlist: feedback.data});
     })
 });
 
 app.post('/users/login', function(req, res) {
-    console.log(req.body);
+    // console.log(req.body);
     var username = req.body.name;
     var password = req.body.password;
 
-    console.log(username);
-    console.log(password);
+    // console.log(username);
+    // console.log(password);
 
     var condition;
     if (username) {
@@ -135,7 +146,7 @@ app.post('/users/login', function(req, res) {
 });
 
 app.post('/users/logout', function(req, res) {
-    console.log(req.session);
+    // console.log(req.session);
     if (!check_login(req, res)) return res.send({feedback:'Failure', msg:'Not logged in'});
     req.session.destroy(function(err) {
         if (err) return res.send({feedback:'Failure', msg:'Error occurs when logout'});
@@ -147,6 +158,8 @@ app.post('/selection/:uid', function(req, res) {
     if (!check_login(req, res)) return res.send({feedback:'Failure', msg:'Fail to Login'});
     var items = req.body.items;
     var uid = req.params.uid;
+    if (req.session.uid !== uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+    if (req.body.comment.length > 50) return res.send({feedback: 'Failure', msg:'Not valid number'});
     for (idx in items) {
         var updateditem = {
             _id: mongo.ObjectID(items[idx]._id)
@@ -168,9 +181,10 @@ app.post('/selection/:uid', function(req, res) {
 app.post('/comment/:uid', function(req, res) {
     if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Not Logged in'});
     var uid = req.params.uid;
+    if (uid.length!=24) return res.send({feedback:'Failure', msg:'Not valid id'});
     databaseIO.user.getOne({_id: mongo.ObjectID(uid)}, function(feedback) {
         if (feedback.feedback === 'Success') {
-            console.log(feedback);
+            // console.log(feedback);
             return res.send({feedback: 'Success', comment: feedback.data.comment});
         }
         else {
@@ -182,9 +196,10 @@ app.post('/comment/:uid', function(req, res) {
 app.post('/admin/delete/:iid', function(req, res) {
     if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid admin'});
     var uid = req.params.iid;
+    if (uid.length!=24) return res.send({feedback:'Failure', msg:'Not valid id'});
     databaseIO.item.delete({_id: mongo.ObjectID(uid)}, function(feedback) {
         if (feedback.feedback === 'Success') {
-            console.log(feedback);
+            // console.log(feedback);
             return res.send({feedback: 'Success'});
         }
         else {
@@ -194,8 +209,10 @@ app.post('/admin/delete/:iid', function(req, res) {
 });
 
 app.post('/admin/update/:iid', function(req, res) {
-    if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Fail to login'});
+    if (!check_admin(req, res)) return res.send({feedback: "Failure", msg: "Not Login"});
+
     var iid = req.params.iid;
+    if (iid.length!=24) return res.send({feedback:'Failure', msg:'Not valid id'});
     var updateditem = {
         _id: mongo.ObjectID(iid)
     };
@@ -215,7 +232,7 @@ app.post('/admin/update/:iid', function(req, res) {
         return res.send({feedback: 'Success'});
     });
 });
-
+/*
 app.post('/admin/item/:iid', function(req, res) {
     if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
     var iid = req.params.iid;
@@ -228,12 +245,12 @@ app.post('/admin/item/:iid', function(req, res) {
         }
     })
 });
-
+*/
 app.post('/admin/user/detail/:uid', function(req, res) {
-    if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
     var uid = req.params.uid;
     if (uid.length != 24) return res.send({feedback: 'Failure'});
-    console.log({_id: mongo.ObjectID(uid)});
+    // console.log({_id: mongo.ObjectID(uid)});
     databaseIO.user.getOne({_id: mongo.ObjectID(uid)}, function(feedback) {
         if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure'});
         else {
@@ -245,7 +262,7 @@ app.post('/admin/user/delete/:uid', function(req, res) {
     if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
     var uid = req.params.uid;
     if (uid.length != 24) return res.send({feedback: 'Failure'});
-    console.log({_id: mongo.ObjectID(uid)});
+    // console.log({_id: mongo.ObjectID(uid)});
     databaseIO.user.delete({_id: mongo.ObjectID(uid)}, function(feedback) {
         if (feedback.feedback === 'Success') {
             res.send({feedback: 'Success'});
@@ -272,4 +289,7 @@ databaseIO.DB.initialize(function(feedback) {
 */
 
 app.use(express.static('Frontend'));
+app.get('*', function(req, res) {
+    res.status(404).send('Null');
+});
 app.listen(3000);

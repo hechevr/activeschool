@@ -1,0 +1,6 @@
+{
+    "admin": "5a3240fc2c740139c8bbd8c0",
+    "mongo": {
+        "address": "mongodb://localhost:27017/test"
+    }
+}

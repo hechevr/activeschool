@@ -4,8 +4,10 @@
   "description": "activeschool project",
   "main": "index.js",
   "dependencies": {
+    "config": "^1.28.1",
     "express": "4.16.2",
-    "mongodb": "2.2.33"
+    "mongodb": "2.2.33",
+    "request": "^2.83.0"
   },
   "devDependencies": {
     "express": "4.16.2",

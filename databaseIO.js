@@ -1,5 +1,7 @@
 var mongoClient = require('mongodb').MongoClient;
-var url = 'mongodb://localhost:27017/test'
+var config = require('config');
+
+var url = config.get("mongo.address");
 
 exports.DB = {
     initialize: function(callback) {
