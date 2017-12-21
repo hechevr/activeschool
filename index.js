@@ -13,6 +13,7 @@ app.use(session());
 var databaseIO = require('./databaseIO');
 var check_login = require('./control.js').check_login;
 var check_admin = require('./control.js').check_admin;
+var send_email = require('./control.js').send_email;
 
 app.get('/', function(req, res) {
     if (check_login(req, res)) {
@@ -38,6 +39,7 @@ app.post('/users', function(req, res) {
     var newuser = {
         type: 'user',
         name: req.body.name,
+        email: req.body.email,
         password: req.body.password
     };
     databaseIO.user.add(newuser, function(feedback) {
@@ -159,7 +161,7 @@ app.post('/selection/:uid', function(req, res) {
     var items = req.body.items;
     var uid = req.params.uid;
     if (req.session.uid !== uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
-    if (req.body.comment.length > 50) return res.send({feedback: 'Failure', msg:'Not valid number'});
+    if (req.body.comment.length > 200) return res.send({feedback: 'Failure', msg:'Not valid number'});
     for (idx in items) {
         var updateditem = {
             _id: mongo.ObjectID(items[idx]._id)
@@ -176,6 +178,7 @@ app.post('/selection/:uid', function(req, res) {
             return res.send({feedback: 'Failure'});
         }
     })
+    send_email(req.body.email);
 });
 
 app.post('/comment/:uid', function(req, res) {
@@ -185,7 +188,7 @@ app.post('/comment/:uid', function(req, res) {
     databaseIO.user.getOne({_id: mongo.ObjectID(uid)}, function(feedback) {
         if (feedback.feedback === 'Success') {
             // console.log(feedback);
-            return res.send({feedback: 'Success', comment: feedback.data.comment});
+            return res.send({feedback: 'Success', comment: feedback.data.comment, email:feedback.data.email});
         }
         else {
             return res.send({feedback: 'Failure'});

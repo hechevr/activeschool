@@ -107,6 +107,7 @@
         .then(function(response) {
             console.log(response);
             $scope.comment = response.data.comment;
+            $scope.email = response.data.email;
         });
         $scope.showdetail = function(item) {
             item.show = !item.show
@@ -137,7 +138,7 @@
                     items.push({_id: item._id, time});
                 }
             }
-            $http.post('/selection/'+uid, {items:items, comment: $scope.comment})
+            $http.post('/selection/'+uid, {items:items, comment: $scope.comment, email: $scope.email})
             .then(function(response) {
                 console.log(response);
                 if (response.data.feedback === 'Success') {

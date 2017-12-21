@@ -38,19 +38,22 @@
                 <th>Delete</th>
                 <th>User Name</th>
                 <th>User ID</th>
+                <th>Email</th>
                 <th>User Password</th>
             </tr>
             <tr ng-repeat='user in users'>
                 <td><button class="btn btn-default" ng-click="deleteUser(user)"><i class="glyphicon glyphicon-trash"></i></button></td>
                 <td><a href="#" ng-bind="user.name" ng-click="selectUser(user)"></a></td>
                 <td ng-bind="user._id"></td>
+                <td ng-bind="user.email"></td>
                 <td ng-bind="user.password"></td>
             </tr>
         </table>
         <button type="button" class="btn btn-default" ng-click="adduser()"><i class="fa fa-plus"></i></button>
         <form ng-show="showAddForm">
             <div class="form-group">
-                <input ng-model='newuser.username' placeholder='Input your name' special-char-directive required/>
+                <input ng-model='newuser.username' placeholder='Input your name' type="text" special-char-directive required/>
+                <input ng-model="newuser.email" placeholder="Input your email" type="email">
                 <input ng-model='newuser.password' placeholder='Input your password' special-char-directive required/>
                 <a href="#" ng-click="randomPassword()">Generate random password</a>
                 <button class="btn" type="submit" style="background-color: transparent; color: green; border-color: green;" ng-click="submit()">Submit</button>
@@ -78,7 +81,7 @@
         }
         $scope.adduser = function() {
             $scope.showAddForm = !$scope.showAddForm;
-            $scope.newuser = {username:'', password:''};
+            $scope.newuser = {username:'', password:'', email: ''};
         }
         $scope.randomPassword = function() {
             var stringLength = 8;
@@ -91,7 +94,7 @@
         }
         const check_valid = function(stringInput) {
             var pattern = /^[a-zA-Z0-9]*$/;
-            if (stringInput.match(pattern) && stringInput.length != 0) {
+            if (stringInput.match(pattern) != null && stringInput.length != 0) {
                 return true;
             }
             else {
@@ -104,6 +107,7 @@
                 $http.post('/users', {
                     type: 'user',
                     name: $scope.newuser.username,
+                    email: $scope.newuser.email,
                     password: $scope.newuser.password
                 }).then(function submitSuccess(response) {
                     console.log(response);
