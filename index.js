@@ -14,6 +14,7 @@ var databaseIO = require('./databaseIO');
 var check_login = require('./control.js').check_login;
 var check_admin = require('./control.js').check_admin;
 var send_email = require('./control.js').send_email;
+var check_validation = require('./control.js').check_validation;
 
 app.get('/', function(req, res) {
     if (check_login(req, res)) {
@@ -36,6 +37,9 @@ app.get('/', function(req, res) {
 
 app.post('/users', function(req, res) {
     console.log('post user');
+    if (!check_validation('user', req.body.name) || !check_validation('email', req.body.email) || !check_validation('password', req.body.password)) {
+        return res.send({feedback: 'Failure'});
+    }
     var newuser = {
         type: 'user',
         name: req.body.name,
@@ -56,6 +60,14 @@ app.post('/users', function(req, res) {
 app.post('/items', function(req, res) {
     console.log('post item');
     if (!check_admin(req, res)) return res.send({feedback: "Failure", msg: "Not Login"});
+    if (check_validation('item', req.body.organization)) return res.send({feedback: 'Failure'});
+    if (check_validation('item', req.body.No)) return res.send({feedback: 'Failure'});
+    if (check_validation('item', req.body.activity)) return res.send({feedback: 'Failure'});
+    if (check_validation('item', req.body.target)) return res.send({feedback: 'Failure'});
+    if (check_validation('item', req.body.maxteacher)) return res.send({feedback: 'Failure'});
+    if (check_validation('item', req.body.ratio)) return res.send({feedback: 'Failure'});
+    if (check_validation('item', req.body.date)) return res.send({feedback: 'Failure'});
+    if (check_validation('item', req.body.options)) return res.send({feedback: 'Failure'});
     var newitem = {
         type: 'item',
         organization: req.body.organization,
@@ -130,7 +142,8 @@ app.post('/users/login', function(req, res) {
 
     // console.log(username);
     // console.log(password);
-
+    if (check_validation('user', username)) return res.send({feedback: 'Failure'});
+    if (check_validation('password', password)) return res.send({feedback: 'Failure'});
     var condition;
     if (username) {
         condition = {type: 'user', name: username, password: password};
@@ -161,7 +174,7 @@ app.post('/selection/:uid', function(req, res) {
     var items = req.body.items;
     var uid = req.params.uid;
     if (req.session.uid !== uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
-    if (req.body.comment.length > 200) return res.send({feedback: 'Failure', msg:'Not valid number'});
+    if (check_validation('item', req.body.comment.length)) return res.send({feedback: 'Failure', msg:'Not valid number'});
     for (idx in items) {
         var updateditem = {
             _id: mongo.ObjectID(items[idx]._id)
@@ -177,8 +190,10 @@ app.post('/selection/:uid', function(req, res) {
         else {
             return res.send({feedback: 'Failure'});
         }
-    })
-    send_email(req.body.email);
+    });
+    if (req.body.email != undefined) {
+        send_email(req.body.email);
+    }
 });
 
 app.post('/comment/:uid', function(req, res) {
@@ -250,8 +265,8 @@ app.post('/admin/item/:iid', function(req, res) {
 });
 */
 app.post('/admin/user/detail/:uid', function(req, res) {
-    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
     var uid = req.params.uid;
+    if (!check_admin(req, res) && uid !== req.session.uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
     if (uid.length != 24) return res.send({feedback: 'Failure'});
     // console.log({_id: mongo.ObjectID(uid)});
     databaseIO.user.getOne({_id: mongo.ObjectID(uid)}, function(feedback) {
