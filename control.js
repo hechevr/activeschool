@@ -52,3 +52,33 @@ exports.send_email = function(address) {
         }
     }
 }
+exports.check_validation = function(type, string) {
+    if (type === 'user' || type === 'password') {
+        if (string.match(/[A-Z0-9]{4,10}/i) != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    else if (type === 'item') {
+        if (string.match(/[A-Z0-9:\\-\\,]{0,200}/i) != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    else if (type === 'email') {
+        if (check_email(string)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        return false;
+    }
+
+}

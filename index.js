@@ -60,14 +60,14 @@ app.post('/users', function(req, res) {
 app.post('/items', function(req, res) {
     console.log('post item');
     if (!check_admin(req, res)) return res.send({feedback: "Failure", msg: "Not Login"});
-    if (check_validation('item', req.body.organization)) return res.send({feedback: 'Failure'});
-    if (check_validation('item', req.body.No)) return res.send({feedback: 'Failure'});
-    if (check_validation('item', req.body.activity)) return res.send({feedback: 'Failure'});
-    if (check_validation('item', req.body.target)) return res.send({feedback: 'Failure'});
-    if (check_validation('item', req.body.maxteacher)) return res.send({feedback: 'Failure'});
-    if (check_validation('item', req.body.ratio)) return res.send({feedback: 'Failure'});
-    if (check_validation('item', req.body.date)) return res.send({feedback: 'Failure'});
-    if (check_validation('item', req.body.options)) return res.send({feedback: 'Failure'});
+    if (!check_validation('item', req.body.organization)) return res.send({feedback: 'Failure'});
+    if (!check_validation('item', req.body.No)) return res.send({feedback: 'Failure'});
+    if (!check_validation('item', req.body.activity)) return res.send({feedback: 'Failure'});
+    if (!check_validation('item', req.body.target)) return res.send({feedback: 'Failure'});
+    if (!check_validation('item', req.body.maxteacher)) return res.send({feedback: 'Failure'});
+    if (!check_validation('item', req.body.ratio)) return res.send({feedback: 'Failure'});
+    if (!check_validation('item', req.body.date)) return res.send({feedback: 'Failure'});
+    if (!check_validation('item', req.body.options)) return res.send({feedback: 'Failure'});
     var newitem = {
         type: 'item',
         organization: req.body.organization,
@@ -142,8 +142,8 @@ app.post('/users/login', function(req, res) {
 
     // console.log(username);
     // console.log(password);
-    if (check_validation('user', username)) return res.send({feedback: 'Failure'});
-    if (check_validation('password', password)) return res.send({feedback: 'Failure'});
+    if (!check_validation('user', username)) return res.send({feedback: 'Failure'});
+    if (!check_validation('password', password)) return res.send({feedback: 'Failure'});
     var condition;
     if (username) {
         condition = {type: 'user', name: username, password: password};
@@ -174,7 +174,7 @@ app.post('/selection/:uid', function(req, res) {
     var items = req.body.items;
     var uid = req.params.uid;
     if (req.session.uid !== uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
-    if (check_validation('item', req.body.comment.length)) return res.send({feedback: 'Failure', msg:'Not valid number'});
+    if (!check_validation('item', req.body.comment.length)) return res.send({feedback: 'Failure', msg:'Not valid number'});
     for (idx in items) {
         var updateditem = {
             _id: mongo.ObjectID(items[idx]._id)
