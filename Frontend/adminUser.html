@@ -33,6 +33,7 @@
                 </nav>
                 <div class="container-fluid">
         <h1>Users</h1>
+        <button ng-click="initializeUser()">Initialize</button>
         <table class='table table-bordered'>
             <tr>
                 <th>Delete</th>
@@ -100,6 +101,16 @@
             else {
                 return false;
             }
+        }
+        $scope.initializeUser = function() {
+            $http.post("/admin/initialize", {}, function(response) {
+                if (response.feedback === 'Success') {
+                    $window.location.reload();
+                }
+                else {
+                    $window.location.reload();
+                }
+            })
         }
         $scope.submit = function() {
             console.log('click submit');

@@ -1,5 +1,5 @@
 {
-    "admin": "5a3240fc2c740139c8bbd8c0",
+    "admin": "5a43327e4a4055270419ab9a",
     "mongo": {
         "address": "mongodb://localhost:27017/test"
     },

@@ -25,6 +25,9 @@ var transporter = nodemailer.createTransport(smtpTransport({
 }));
 
 const check_email = function(string) {
+    if (string === undefined) {
+        return false;
+    }
     if (string.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}/i) != null) {
         return true;
     }
@@ -54,7 +57,7 @@ exports.send_email = function(address) {
 }
 exports.check_validation = function(type, string) {
     if (type === 'user' || type === 'password') {
-        if (string.match(/[A-Z0-9]{4,10}/i) != null) {
+        if (string.match(/[A-Z0-9]{3,10}/i) != null) {
             return true;
         }
         else {
@@ -71,6 +74,9 @@ exports.check_validation = function(type, string) {
     }
     else if (type === 'email') {
         if (check_email(string)) {
+            return true;
+        }
+        else if (string === undefined || string.length === 0) {
             return true;
         }
         else {

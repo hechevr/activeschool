@@ -37,6 +37,7 @@ app.get('/', function(req, res) {
 
 app.post('/users', function(req, res) {
     console.log('post user');
+    console.log(req.body);
     if (!check_validation('user', req.body.name) || !check_validation('email', req.body.email) || !check_validation('password', req.body.password)) {
         return res.send({feedback: 'Failure'});
     }
@@ -174,7 +175,8 @@ app.post('/selection/:uid', function(req, res) {
     var items = req.body.items;
     var uid = req.params.uid;
     if (req.session.uid !== uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
-    if (!check_validation('item', req.body.comment.length)) return res.send({feedback: 'Failure', msg:'Not valid number'});
+    console.log(req.body);
+    if (!check_validation('item', req.body.comment)) return res.send({feedback: 'Failure', msg:'Not valid number'});
     for (idx in items) {
         var updateditem = {
             _id: mongo.ObjectID(items[idx]._id)
@@ -191,7 +193,7 @@ app.post('/selection/:uid', function(req, res) {
             return res.send({feedback: 'Failure'});
         }
     });
-    if (req.body.email != undefined) {
+    if (req.body.email != undefined && req.body.email != null) {
         send_email(req.body.email);
     }
 });
@@ -305,6 +307,18 @@ databaseIO.DB.initialize(function(feedback) {
     console.log(feedback);
 });
 */
+app.post('/admin/initialize', function(req, res) {
+    databaseIO.user.update({}, {comment: ""}, function(feedback) {
+        if (feedback.feedback === 'Success') {
+            res.send({feedback: 'Success'});
+        }
+        else {
+            res.send({feedback: 'Failure'});
+        }
+    });
+})
+
+
 
 app.use(express.static('Frontend'));
 app.get('*', function(req, res) {

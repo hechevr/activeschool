@@ -89,6 +89,16 @@
             $scope.itemlist = response.data.itemlist;
             for (idx in $scope.itemlist) {
                 $scope.itemlist[idx].show = false;
+                var targetlist = $scope.itemlist[idx].target.split(',');
+                $scope.itemlist[idx].target = targetTranslate(targetlist[0]) + "至" + targetTranslate(targetlist[1]);
+                var datelist = $scope.itemlist[idx].date.split(",");
+                $scope.itemlist[idx].date = "";
+                for (t in datelist) {
+                    $scope.itemlist[idx].date += dateTranslate(datelist[t]);
+                    if (t < datelist.length - 1) {
+                        $scope.itemlist[idx].date += ","
+                    }
+                }
                 for (t in $scope.itemlist[idx].time) {
                     if ($scope.itemlist[idx].time[t].user === uid) {
                         $scope.itemlist[idx].time[t].show = true;
@@ -163,6 +173,69 @@
                 $window.location.href = '/';
             });
         };
+        const targetTranslate = function(target) {
+            if (target === 'L1') {
+                return "小一";
+            }
+            else if (target === "L2") {
+                return "小二";
+            }
+            else if (target === "L3") {
+                return "小三";
+            }
+            else if (target === "L4") {
+                return "小四";
+            }
+            else if (target === "L5") {
+                return "小五";
+            }
+            else if (target === "L6") {
+                return "小六";
+            }
+            else if (target === "M1") {
+                return "中一";
+            }
+            else if (target === "M2") {
+                return "中二";
+            }
+            else if (target === "M3") {
+                return "中三";
+            }
+            else if (target === "M4") {
+                return "中四";
+            }
+            else if (target === "M5") {
+                return "中五";
+            }
+            else if (target === "M6") {
+                return "中六";
+            }
+            return target;
+        }
+        const dateTranslate = function(date) {
+            if (date === "Mon") {
+                return "星期一";
+            }
+            else if (date === "Tue") {
+                return "星期二";
+            }
+            else if (date === "Wed") {
+                return "星期三";
+            }
+            else if (date === "Thur") {
+                return "星期四";
+            }
+            else if (date === "Fri") {
+                return "星期五";
+            }
+            else if (date === "Sat") {
+                return "星期六";
+            }
+            else if (date === "Sun") {
+                return "星期日";
+            }
+            return date;
+        }
     })
     .directive('specialCharDirective', function() {
         function link(scope, elem, attrs, ngModel) {
