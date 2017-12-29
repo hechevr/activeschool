@@ -33,20 +33,23 @@
                 </nav>
                 <div class="container-fluid">
         <h1>Users</h1>
-        <button ng-click="initializeUser()">Initialize</button>
+        <button ng-click="initializeUser()" style="float:right">Initialize</button>
+        <button ng-click="isUpdateUser=!isUpdateUser" style="float:right">Update</button>
         <table class='table table-bordered'>
             <tr>
                 <th>Delete</th>
                 <th>User Name</th>
-                <th>User ID</th>
                 <th>Email</th>
                 <th>User Password</th>
             </tr>
             <tr ng-repeat='user in users'>
                 <td><button class="btn btn-default" ng-click="deleteUser(user)"><i class="glyphicon glyphicon-trash"></i></button></td>
                 <td><a href="#" ng-bind="user.name" ng-click="selectUser(user)"></a></td>
-                <td ng-bind="user._id"></td>
-                <td ng-bind="user.email"></td>
+                <td ng-show="isUpdateUser">
+                    <input type="email" ng-model="user.email" placeholder="Input your email">
+                    <button class="btn btn-default" ng-click="updateUser(user)"><i class="fa fa-repeat"></i></button>
+                </td>
+                <td ng-bind="user.email" ng-show="!isUpdateUser"></td>
                 <td ng-bind="user.password"></td>
             </tr>
         </table>
@@ -67,6 +70,7 @@
 <script>
     var app = angular.module("myModel", ["ngCookies"]);
     app.controller("adminController", function($scope, $window, $http, $cookies) {
+        $scope.isUpdateUser = false;
         $scope.showAddForm = false;
         $http.post('/admin/users', {})
         .then(function(response) {
@@ -165,6 +169,20 @@
                 $window.location.href = '/login.html';
             });
         };
+        $scope.updateUser = function(user) {
+            $http.post("/admin/user/update/" + user._id, 
+        {
+            email: user.email
+        }).then(function(response) {
+            console.log(response);
+            if (response.feedback === "Success") {
+                $window.location.reload();
+            }
+            else {
+                $window.location.reload();
+            }
+        });
+        }
     })
     .directive('specialCharDirective', function() {
     function link(scope, elem, attrs, ngModel) {

@@ -73,7 +73,7 @@ exports.user = {
             }
             db.collection('user').find({}).toArray(function(err, result) {
                 if (err) {
-                    callback({feedback:'Failure', msg: 'Fail to get'});
+                    callback({feedback:'Failure', msg: 'Fail to get'});                        
                     return;
                 }
                 console.log('extract user');
@@ -82,6 +82,7 @@ exports.user = {
                 return;
             });
         });
+        
     },
     // get one user (for login)
     getOne: function(condition, callback) {
@@ -126,18 +127,34 @@ exports.user = {
                 callback({feedback: 'Failure', msg: 'Fail to connect to database'});
                 return;
             }
-            db.collection('user').updateOne(objOld, {$set: {comment: objNew.comment}}, function(err, res) {
-                if (err) {
-                    callback({feedback: 'Failure', msg: 'Fail to update data'});
+            if (objNew.comment != undefined) {
+                db.collection('user').updateOne(objOld, {$set: {comment: objNew.comment}}, function(err, res) {
+                    if (err) {
+                        callback({feedback: 'Failure', msg: 'Fail to update data'});
+                        return;
+                    }
+                    console.log('update user');
+                    console.log(objOld);
+                    console.log(objNew);
+                    db.close();
+                    callback({feedback: 'Success'});
                     return;
-                }
-                console.log('update user');
-                console.log(objOld);
-                console.log(objNew);
-                db.close();
-                callback({feedback: 'Success'});
-                return;
-            });
+                });
+            }
+            else if (objNew.email != undefined) {
+                db.collection('user').updateOne(objOld, {$set: {email: objNew.email}}, function(err, res) {
+                    if (err) {
+                        callback({feedback: 'Failure', msg: 'Fail to update data'});
+                        return;
+                    }
+                    console.log('update user');
+                    console.log(objOld);
+                    console.log(objNew);
+                    db.close();
+                    callback({feedback: 'Success'});
+                    return;
+                });
+            }
         });
     },
     // delete user
@@ -162,7 +179,7 @@ exports.user = {
 exports.item = {
     // add item
     add: function(obj, callback) {
-        if (obj.type === 'item') {
+        if (obj.status === 'active') {
             mongoClient.connect(url, function(err, db) {
                 if (err) {
                     callback({feedback: 'Failure', msg: 'Fail to connect to mongo'});
@@ -187,8 +204,8 @@ exports.item = {
         }
     },
     // get all items
-    get: function(type, callback) {
-        if (type === 'item') {
+    get: function(status, callback) {
+        if (status === 'all') {
             mongoClient.connect(url, function(err, db) {
                 if (err) {
                     callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
@@ -207,8 +224,22 @@ exports.item = {
             });
         }
         else {
-            callback({feedback: 'Failure'});
-            return;
+            mongoClient.connect(url, function(err, db) {
+                if (err) {
+                    callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
+                    return;
+                }
+                db.collection('item').find({status:'active'}).toArray(function(err, result) {
+                    if (err) {
+                        callback({feedback:'Failure', msg: 'Fail to get'});
+                        return;
+                    }
+                    console.log('extract item');
+                    db.close();
+                    callback({feedback: 'Success', data: result});
+                    return;
+                });
+            });
         }
     },
     // get one item (for itemlist)
@@ -300,10 +331,9 @@ exports.item = {
                 callback({feedback: 'Failure', msg: 'Fail to connect to database'});
                 return;
             }
-            console.log(objOld);
-            console.log(objNew);
             db.collection('item').updateOne(objOld, {
                 $set: {
+                    status: objNew.status,
                     organization: objNew.organization,
                     No: objNew.No,
                     activity: objNew.activity,

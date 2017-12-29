@@ -80,7 +80,7 @@ app.controller('myCtrl', function($scope, $http, $window, $cookies) {
         }).then(function submitSuccess(response) {
             console.log(response);
             if (response.data.feedback === 'Success') {
-                $window.location.href = '/itemlist.html';
+                $window.location.href = '/';
                 $cookies.put('uid', response.data._id);
             }
             else {

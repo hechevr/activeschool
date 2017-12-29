@@ -88,3 +88,11 @@ exports.check_validation = function(type, string) {
     }
 
 }
+exports.check_id = function(string) {
+    if (string.match(/[A-Z0-9]{24}/i) != null) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}

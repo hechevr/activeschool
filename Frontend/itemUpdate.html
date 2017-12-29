@@ -41,6 +41,7 @@
     </nav>
     <div class="container-fluid">
     <h1>Activity</h1>
+    <input type="checkbox" ng-model="isActive">
     <form name="itemform">
         <div class="form-group">
             <label>Organization</label>
@@ -78,7 +79,7 @@
             <label>Date</label>
             <input class="form-control" ng-model='itemdate' special-char-directive required/>
         </div>
-            <div class="form-group">
+        <div class="form-group">
             <label>Suggest period</label>
             <div ng-repeat="time in times">
                 <input class="form-control" type="text" ng-model="time.value" special-char-directive required/>
@@ -111,7 +112,7 @@ app.controller('itemCtrl', function($scope, $http, $window, $cookies) {
     $scope.decreasetime = function(time) {
         $scope.times.splice(time.index, 1);
     };
-    $http.post('/admin/item/'+iid, {})
+    $http.post('/admin/item/detail/'+iid, {})
     .then(function(response) {
         console.log(response);
         if (response.data.feedback === 'Failure') {
@@ -126,7 +127,7 @@ app.controller('itemCtrl', function($scope, $http, $window, $cookies) {
         $scope.itemdate = response.data.data.date;
         $scope.itemtime = response.data.data.time;
         $scope.itemoptions = response.data.data.options;
-
+        $scope.isActive = response.data.data.status === 'active';
         for (idx in $scope.itemtime) {
             if (idx > 0) {
                 $scope.addtime();
@@ -144,7 +145,11 @@ app.controller('itemCtrl', function($scope, $http, $window, $cookies) {
                 itemtime.push({value: $scope.times[time].value});
             }
         }
-        $http.post('/admin/update/'+iid, {
+        var status = 'closed';
+        if ($scope.isActive) {
+            status = 'active';
+        }
+        $http.post('/admin/item/update/'+iid, {
             organization: $scope.itemorgan,
             No: $scope.itemno,
             activity: $scope.itemactivity,
@@ -153,7 +158,8 @@ app.controller('itemCtrl', function($scope, $http, $window, $cookies) {
             ratio: $scope.itemratio,
             date: $scope.itemdate,
             time: itemtime,
-            options: $scope.itemoptions
+            options: $scope.itemoptions,
+            status: status,
         }).then(function(response) {
 
             if (response.data.feedback === 'Success') {
@@ -187,7 +193,7 @@ app.controller('itemCtrl', function($scope, $http, $window, $cookies) {
 .directive('specialCharDirective', function() {
     function link(scope, elem, attrs, ngModel) {
         ngModel.$parsers.push(function(viewValue) {
-            var reg = /^[a-zA-Z0-9-:,]*$/;
+            var reg = /^[a-zA-Z0-9-:, ]*$/;
             if (viewValue.match(reg)) {
                 return viewValue;
             }
