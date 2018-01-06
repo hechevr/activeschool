@@ -54,7 +54,7 @@ exports.user = {
                     console.log('insert user');
                     console.log(obj);
                     db.close();
-                    callback({feedback: 'Success'});
+                    callback({feedback: 'Success', obj:obj});
                     return;
                 });
             });
