@@ -73,7 +73,7 @@ exports.user = {
             }
             db.collection('user').find({}).toArray(function(err, result) {
                 if (err) {
-                    callback({feedback:'Failure', msg: 'Fail to get'});                        
+                    callback({feedback:'Failure', msg: 'Fail to get'});
                     return;
                 }
                 console.log('extract user');
@@ -82,7 +82,7 @@ exports.user = {
                 return;
             });
         });
-        
+
     },
     // get one user (for login)
     getOne: function(condition, callback) {
@@ -119,7 +119,53 @@ exports.user = {
                 db.close();
             });
         });
-    }, 
+    },
+    updateStatus: function(objOld, objNew, callback) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                return;
+            }
+            if (objNew.status != undefined) {
+                db.collection('user').updateOne(objOld, {$set: {status: objNew.status}}, function(err, res) {
+                    if (err) {
+                        callback({feedback: 'Failure', msg: 'Fail to update data'});
+                        return;
+                    }
+                    db.close();
+                    callback({feedback: 'Success'});
+                    return;
+                });
+            }
+            else {
+                callback({feedback: 'Failure'});
+                return;
+            }
+        });
+    },
+    updateInfo: function(objOld, objNew, callback) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                return;
+            }
+            if (objNew.name != undefined && objNew.password != undefined && objNew.email != undefined) {
+                db.collection('user').updateOne(objOld, {$set: {name: objNew.name, email: objNew.email, password: objNew.password}}, function(err, res) {
+                    if (err) {
+                        callback({feedback: 'Failure', msg: 'Fail to update data'});
+                        return;
+                    }
+                    db.close();
+                    callback({feedback: 'Success'});
+                    return;
+                });
+            }
+            else {
+                callback({feedback: 'Failure'});
+                return;
+            }
+        });
+    },
     // update user info
     update: function(objOld, objNew, callback) {
         mongoClient.connect(url, function(err, db) {
@@ -128,14 +174,11 @@ exports.user = {
                 return;
             }
             if (objNew.comment != undefined) {
-                db.collection('user').updateOne(objOld, {$set: {comment: objNew.comment}}, function(err, res) {
+                db.collection('user').updateOne(objOld, {$set: {comment: objNew.comment, status: objNew.status}}, function(err, res) {
                     if (err) {
                         callback({feedback: 'Failure', msg: 'Fail to update data'});
                         return;
                     }
-                    console.log('update user');
-                    console.log(objOld);
-                    console.log(objNew);
                     db.close();
                     callback({feedback: 'Success'});
                     return;
@@ -154,6 +197,10 @@ exports.user = {
                     callback({feedback: 'Success'});
                     return;
                 });
+            }
+            else {
+                callback({feedback: 'Failure'});
+                return;
             }
         });
     },
@@ -302,7 +349,7 @@ exports.item = {
             callback({feedback: 'Failure'});
             return;
         }
-    }, 
+    },
     // update item info
     update: function(objOld, objNew, callback) {
         mongoClient.connect(url, function(err, db) {
@@ -426,7 +473,5 @@ exports.selection = {
             });
         });
     }
-    
+
 }
-
-

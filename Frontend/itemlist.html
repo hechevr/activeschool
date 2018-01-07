@@ -23,12 +23,54 @@
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="#" ng-click="showItemlist()">Activity list</a></li>
                     <li><a href="#" ng-click="showProfile()">My Selection</a></li>
+                    <li><a href="#" ng-click="oldprofile={name:user.name};newprofile={};showerror=false;" data-toggle="modal" data-target="#myModal">Update Info</a></li>
                 </ul>
                 <div class="navbar-right">
                     <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">Logout</button>
                 </div>
             </div>
         </nav>
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Update Profile</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label>Current info</label>
+                            </div>
+                            <div class="form-group">
+                                <input ng-model="oldprofile.name" placeholder="name" special-char-directive>
+                                <input type="email" ng-model="oldprofile.email" placeholder="email">
+                                <input ng-model="oldprofile.password" placeholder="password" special-char-directive>
+                            </div>
+                            <div class="form-group">
+                                <label>New info</label>
+                            </div>
+                            <div class="form-group">
+                                <input ng-model="newprofile.name" placeholder="name" special-char-directive>
+                                <input type="email" ng-model="newprofile.email" placeholder="email">
+                                <input ng-model="newprofile.password" placeholder="password" special-char-directive>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <p style="color:red" ng-show="showerror" ng-model="errormsg">Invalid input</p>
+                        <button type="button" class="btn btn-success" ng-click="updateprofile()">Submit</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
         <div class="container-fluid">
             <h2 style="color:#33a6cc;">動感校園 <span style="color:Black"> 2017/18 (2017年10月9日至2018年2月23日) </span>活動 / 課程時間表</h2>
             <table class="table table-bordered">
@@ -56,18 +98,19 @@
                     <td ng-bind="item.options"></td>
                 </tr>
                 <tr ng-repeat-end ng-repeat="t in item.time" ng-show="item.show && t.show">
-                    <td><input type="checkbox" ng-model="t.checked" ng-show="t.show"/></td>
+                    <td><input type="checkbox" ng-model="t.checked" ng-show="t.show" ng-disabled="userstatus"/></td>
                     <td colspan="7" ng-bind="t.value"></td>
                 </tr>
             </table>
 
             <div>
-                <textarea class="form-control" style="resize: none; width:100%" row="3" ng-model="comment" maxlength=200 special-char-directive></textarea>
+                <textarea class="form-control" style="resize: none; width:100%" row="3" ng-model="comment" maxlength=200 special-char-directive ng-disabled="userstatus"></textarea>
             </div>
             <br>
             <div>
-                <button class="btn" style="background-color: transparent; color: green; border-color: green;" ng-click="submit()">Submit</button>
+                <button class="btn" style="background-color: transparent; color: green; border-color: green;" ng-click="submit()" ng-disabled="userstatus">Submit</button>
                 <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">Cancel</button>
+                <label ng-show="userstatus">You have submited, please contact admin if you want to change you choice</label>
             </div>
         </div>
     </div>
@@ -78,6 +121,7 @@
     app.controller("itemlistController", function($scope, $http, $window, $cookies){
         var uid = $cookies.get("uid");
         $scope.isActive = true;
+        $scope.userstatus = true;
         $scope.itemlist = [];
         $scope.comment = "";
         $http.post("/itemlistdata", {})
@@ -118,6 +162,7 @@
             console.log(response);
             $scope.comment = response.data.comment;
             $scope.email = response.data.email;
+            $scope.userstatus = !(response.data.status === 'active');
         });
         $scope.showdetail = function(item) {
             item.show = !item.show
@@ -173,6 +218,31 @@
                 $window.location.href = '/';
             });
         };
+        $scope.updateprofile = function() {
+            if ($scope.oldprofile.email != undefined && $scope.oldprofile.name != undefined && $scope.oldprofile.password != undefined && $scope.newprofile.email != undefined && $scope.newprofile.name != undefined && $scope.newprofile.password != undefined) {
+                $http.post("/users/update/"+uid, {oldprofile:$scope.oldprofile, newprofile:$scope.newprofile})
+                .then(function(response) {
+                    console.log(response);
+                    if (response.feedback === 'Success') {
+                        $window.location.reload();
+                    }
+                    else {
+                        $scope.showerror = true;
+                        if (response.msg != undefined) {
+                            $scope.errormsg = response.msg;
+                        }
+                        else {
+                            console.log("wtf");
+                            $scope.errormsg = "error";
+                        }
+                    }
+                })
+            }
+            else {
+                $scope.showerror = true;
+                $scope.errormsg = "Invalid Input";
+            }
+        }
         const targetTranslate = function(target) {
             if (target === 'L1') {
                 return "小一";
@@ -240,7 +310,7 @@
     .directive('specialCharDirective', function() {
         function link(scope, elem, attrs, ngModel) {
             ngModel.$parsers.push(function(viewValue) {
-                var reg = /^[a-zA-Z0-9-:,. ]*$/;
+                var reg = /^[a-zA-Z0-9-:,.， \u4E00-\u9FCC]*$/;
                 if (viewValue.match(reg)) {
                     return viewValue;
                 }

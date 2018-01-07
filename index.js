@@ -41,7 +41,7 @@ app.get('/', function(req, res) {
             res.end();
         })
     }
-    
+
 });
 
 app.get('/admin.html', function(req, res) {
@@ -59,7 +59,7 @@ app.get('/admin.html', function(req, res) {
             res.end();
         });
     }
-    
+
 });
 
 
@@ -73,7 +73,8 @@ app.post('/users', function(req, res) {
         type: 'user',
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        status: "active"
     };
     databaseIO.user.add(newuser, function(feedback) {
         if (feedback.feedback === 'Success') {
@@ -198,12 +199,50 @@ app.post('/users/logout', function(req, res) {
     });
 });
 
+app.post('/users/update/:uid', function(req, res) {
+    var uid = req.params.uid;
+    if (!check_login(req, res)) return res.send({feedback:'Failure', msg:'Fail to Login'});
+    if (req.session.uid !== uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+    if (!check_validation('email',req.body.oldprofile.email)) return res.send({feedback: 'Failure'});
+    if (!check_validation('user', req.body.oldprofile.name)) return res.send({feedback: 'Failure'});
+    if (!check_validation('password', req.body.oldprofile.password)) return res.send({feedback: 'Failure'});
+    if (!check_validation('email',req.body.newprofile.email)) return res.send({feedback: 'Failure', msg: 'Wrong format'});
+    if (!check_validation('user', req.body.newprofile.name)) return res.send({feedback: 'Failure', msg: 'Wrong format'});
+    if (!check_validation('password', req.body.newprofile.password)) return res.send({feedback: 'Failure', msg: 'Wrong format'});
+    databaseIO.user.getOne(
+        {
+            _id:mongo.ObjectID(uid),
+            email:req.body.oldprofile.email,
+            password:req.body.oldprofile.password,
+            name: req.body.oldprofile.name
+        }, function(feedback) {
+            if (feedback.feedback != 'Success' || !feedback.data) return res.send({feedback:'Failure', msg:'Wrong info'});
+            else {
+                databaseIO.user.updateInfo(
+                    {_id: mongo.ObjectID(uid)},
+                    {
+                        name: req.body.newprofile.name,
+                        password: req.body.newprofile.password,
+                        email: req.body.newprofile.email
+                    },
+                    function(fb) {
+                        if (fb.feedback === 'Success') {
+                            return res.send({feedback: 'Success'});
+                        }
+                        else {
+                            return res.send({feedback: 'Failure'});
+                        }
+                    }
+
+            )
+            }
+        })
+});
 app.post('/selection/:uid', function(req, res) {
     if (!check_login(req, res)) return res.send({feedback:'Failure', msg:'Fail to Login'});
     var items = req.body.items;
     var uid = req.params.uid;
     if (req.session.uid !== uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
-    console.log(req.body);
     if (!check_validation('item', req.body.comment)) return res.send({feedback: 'Failure', msg:'Not valid number'});
     for (idx in items) {
         var updateditem = {
@@ -213,7 +252,7 @@ app.post('/selection/:uid', function(req, res) {
             if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure', msg: 'Fail to update item'});
         });
     }
-    databaseIO.user.update({_id: mongo.ObjectID(uid)}, {comment: req.body.comment}, function(feedback) {
+    databaseIO.user.update({_id: mongo.ObjectID(uid)}, {comment: req.body.comment, status: "decline"}, function(feedback) {
         if (feedback.feedback === 'Success') {
             return res.send({feedback: 'Success'});
         }
@@ -233,7 +272,7 @@ app.post('/comment/:uid', function(req, res) {
     databaseIO.user.getOne({_id: mongo.ObjectID(uid)}, function(feedback) {
         if (feedback.feedback === 'Success') {
             // console.log(feedback);
-            return res.send({feedback: 'Success', comment: feedback.data.comment, email:feedback.data.email});
+            return res.send({feedback: 'Success', comment: feedback.data.comment, status: feedback.data.status, email:feedback.data.email});
         }
         else {
             return res.send({feedback: 'Failure'});
@@ -335,15 +374,37 @@ app.post('/admin/user/update/:uid', function(req, res) {
     if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
     var uid = req.params.uid;
     if (!check_id(uid)) return res.send({feedback: 'Failure', msg: 'Wrong id'});
-    if (!check_validation('email', req.body.email)) return res.send({feedback: 'Failure', msg: 'Invalid email'});
-    databaseIO.user.update({_id: mongo.ObjectID(uid)}, {email: req.body.email}, function(feedback) {
-        if (feedback.feedback === 'Success') {
-            return res.send({feedback: 'Success'});
+    console.log(req.body);
+    if (req.body.email != undefined) {
+        if (!check_validation('email', req.body.email)) return res.send({feedback: 'Failure', msg: 'Invalid email'});
+        databaseIO.user.update({_id: mongo.ObjectID(uid)}, {email: req.body.email}, function(feedback) {
+            if (feedback.feedback === 'Success') {
+                return res.send({feedback: 'Success'});
+            }
+            else {
+                return res.send({feedback: 'Failure'});
+            }
+        });
+    }
+    else if (req.body.status != undefined) {
+        if (req.body.status == 'active' || req.body.status == 'decline') {
+            databaseIO.user.updateStatus({_id: mongo.ObjectID(uid)}, {status: req.body.status}, function(feedback) {
+                if (feedback.feedback === 'Success') {
+                    return res.send({feedback: 'Success'});
+                }
+                else {
+                    return res.send({feedback: 'Failure'});
+                }
+            });
         }
         else {
             return res.send({feedback: 'Failure'});
         }
-    })
+    }
+    else {
+        return res.send({feedback: 'Failure'});
+    }
+
 })
 
 app.post('/admin/users', function(req, res) {

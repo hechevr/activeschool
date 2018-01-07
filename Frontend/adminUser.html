@@ -8,13 +8,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    
+
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    
+
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
-    
+
 </head>
 <body>
     <div ng-app='myModel' ng-controller='adminController'>
@@ -38,12 +38,14 @@
         <table class='table table-bordered'>
             <tr>
                 <th>Delete</th>
+                <th>Active</th>
                 <th>User Name</th>
                 <th>Email</th>
                 <th>User Password</th>
             </tr>
             <tr ng-repeat='user in users'>
                 <td><button class="btn btn-default" ng-click="deleteUser(user)"><i class="glyphicon glyphicon-trash"></i></button></td>
+                <td><a  href="#" ng-click="setactive(user)" ng-show="!(user.status==='active')">Set Active</a><a href="#" ng-show="(user.status==='active')" ng-click="setdecline(user)">Set decline</a></td>
                 <td><a href="#" ng-bind="user.name" ng-click="selectUser(user)"></a></td>
                 <td ng-show="isUpdateUser">
                     <input type="email" ng-model="user.email" placeholder="Input your email">
@@ -74,6 +76,7 @@
         $scope.showAddForm = false;
         $http.post('/admin/users', {})
         .then(function(response) {
+            console.log(response);
             if (response.data.feedback === 'Success') {
                 $scope.users = response.data.data;
             }
@@ -168,9 +171,37 @@
                 $cookies.remove('uid');
                 $window.location.href = '/login.html';
             });
-        };
+        }
+        $scope.setactive = function(user) {
+            $http.post('/admin/user/update/'+user._id,
+            {
+                status: 'active'
+            }).then(function(response) {
+                console.log(response);
+                if (response.feedback === 'Success') {
+                    $window.location.reload();
+                }
+                else {
+                    $window.location.reload();
+                }
+            })
+        }
+        $scope.setdecline = function(user) {
+            $http.post('/admin/user/update/'+user._id,
+            {
+                status: 'decline'
+            }).then(function(response) {
+                console.log(response);
+                if (response.feedback === 'Success') {
+                    $window.location.reload();
+                }
+                else {
+                    $window.location.reload();
+                }
+            })
+        }
         $scope.updateUser = function(user) {
-            $http.post("/admin/user/update/" + user._id, 
+            $http.post("/admin/user/update/" + user._id,
         {
             email: user.email
         }).then(function(response) {

@@ -56,8 +56,16 @@ exports.send_email = function(address) {
     }
 }
 exports.check_validation = function(type, string) {
-    if (type === 'user' || type === 'password') {
-        if (string.match(/[A-Z0-9]{3,10}/i) != null) {
+    if (type === 'user') {
+        if (string.match(/[A-Z0-9\u4E00-\u9FCC]{3,10}/i) != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    else if (type === 'password') {
+        if (string.match(/[A-Z0-9]{3,16}/i) != null) {
             return true;
         }
         else {
@@ -65,7 +73,8 @@ exports.check_validation = function(type, string) {
         }
     }
     else if (type === 'item') {
-        if (string.match(/[A-Z0-9:\\-\\,]{0,200}/i) != null) {
+
+        if (string.match(/[A-Z0-9:\\-\\,\u4E00-\u9FCC]]{0,200}/i) != null) {
             return true;
         }
         else {
