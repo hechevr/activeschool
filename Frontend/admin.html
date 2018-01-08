@@ -30,8 +30,10 @@
             </div>
         </nav>
         <div class="container-fluid">
-            <h2  style="color:#33a6cc">動感校園 <span style="color:Black"> 2017/18 (2017年10月9日至2018年2月23日)<button class="btn btn-sm" style="background-color: transparent; border-color: transparent;" ng-click="updatetitle=!updatetitle;"><span class="glyphicon glyphicon-pencil"></span></button></span>活動 / 課程時間表</h2>
-            <h2  style="color:#33a6cc" ng-show="updatetitle">動感校園 <input style="color:Black"></input><button class="btn btn-sm" style="background-color: transparent; border-color: black;" ng-click="updatetitle(item)">確定</button>活動 / 課程時間表</h2>
+
+            <h2  style="color:#33a6cc">動感校園 <span style="color:Black" ng-bind="activetitle"> 2017/18 (2017年10月9日至2018年2月23日) </span><button display="inline" class="btn btn-sm" style="background-color: transparent; border-color: transparent;" ng-click="updatetitle=!updatetitle;"><span class="glyphicon glyphicon-pencil"></span></button>活動 / 課程時間表</h2>
+
+            <h2 style="color:#33a6cc" ng-show="updatetitle">動感校園 <input style="color:Black" ng-model="activetitle"></input><button class="btn btn-sm" style="background-color: transparent; border-color: black;" ng-click="titleupdate(item)">確定</button>活動 / 課程時間表</h2>
             <table class="table table-bordered">
                 <thead class="thead thead-inverse">
                     <tr>
@@ -79,6 +81,15 @@
     app.controller("itemlistController", function($scope, $http, $window, $cookies){
         $scope.itemlist = [];
         $scope.updatetitle = false;
+        $http.get("/title").then(function(response) {
+            console.log(response);
+            if (response.data.feedback === 'Success') {
+                $scope.activetitle = response.data.value;
+            }
+            else {
+                $scope.activetitle = "";
+            }
+        });
         $http.post("/admin/itemlistdata", {})
         .then(function(response) {
             if (response.data.feedback === 'Failure') {
@@ -176,6 +187,16 @@
                     $scope.itemlist[idx].show = false;
                 }
             }
+        }
+        $scope.titleupdate = function() {
+            $http.post('/title/update', {title: $scope.activetitle}).then(function(response) {
+                if (response.data.feedback === 'Success') {
+                    $window.location.reload();
+                }
+                else {
+                    console.log(response);
+                }
+            });
         }
         $scope.checkUser = function(iid) {
             $window.location.href = "/profile.html?"+iid;

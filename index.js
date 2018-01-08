@@ -62,6 +62,33 @@ app.get('/admin.html', function(req, res) {
 
 });
 
+app.get('/title', function(req, res) {
+    if (!check_login(req, res)) {
+        return res.send({feedback: 'Failure', msg:'Not valid user'});
+    }
+    databaseIO.config.getOne({name: 'title'}, function(feedback) {
+        if (feedback.feedback === 'Failure') {
+            return res.send({feedback: 'Failure', msg: 'Fail to get title'});
+        }
+        console.log(feedback);
+        return res.send({feedback: 'Success', value: feedback.data.value});
+    });
+});
+
+app.post('/title/update', function(req, res) {
+    if (!check_admin(req, res)) {
+        return res.send({feedback:'Failure', msg: 'Not valid user'});
+    }
+    if (!check_validation('title', req.body.title)) return res.send({feedback: 'Failure', msg: 'Wrong format'});
+    databaseIO.config.update({name: 'title'}, {value: req.body.title}, function(feedback) {
+        if (feedback.feedback === 'Failure') {
+            return res.send({feedback:'Failure', msg: 'Fail to update title'});
+        }
+        console.log(feedback);
+        return res.send({feedback: 'Success'});
+    });
+});
+
 
 app.post('/users', function(req, res) {
     console.log('post user');
@@ -422,15 +449,31 @@ databaseIO.DB.initialize(function(feedback) {
 });
 */
 app.post('/admin/initialize', function(req, res) {
-    databaseIO.user.update({}, {comment: ""}, function(feedback) {
+    console.log('initialize');
+    databaseIO.user.update({}, {comment: "", status:'active'}, function(feedback) {
+        console.log(feedback);
         if (feedback.feedback === 'Success') {
-            res.send({feedback: 'Success'});
+            databaseIO.user.updateStatus({}, {comment: "", status:'active'}, function(feedback) {
+                if (feedback.feedback === 'Success') {
+                    databaseIO.item.update({}, {time:{}}, function(feedback) {
+                        if (feedback.feedback === 'Success') {
+                            return res.send({feedback: 'Success'});
+                        }
+                        else {
+                            return res.send({feedback: 'Failure'});
+                        }
+                    })
+                }
+                else {
+                    return res.send({feedback: 'Failure'});
+                }
+            });
         }
         else {
-            res.send({feedback: 'Failure'});
+            return res.send({feedback: 'Failure'});
         }
     });
-})
+});
 
 
 

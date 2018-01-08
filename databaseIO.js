@@ -36,7 +36,59 @@ exports.DB = {
         });
     }
 }
+exports.config = {
+    add: function(obj, callback) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect to mongo'});
+                return;
+            }
+            db.collection('config').insertOne(obj, function(err, res) {
+                if (err) {
+                    callback({feedback: 'Failure', msg:'Fail to add config'});
+                    return;
+                }
+                db.close();
+                callback({feedback: 'Success', obj: obj});
+                return;
+            })
+        })
+    },
 
+    getOne: function(obj, callback) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg:'Fail to connect to mong'});
+                return;
+            }
+            db.collection('config').findOne(obj, function(err, res) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to find obj'});
+                    return;
+                }
+                callback({feedback: 'Success', data: res});
+                return;
+            })
+        })
+    },
+
+    update: function(oldObj, newObj, callback) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg:'Fail to connect to mong'});
+                return;
+            }
+            db.collection('config').updateOne(oldObj, {$set: {value: newObj.value}}, function(err, res) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to update obj'});
+                    return;
+                }
+                callback({feedback: 'Success'});
+                return;
+            })
+        })
+    }
+}
 exports.user = {
     // add user
     add: function(obj, callback) {
@@ -127,7 +179,7 @@ exports.user = {
                 return;
             }
             if (objNew.status != undefined) {
-                db.collection('user').updateOne(objOld, {$set: {status: objNew.status}}, function(err, res) {
+                db.collection('user').updateMany(objOld, {$set: {status: objNew.status}}, function(err, res) {
                     if (err) {
                         callback({feedback: 'Failure', msg: 'Fail to update data'});
                         return;
@@ -150,7 +202,7 @@ exports.user = {
                 return;
             }
             if (objNew.name != undefined && objNew.password != undefined && objNew.email != undefined) {
-                db.collection('user').updateOne(objOld, {$set: {name: objNew.name, email: objNew.email, password: objNew.password}}, function(err, res) {
+                db.collection('user').update(objOld, {$set: {name: objNew.name, email: objNew.email, password: objNew.password}}, function(err, res) {
                     if (err) {
                         callback({feedback: 'Failure', msg: 'Fail to update data'});
                         return;
@@ -174,7 +226,7 @@ exports.user = {
                 return;
             }
             if (objNew.comment != undefined) {
-                db.collection('user').updateOne(objOld, {$set: {comment: objNew.comment, status: objNew.status}}, function(err, res) {
+                db.collection('user').updateMany(objOld, {$set: {comment: objNew.comment, status: objNew.status}}, function(err, res) {
                     if (err) {
                         callback({feedback: 'Failure', msg: 'Fail to update data'});
                         return;
@@ -359,7 +411,7 @@ exports.item = {
             }
             console.log(objOld);
             console.log(objNew);
-            db.collection('item').updateOne(objOld, {$set: {time: objNew.time}}, function(err, res) {
+            db.collection('item').updateMany(objOld, {$set: {time: objNew.time}}, function(err, res) {
                 if (err) {
                     callback({feedback: 'Failure', msg: 'Fail to update data'});
                     return;

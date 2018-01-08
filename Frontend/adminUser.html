@@ -110,14 +110,15 @@
             }
         }
         $scope.initializeUser = function() {
-            $http.post("/admin/initialize", {}, function(response) {
+            $http.post("/admin/initialize", {}).then(function(response) {
+                console.log(response);
                 if (response.feedback === 'Success') {
                     $window.location.reload();
                 }
                 else {
                     $window.location.reload();
                 }
-            })
+            });
         }
         $scope.submit = function() {
             console.log('click submit');

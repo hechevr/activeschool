@@ -57,7 +57,15 @@ exports.send_email = function(address) {
 }
 exports.check_validation = function(type, string) {
     if (type === 'user') {
-        if (string.match(/[A-Z0-9\u4E00-\u9FCC]{3,10}/i) != null) {
+        if (string.match(/[A-Z0-9\u4E00-\u9FCC]{3,10}/i)[0] === string) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    else if (type === 'title') {
+        if (string.match(/[A-Z0-9/() \u4E00-\u9FCC]{0,50}/i)[0] === string) {
             return true;
         }
         else {
@@ -65,7 +73,7 @@ exports.check_validation = function(type, string) {
         }
     }
     else if (type === 'password') {
-        if (string.match(/[A-Z0-9]{3,16}/i) != null) {
+        if (string.match(/[A-Z0-9]{3,16}/i)[0] === string) {
             return true;
         }
         else {
@@ -76,7 +84,7 @@ exports.check_validation = function(type, string) {
         if (string.length === 0) {
             return true;
         }
-        if (string.match(/[A-Z0-9:\\-\\,，。 \u4E00-\u9FCC]]{0,200}/i) != null) {
+        if (string.match(/[A-Z0-9:\\-\\,，。 \u4E00-\u9FCC]]{0,200}/i)[0] === string) {
             return true;
         }
         else {

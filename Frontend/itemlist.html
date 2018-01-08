@@ -72,7 +72,7 @@
         </div>
 
         <div class="container-fluid">
-            <h2 style="color:#33a6cc;">動感校園 <span style="color:Black"> 2017/18 (2017年10月9日至2018年2月23日) </span>活動 / 課程時間表</h2>
+            <h2 style="color:#33a6cc;">動感校園 <span style="color:Black" ng-bind="activetitle"> </span>活動 / 課程時間表</h2>
             <table class="table table-bordered">
                 <thead class="thead thead-inverse">
                     <tr>
@@ -124,6 +124,15 @@
         $scope.userstatus = true;
         $scope.itemlist = [];
         $scope.comment = "";
+        $http.get('/title').then(function(response) {
+            console.log(response);
+            if (response.data.feedback === 'Success') {
+                $scope.activetitle = response.data.value;
+            }
+            else {
+                $scope.activetitle = "";
+            }
+        });
         $http.post("/itemlistdata", {})
         .then(function(response) {
             console.log(response);
