@@ -20,28 +20,28 @@
     <div ng-app='myModel' ng-controller='adminController'>
             <nav class="navbar navbar-inverse bg-inverse">
                     <div class="container-fluid">
-                        <div class="navbar-header"><a class="navbar-brand" href="#">ActiveSchool</a></div>
+                        <div class="navbar-header"><a class="navbar-brand" href="#">動感校園</a></div>
                         <ul class="nav navbar-nav">
-                            <li><a href="#" ng-click="showItemlist()">Activity list</a></li>
-                            <li><a href="#" ng-click="addItem()">New Activity</a></li>
-                            <li class="active"><a href="#" ng-click="userList()">Users</a></li>
+                            <li><a href="#" ng-click="showItemlist()">項目列表</a></li>
+                            <li><a href="#" ng-click="addItem()">創建項目</a></li>
+                            <li class="active"><a href="#" ng-click="userList()">用戶列表</a></li>
                         </ul>
                         <div class="navbar-right">
-                            <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">Logout</button>
+                            <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">登出</button>
                         </div>
                     </div>
                 </nav>
                 <div class="container-fluid">
         <h1>Users</h1>
-        <button ng-click="initializeUser()" style="float:right">Initialize</button>
-        <button ng-click="isUpdateUser=!isUpdateUser" style="float:right">Update</button>
+        <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc;float:right;" ng-click="initializeUser()">初始化</button>
+        <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc;float:right;" ng-click="isUpdateUser=!isUpdateUser">更新電郵</button>
         <table class='table table-bordered'>
             <tr>
-                <th>Delete</th>
-                <th>Active</th>
-                <th>User Name</th>
-                <th>Email</th>
-                <th>User Password</th>
+                <th>刪除</th>
+                <th>狀態</th>
+                <th>用戶姓名</th>
+                <th>用戶電郵</th>
+                <th>用戶密碼</th>
             </tr>
             <tr ng-repeat='user in users'>
                 <td><button class="btn btn-default" ng-click="deleteUser(user)"><i class="glyphicon glyphicon-trash"></i></button></td>
@@ -58,12 +58,12 @@
         <button type="button" class="btn btn-default" ng-click="adduser()"><i class="fa fa-plus"></i></button>
         <form ng-show="showAddForm">
             <div class="form-group">
-                <input ng-model='newuser.username' placeholder='Input your name' type="text" special-char-directive required/>
-                <input ng-model="newuser.email" placeholder="Input your email" type="email">
-                <input ng-model='newuser.password' placeholder='Input your password' special-char-directive required/>
-                <a href="#" ng-click="randomPassword()">Generate random password</a>
-                <button class="btn" type="submit" style="background-color: transparent; color: green; border-color: green;" ng-click="submit()">Submit</button>
-                <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">Cancel</button>
+                <input ng-model='newuser.username' placeholder='用戶姓名' type="text" special-char-directive required/>
+                <input ng-model="newuser.email" placeholder="用戶電郵" type="email">
+                <input ng-model='newuser.password' placeholder='用戶密碼' special-char-directive required/>
+                <a href="#" ng-click="randomPassword()">隨機密碼</a>
+                <button class="btn" type="submit" style="background-color: transparent; color: green; border-color: green;" ng-click="submit()">確定</button>
+                <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">取消</button>
             </div>
         </form>
     </div>

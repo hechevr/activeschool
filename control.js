@@ -73,8 +73,10 @@ exports.check_validation = function(type, string) {
         }
     }
     else if (type === 'item') {
-
-        if (string.match(/[A-Z0-9:\\-\\,\u4E00-\u9FCC]]{0,200}/i) != null) {
+        if (string.length === 0) {
+            return true;
+        }
+        if (string.match(/[A-Z0-9:\\-\\,，。 \u4E00-\u9FCC]]{0,200}/i) != null) {
             return true;
         }
         else {

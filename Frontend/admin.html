@@ -18,24 +18,25 @@
     <div ng-app="userModel" ng-controller="itemlistController">
         <nav class="navbar navbar-inverse bg-inverse">
             <div class="container-fluid">
-                <div class="navbar-header"><a class="navbar-brand" href="#">ActiveSchool</a></div>
+                <div class="navbar-header"><a class="navbar-brand" href="#">動感校園</a></div>
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#" ng-click="showItemlist()">Activity list</a></li>
-                    <li><a href="#" ng-click="addItem()">New Activity</a></li>
-                    <li><a href="#" ng-click="userList()">Users</a></li>
+                    <li class="active"><a href="#" ng-click="showItemlist()">項目列表</a></li>
+                    <li><a href="#" ng-click="addItem()">創建項目</a></li>
+                    <li><a href="#" ng-click="userList()">用戶列表</a></li>
                 </ul>
                 <div class="navbar-right">
-                    <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">Logout</button>
+                    <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">登出</button>
                 </div>
             </div>
         </nav>
         <div class="container-fluid">
-            <h2  style="color:#33a6cc">動感校園 <span style="color:Black"> 2017/18 (2017年10月9日至2018年2月23日) </span>活動 / 課程時間表</h2>
+            <h2  style="color:#33a6cc">動感校園 <span style="color:Black"> 2017/18 (2017年10月9日至2018年2月23日)<button class="btn btn-sm" style="background-color: transparent; border-color: transparent;" ng-click="updatetitle=!updatetitle;"><span class="glyphicon glyphicon-pencil"></span></button></span>活動 / 課程時間表</h2>
+            <h2  style="color:#33a6cc" ng-show="updatetitle">動感校園 <input style="color:Black"></input><button class="btn btn-sm" style="background-color: transparent; border-color: black;" ng-click="updatetitle(item)">確定</button>活動 / 課程時間表</h2>
             <table class="table table-bordered">
                 <thead class="thead thead-inverse">
                     <tr>
-                        <th>Delete</th>
-                        <th>Edit</th>
+                        <th>刪除</th>
+                        <th>編輯</th>
                         <th>活動組織</th>
                         <th>No.</th>
                         <th>活動課程</th>
@@ -70,13 +71,14 @@
                     <td colspan='7'><a href="#" ng-bind='t.user' ng-click="checkUser(t.user)"></a></td>
                 </tr>
             </table>
-            <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">Return</button>
+            <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">返回</button>
         </div>
     </div>
     <script>
     var app = angular.module("userModel", ['ngCookies']);
     app.controller("itemlistController", function($scope, $http, $window, $cookies){
         $scope.itemlist = [];
+        $scope.updatetitle = false;
         $http.post("/admin/itemlistdata", {})
         .then(function(response) {
             if (response.data.feedback === 'Failure') {

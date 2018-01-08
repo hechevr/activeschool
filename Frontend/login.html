@@ -26,7 +26,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-sm-8 col-sm-offset-2 text">
-                        <h1><strong>ActiveSchool</strong> Login</h1>
+                        <h1><strong>動感校園</strong> 登錄</h1>
                         <div class="description">
                             <p>香港精英运动员协会 動感校園</p>
                         </div>
@@ -37,8 +37,8 @@
                         <div class="col-sm-6 col-sm-offset-3 form-box">
                             <div class="form-top">
                                 <div class="form-top-left">
-                                    <h3>Login to ActiveSchool</h3>
-                                    <p>Enter your username and password</p>
+                                    <h3>登錄</h3>
+                                    <p>輸入你的用戶名和密碼</p>
                                 </div>
                                 <div class="form-top-right">
                                     <i class="fa fa-key"></i>
@@ -47,17 +47,17 @@
                             <div class="form-bottom">
                                 <form role="form" class="login-form">
                                     <div class="form-group">
-                                        <label class="sr-only">Username</label>
-                                        <input ng-model='username' type="text" class="form-username form-control" placeholder='Input your name' special-char-directive required/>
+                                        <label class="sr-only">用戶名</label>
+                                        <input ng-model='username' type="text" class="form-username form-control" placeholder='用戶名' special-char-directive required/>
                                     </div>
                                     <div class="form-group">
-                                        <label class="sr-only">Password</label>
-                                        <input ng-model='password' type='password' class="form-password form-control" placeholder='Input your password' special-char-directive required/>
+                                        <label class="sr-only">密碼</label>
+                                        <input ng-model='password' type='password' class="form-password form-control" placeholder='密碼' special-char-directive required/>
                                     </div>
                                     <div class="alert alert-danger" ng-show="failToLogin">
-                                        <strong>Failure</strong> Invalid username or password.
+                                        <strong>錯誤</strong> 無效的用戶名或密碼
                                     </div>
-                                    <button type="submit" class="btn" ng-click="submit()">Sign in!</button>
+                                    <button type="submit" class="btn" ng-click="submit()">登錄</button>
                                 </form>
                             </div>
                         </div>
