@@ -276,20 +276,23 @@ app.post('/selection/:uid', function(req, res) {
             _id: mongo.ObjectID(items[idx]._id)
         };
         databaseIO.item.update(updateditem, {time: items[idx].time}, function(feedback) {
-            if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure', msg: 'Fail to update item'});
+            if (feedback.feedback === 'Failure') {
+                return res.send({feedback: 'Failure', msg: 'Fail to update item'});
+            }
         });
     }
     databaseIO.user.update({_id: mongo.ObjectID(uid)}, {comment: req.body.comment, status: "decline"}, function(feedback) {
         if (feedback.feedback === 'Success') {
+            if (req.body.email != undefined && req.body.email != null) {
+                send_email(req.body.email);
+            }
             return res.send({feedback: 'Success'});
         }
         else {
             return res.send({feedback: 'Failure'});
         }
     });
-    if (req.body.email != undefined && req.body.email != null) {
-        send_email(req.body.email);
-    }
+    
 });
 
 app.post('/comment/:uid', function(req, res) {
@@ -455,7 +458,8 @@ app.post('/admin/initialize', function(req, res) {
         if (feedback.feedback === 'Success') {
             databaseIO.user.updateStatus({}, {comment: "", status:'active'}, function(feedback) {
                 if (feedback.feedback === 'Success') {
-                    databaseIO.item.update({}, {time:{}}, function(feedback) {
+                    databaseIO.item.initialize({}, {time:""}, function(feedback) {
+                        console.log(feedback);
                         if (feedback.feedback === 'Success') {
                             return res.send({feedback: 'Success'});
                         }

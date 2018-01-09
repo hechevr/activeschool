@@ -92,6 +92,7 @@
                 <div class="form-group">
                     <button type="submit" class="btn btn-success" ng-click='submit()' ng-disabled="itemform.$invalid">提交</button>
                     <button class="btn btn-default" ng-click='cancel()'>取消</button>
+                    <p ng-show="showerror" style="color:red">無效的輸入</p>
                 </div>
             </form>
         </div>
@@ -104,6 +105,7 @@
         $scope.itemoptions = "";
         $scope.times = [{show: false, index: count}];
         count ++;
+        $scope.showerror = false;
         $scope.addtime = function() {
             $scope.times.push({show: true, index:count});
             count ++;
@@ -131,7 +133,12 @@
                 options: $scope.itemoptions
             }).then(function(response) {
                 console.log(response);
-                $window.location.href = '/item.html';
+                if(response.data.feedback.feedback === "Success") {
+                    $window.location.reload();
+                }
+                else {
+                    $scope.showerror = true;
+                }
             });
         };
         $scope.userList = function() {

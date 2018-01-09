@@ -423,6 +423,26 @@ exports.item = {
             });
         });
     },
+    //
+    initialize: function(objOld, objNew, callback) {
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                return;
+            }
+            db.collection('item').updateMany(objOld, {$set: {time: []}}, function(err, res) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to update data'});
+                    return;
+                }
+                console.log('update item');
+                db.close();
+                callback({feedback: 'Success'});
+                return;
+            });
+            
+        })
+    },
     // update item info
     updateAll: function(objOld, objNew, callback) {
         mongoClient.connect(url, function(err, db) {
