@@ -485,6 +485,6 @@ app.use(express.static('Frontend'));
 app.get('*', function(req, res) {
     res.status(404).send('Null');
 });
-app.listen(3000, "0.0.0.0", function() {
-	console.log('Listening to port: ' + 3000);
+app.listen(80, "0.0.0.0", function() {
+	console.log('Listening to port: ' + 80);
 });
