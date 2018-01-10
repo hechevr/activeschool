@@ -10,6 +10,8 @@ app.use(bodyParser());
 app.use(cookieParser('secret'));
 app.use(session());
 
+var port = 3000;
+
 var databaseIO = require('./databaseIO');
 var check_login = require('./control.js').check_login;
 var check_admin = require('./control.js').check_admin;
@@ -292,7 +294,7 @@ app.post('/selection/:uid', function(req, res) {
             return res.send({feedback: 'Failure'});
         }
     });
-    
+
 });
 
 app.post('/comment/:uid', function(req, res) {
@@ -485,6 +487,6 @@ app.use(express.static('Frontend'));
 app.get('*', function(req, res) {
     res.status(404).send('Null');
 });
-app.listen(80, "0.0.0.0", function() {
-	console.log('Listening to port: ' + 80);
+app.listen(port, "0.0.0.0", function() {
+	console.log('Listening to port: ' + port);
 });

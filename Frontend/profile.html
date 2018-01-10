@@ -24,6 +24,14 @@
                     <li><a href="#" ng-click="showItemlist()">項目列表</a></li>
                     <li class="active"><a href="#" ng-click="showProfile()">已選項目</a></li>
                     <li><a href="#" ng-click="oldprofile={name:user.name};newprofile={};" data-toggle="modal" data-target="#myModal">更新信息</a></li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">下载</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" ng-click="download(1)">申請表</a></li>
+                            <li><a href="#" ng-click="download(2)">動感校園報名信</a></li>
+                            <li><a href="#" ng-click="download(3)">約章</a></li>
+                        </ul>
+                    </li>
                 </ul>
                 <div class="navbar-right">
                     <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">登出</button>
@@ -135,23 +143,14 @@
                         organization: response.data.itemlist[idx].organization,
                         No: response.data.itemlist[idx].No,
                         activity: response.data.itemlist[idx].activity,
-                        target: "",
+                        target: response.data.itemlist[idx].target,
                         maxteacher: response.data.itemlist[idx].maxteacher,
                         ratio: response.data.itemlist[idx].ratio,
-                        date: "",
+                        date: response.data.itemlist[idx].date,
                         options: response.data.itemlist[idx].options,
                         time:[]
                     };
-                    var targetlist = response.data.itemlist[idx].target.split(',');
-                    var datelist = response.data.itemlist[idx].date.split(',');
-                    item.target = targetTranslate(targetlist[0]) + "至" + targetTranslate(targetlist[1]);
-                    for (ti in datelist) {
-                        item.date += dateTranslate(datelist[ti]);
-                        if (ti < datelist.length - 1) {
-                            item.date += ",";
-                        }
 
-                    }
                     for (t in response.data.itemlist[idx].time) {
                         if (response.data.itemlist[idx].time[t].user === uid) {
                             response.data.itemlist[idx].time[t].show = true;
@@ -165,69 +164,18 @@
                 }
             });
         });
-        const targetTranslate = function(target) {
-            if (target === 'L1') {
-                return "小一";
+        $scope.download = function(index) {
+            if (index === 1) {
+                $window.open("/resource/application.pdf");
             }
-            else if (target === "L2") {
-                return "小二";
+            else if (index == 2) {
+                $window.open("/resource/letter.pdf");
             }
-            else if (target === "L3") {
-                return "小三";
+            else if (index == 3) {
+                $window.open("/resource/info.pdf")
             }
-            else if (target === "L4") {
-                return "小四";
-            }
-            else if (target === "L5") {
-                return "小五";
-            }
-            else if (target === "L6") {
-                return "小六";
-            }
-            else if (target === "M1") {
-                return "中一";
-            }
-            else if (target === "M2") {
-                return "中二";
-            }
-            else if (target === "M3") {
-                return "中三";
-            }
-            else if (target === "M4") {
-                return "中四";
-            }
-            else if (target === "M5") {
-                return "中五";
-            }
-            else if (target === "M6") {
-                return "中六";
-            }
-            return target;
         }
-        const dateTranslate = function(date) {
-            if (date === "Mon") {
-                return "星期一";
-            }
-            else if (date === "Tue") {
-                return "星期二";
-            }
-            else if (date === "Wed") {
-                return "星期三";
-            }
-            else if (date === "Thur") {
-                return "星期四";
-            }
-            else if (date === "Fri") {
-                return "星期五";
-            }
-            else if (date === "Sat") {
-                return "星期六";
-            }
-            else if (date === "Sun") {
-                return "星期日";
-            }
-            return date;
-        }
+
         $scope.cancel = function() {
             $window.history.back();
         }

@@ -16,7 +16,7 @@
 </head>
 <body>
     <div ng-app="userModel" ng-controller="itemlistController">
-        <nav class="navbar navbar-inverse bg-inverse">
+        <nav class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header"><a class="navbar-brand" href="#">動感校園</a></div>
                 <ul class="nav navbar-nav">
@@ -33,7 +33,7 @@
 
             <h2  style="color:#33a6cc">動感校園 <span style="color:Black" ng-bind="activetitle"> 2017/18 (2017年10月9日至2018年2月23日) </span><button display="inline" class="btn btn-sm" style="background-color: transparent; border-color: transparent;" ng-click="updatetitle=!updatetitle;"><span class="glyphicon glyphicon-pencil"></span></button>活動 / 課程時間表</h2>
             <div ng-show="updatetitle">
-                <h2 style="color:#33a6cc" ng-show="updatetitle">動感校園 <input style="color:Black" ng-model="activetitle"></input><button class="btn btn-sm" style="background-color: transparent; border-color: black;" ng-click="titleupdate(item)">確定</button>活動 / 課程時間表</h2>                
+                <h2 style="color:#33a6cc" ng-show="updatetitle">動感校園 <input style="color:Black" ng-model="activetitle"></input><button class="btn btn-sm" style="background-color: transparent; border-color: black;" ng-click="titleupdate(item)">確定</button>活動 / 課程時間表</h2>
                 <p ng-show="showerror" style="color:red">無效的輸入</p>
             </div>
             <table class="table table-bordered">
