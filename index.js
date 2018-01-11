@@ -460,15 +460,7 @@ app.post('/admin/initialize', function(req, res) {
         if (feedback.feedback === 'Success') {
             databaseIO.user.updateStatus({}, {comment: "", status:'active'}, function(feedback) {
                 if (feedback.feedback === 'Success') {
-                    databaseIO.item.initialize({}, {time:""}, function(feedback) {
-                        console.log(feedback);
-                        if (feedback.feedback === 'Success') {
-                            return res.send({feedback: 'Success'});
-                        }
-                        else {
-                            return res.send({feedback: 'Failure'});
-                        }
-                    })
+                    return res.send({feedback: 'Success'});
                 }
                 else {
                     return res.send({feedback: 'Failure'});

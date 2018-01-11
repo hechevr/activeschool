@@ -20,16 +20,17 @@
     <link rel="stylesheet" href="css/style-login.css">
 
 </head>
-<body style="background-image:url('image/background.jpg')">
+<body style="background-image:url('image/background.jpg');background-repeat:no-repeat; background-size:cover;">
     <div class="top-content" ng-app="userModel" ng-controller="myCtrl">
         <div class="inner-bg">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-8 col-sm-offset-2 text">
-                        <h1><strong>動感校園</strong> 登錄</h1>
+                    <div style="text-align:center; padding-top:150px">
+                        <h1  style="color:#555"><strong>動感校園</strong> 登錄</h1>
+                        <!--
                         <div class="description">
                             <p>香港精英运动员协会 動感校園</p>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
                 <div class="row">
@@ -40,15 +41,17 @@
                                     <h3>登錄</h3>
                                     <p>輸入你的用戶名和密碼</p>
                                 </div>
-                                <div class="form-top-logo">
-                                    <!--<i class="fa fa-key"></i>-->
-                                    <image src="/resource/logo_ico.jpg" width="120px"></image>
+                                <div class="form-top-right">
+                                    <i class="fa fa-key"></i>
+                                    <!--<image src="/resource/logo_ico.jpg" width="120px"></image>-->
                                 </div>
+                                <!--
                                 <div class="form-bottom-logo">
                                     <image src="/resource/eact_ico.jpg" width="100px"></image>
                                     <image src="/resource/hkjc_ico.png" width="100px"></image>
                                     <image src="/resource/hkeaa_ico.jpg" width="100px"></image>
                                 </div>
+                                -->
                             </div>
                             <div class="form-bottom">
                                 <form role="form" class="login-form">
