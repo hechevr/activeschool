@@ -10,7 +10,7 @@ app.use(bodyParser());
 app.use(cookieParser('secret'));
 app.use(session());
 
-var port = 3000;
+var port = 80;
 
 var databaseIO = require('./databaseIO');
 var check_login = require('./control.js').check_login;
@@ -206,7 +206,7 @@ app.post('/users/login', function(req, res) {
     if (!check_validation('password', password)) return res.send({feedback: 'Failure'});
     var condition;
     if (username) {
-        condition = {type: 'user', name: username, password: password};
+        condition = {name: username, password: password};
     }
     else {
         return res.send({feedback: 'Failure', msg: 'Fail to login'});
