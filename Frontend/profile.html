@@ -58,7 +58,6 @@
                                     <label>現在信息</label>
                                 </div>
                                 <div class="form-group">
-                                    <input ng-model="oldprofile.name" placeholder="用戶名" special-char-directive>
                                     <input type="email" ng-model="oldprofile.email" placeholder="電郵">
                                     <input ng-model="oldprofile.password" placeholder="密碼" special-char-directive>
                                 </div>
@@ -66,7 +65,6 @@
                                     <label>新信息</label>
                                 </div>
                                 <div class="form-group">
-                                    <input ng-model="newprofile.name" placeholder="用戶名" special-char-directive>
                                     <input type="email" ng-model="newprofile.email" placeholder="電郵">
                                     <input ng-model="newprofile.password" placeholder="密碼" special-char-directive>
                                 </div>
@@ -187,7 +185,7 @@
             $window.location.href = "/itemlist.html";
         }
         $scope.updateprofile = function() {
-            if ($scope.oldprofile.email != undefined && $scope.oldprofile.name != undefined && $scope.oldprofile.password != undefined && $scope.newprofile.email != undefined && $scope.newprofile.name != undefined && $scope.newprofile.password != undefined) {
+            if ($scope.oldprofile.email != undefined && $scope.oldprofile.password != undefined && $scope.newprofile.email != undefined && $scope.newprofile.password != undefined) {
                 $http.post("/users/update/"+uid, {oldprofile:$scope.oldprofile, newprofile:$scope.newprofile})
                 .then(function(response) {
                     console.log(response);
@@ -200,7 +198,6 @@
                             $scope.errormsg = response.data.msg;
                         }
                         else {
-                            console.log("wtf");
                             $scope.errormsg = "error";
                         }
                     }

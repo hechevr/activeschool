@@ -31,6 +31,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="#" ng-click="showItemlist()">項目列表</a></li>
                     <li class="active"><a href="#" ng-click="addItem()">創建項目</a></li>
+                    <li><a href="#" ng-click="showMsg()">訊息</a></li>
                     <li><a href="#" ng-click="userList()">用戶列表</a></li>
                 </ul>
                 <div class="navbar-right">
@@ -140,6 +141,9 @@
                     $scope.showerror = true;
                 }
             });
+        };
+        $scope.showMsg = function() {
+            $window.location.href = "/adminMsg.html";
         };
         $scope.userList = function() {
             $window.location.href = '/adminUser.html';

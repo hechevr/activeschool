@@ -103,7 +103,8 @@ app.post('/users', function(req, res) {
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
-        status: "active"
+        status: "active",
+        date: new Date().toString(),
     };
     databaseIO.user.add(newuser, function(feedback) {
         if (feedback.feedback === 'Success') {
@@ -233,24 +234,20 @@ app.post('/users/update/:uid', function(req, res) {
     if (!check_login(req, res)) return res.send({feedback:'Failure', msg:'Fail to Login'});
     if (req.session.uid !== uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
     if (!check_validation('email',req.body.oldprofile.email)) return res.send({feedback: 'Failure'});
-    if (!check_validation('user', req.body.oldprofile.name)) return res.send({feedback: 'Failure'});
     if (!check_validation('password', req.body.oldprofile.password)) return res.send({feedback: 'Failure'});
     if (!check_validation('email',req.body.newprofile.email)) return res.send({feedback: 'Failure', msg: 'Wrong format'});
-    if (!check_validation('user', req.body.newprofile.name)) return res.send({feedback: 'Failure', msg: 'Wrong format'});
     if (!check_validation('password', req.body.newprofile.password)) return res.send({feedback: 'Failure', msg: 'Wrong format'});
     databaseIO.user.getOne(
         {
             _id:mongo.ObjectID(uid),
             email:req.body.oldprofile.email,
             password:req.body.oldprofile.password,
-            name: req.body.oldprofile.name
         }, function(feedback) {
             if (feedback.feedback != 'Success' || !feedback.data) return res.send({feedback:'Failure', msg:'Wrong info'});
             else {
                 databaseIO.user.updateInfo(
                     {_id: mongo.ObjectID(uid)},
                     {
-                        name: req.body.newprofile.name,
                         password: req.body.newprofile.password,
                         email: req.body.newprofile.email
                     },
@@ -283,7 +280,7 @@ app.post('/selection/:uid', function(req, res) {
             }
         });
     }
-    databaseIO.user.update({_id: mongo.ObjectID(uid)}, {comment: req.body.comment, status: "decline"}, function(feedback) {
+    databaseIO.user.update({_id: mongo.ObjectID(uid)}, {comment: req.body.comment, status: "decline", date: new Date().toString()}, function(feedback) {
         if (feedback.feedback === 'Success') {
             if (req.body.email != undefined && req.body.email != null) {
                 send_email(req.body.email);
@@ -337,6 +334,31 @@ app.post('/admin/item/detail/:iid', function(req, res) {
         if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure'});
         else {
             return res.send({feedback: 'Success', data: feedback.data});
+        }
+    })
+});
+
+app.get('/admin/msg', function(req, res) {
+    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+    databaseIO.user.getAll({status: 'decline'}, function(feedback) {
+        if (feedback.feedback === 'Failure') {
+            res.send({feedback: 'Failure', msg: 'Fail to get msg'});
+        }
+        else {
+            res.send({feedback: 'Success', data: feedback.data});
+        }
+    })
+});
+
+app.get('/admin/msg/delete/:uid', function(req, res) {
+    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+    var uid = req.params.uid;
+    databaseIO.user.update({_id: mongo.ObjectID(uid)}, {comment: ""}, function(feedback) {
+        if (feedback.feedback === 'Success') {
+            return res.send({feedback: 'Success'});
+        }
+        else {
+            return res.send({feedback: 'Failure'});
         }
     })
 });

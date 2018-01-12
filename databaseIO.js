@@ -155,6 +155,26 @@ exports.user = {
             });
         });
     },
+
+    // get msg
+    getAll: function(condition, callback) {
+        console.log(condition);
+        mongoClient.connect(url, function(err, db) {
+            if (err) {
+                callback({feedback: 'Failure', msg: 'Fail to connect mongo'});
+                return;
+            }
+            db.collection('user').find(condition).sort({date: -1}).toArray(function(err, result) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to get msg'});
+                    return;
+                }
+                db.close();
+                callback({feedback: 'Success', data: result});
+                return;
+            });
+        });
+    },
     // drop user collection
     drop: function() {
         mongoClient.connect(url, function(err, db) {
@@ -201,8 +221,8 @@ exports.user = {
                 callback({feedback: 'Failure', msg: 'Fail to connect to database'});
                 return;
             }
-            if (objNew.name != undefined && objNew.password != undefined && objNew.email != undefined) {
-                db.collection('user').update(objOld, {$set: {name: objNew.name, email: objNew.email, password: objNew.password}}, function(err, res) {
+            if (objNew.password != undefined && objNew.email != undefined) {
+                db.collection('user').update(objOld, {$set: {email: objNew.email, password: objNew.password}}, function(err, res) {
                     if (err) {
                         callback({feedback: 'Failure', msg: 'Fail to update data'});
                         return;
@@ -226,15 +246,29 @@ exports.user = {
                 return;
             }
             if (objNew.comment != undefined) {
-                db.collection('user').updateMany(objOld, {$set: {comment: objNew.comment, status: objNew.status}}, function(err, res) {
-                    if (err) {
-                        callback({feedback: 'Failure', msg: 'Fail to update data'});
+                if (objNew.status != undefined && objNew.date != undefined) {
+                    db.collection('user').updateMany(objOld, {$set: {comment: objNew.comment, status: objNew.status, date: objNew.date}}, function(err, res) {
+                        if (err) {
+                            callback({feedback: 'Failure', msg: 'Fail to update data'});
+                            return;
+                        }
+                        db.close();
+                        callback({feedback: 'Success'});
                         return;
-                    }
-                    db.close();
-                    callback({feedback: 'Success'});
-                    return;
-                });
+                    });
+                }
+                else {
+                    db.collection('user').updateMany(objOld, {$set: {comment: objNew.comment}}, function(err, res) {
+                        if (err) {
+                            callback({feedback: 'Failure', msg: 'Fail to update data'});
+                            return;
+                        }
+                        db.close();
+                        callback({feedback: 'Success'});
+                        return;
+                    });
+                }
+
             }
             else if (objNew.email != undefined) {
                 db.collection('user').updateOne(objOld, {$set: {email: objNew.email}}, function(err, res) {
@@ -440,7 +474,7 @@ exports.item = {
                 callback({feedback: 'Success'});
                 return;
             });
-            
+
         })
     },
     // update item info

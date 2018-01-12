@@ -5,15 +5,15 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
-    
+
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    
+
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
 
         <link rel="stylesheet" href="/css/photo-gallery.css">
-    
+
     </head>
     <body>
             <div ng-app="userModel" ng-controller="itemlistController">
@@ -45,13 +45,13 @@
             <div class="gallery col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <h1 class="gallery-title">Gallery</h1>
             </div>
-        
+
             <br/>
 
             <!-- Modal -->
         <div class="modal fade" id="myModal" role="dialog">
                 <div class="modal-dialog">
-    
+
                     <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-header">
@@ -64,7 +64,6 @@
                                     <label>現在信息</label>
                                 </div>
                                 <div class="form-group">
-                                    <input ng-model="oldprofile.name" placeholder="用戶名" special-char-directive>
                                     <input type="email" ng-model="oldprofile.email" placeholder="電郵">
                                     <input ng-model="oldprofile.password" placeholder="密碼" special-char-directive>
                                 </div>
@@ -72,7 +71,6 @@
                                     <label>新信息</label>
                                 </div>
                                 <div class="form-group">
-                                    <input ng-model="newprofile.name" placeholder="用戶名" special-char-directive>
                                     <input type="email" ng-model="newprofile.email" placeholder="電郵">
                                     <input ng-model="newprofile.password" placeholder="密碼" special-char-directive>
                                 </div>
@@ -86,53 +84,53 @@
                     </div>
                 </div>
             </div>
-    
-        
-        
+
+
+
                 <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
                     <img src="/image/Photo/1.jpg" class="img-responsive">
                 </div>
-        
+
                 <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter sprinkle">
                     <img src="/image/Photo/2.jpg" class="img-responsive">
                 </div>
-        
+
                 <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
                     <img src="/image/Photo/3.jpg" class="img-responsive">
                 </div>
-        
+
                 <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
                     <img src="/image/Photo/4.jpg" class="img-responsive">
                 </div>
-        
+
                 <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
                     <img src="/image/Photo/5.jpg" class="img-responsive">
                 </div>
-        
+
                 <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
                     <img src="/image/Photo/6.jpg" class="img-responsive">
                 </div>
-        
+
                 <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
                     <img src="/image/Photo/7.jpg" class="img-responsive">
                 </div>
-        
+
                 <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
                     <img src="/image/Photo/8.jpg" class="img-responsive">
                 </div>
-        
+
                 <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter irrigation">
                     <img src="/image/Photo/9.jpg" class="img-responsive">
                 </div>
-        
+
                 <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
                     <img src="/image/Photo/10.jpg" class="img-responsive">
                 </div>
-        
+
                 <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter spray">
                     <img src="/image/Photo/11.jpg" class="img-responsive">
                 </div>
-        
+
                 <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter sprinkle">
                     <img src="/image/Photo/12.jpg" class="img-responsive">
                 </div>
@@ -140,7 +138,7 @@
         </div>
 
         </div>
-        
+
     </body>
     <script>
     var app = angular.module("userModel", ['ngCookies']);
@@ -161,7 +159,7 @@
             });
         };
         $scope.updateprofile = function() {
-            if ($scope.oldprofile.email != undefined && $scope.oldprofile.name != undefined && $scope.oldprofile.password != undefined && $scope.newprofile.email != undefined && $scope.newprofile.name != undefined && $scope.newprofile.password != undefined) {
+            if ($scope.oldprofile.email != undefined && $scope.oldprofile.password != undefined && $scope.newprofile.email != undefined && $scope.newprofile.password != undefined) {
                 $http.post("/users/update/"+uid, {oldprofile:$scope.oldprofile, newprofile:$scope.newprofile})
                 .then(function(response) {
                     console.log(response);
