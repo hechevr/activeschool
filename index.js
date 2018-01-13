@@ -1,10 +1,14 @@
 var express = require('express');
 var fs = require('fs');
+var multer = require('multer');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var mongo = require('mongodb');
+
 var app = express();
+var uploadImg = multer({dest: './Frontend/image/Photonew'});
+var uploadPdf = multer({dest: './Frontend/resourcenew'})
 
 app.use(bodyParser());
 app.use(cookieParser('secret'));
@@ -495,9 +499,43 @@ app.post('/admin/initialize', function(req, res) {
     });
 });
 
+app.post('/admin/photo/:pid', uploadImg.single('image'), function(req, res) {
+    // if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+    var pid = req.params.pid;
+    var pidint = parseInt(pid);
+    if (pidint === null) return res.send({feedback: 'Failure', msg: 'wrong pid'});
+    if (pidint < 1 || pidint > 17) return res.send({feedback: 'Failure', msg: 'wrong pid'});
+    var file = "./Frontend/image/Photonew/" + pid + ".jpg";
+    fs.rename(req.file.path, file, function(err) {
+        if (err) {
+            console.log(err);
+            return res.send({feedback: 'Failure'});
+        }
+        else {
+            return res.send({feedback: 'Success'});
+        }
+    });
+});
+
+app.post('/admin/pdf/:pid', uploadPdf.single('pdf'), function(req, res) {
+    var pid = req.params.pid;
+    if (pid !== 'application' && pid !== 'info' && pid !== 'letter') return res.send({feedback: 'Failure', msg: 'wrong pid'});
+    var file = './Frontend/resourcenew/' + pid + '.jpg';
+    fs.rename(req.file.path, file, function(err) {
+        if (err) {
+            console.log(err);
+            return res.send({feedback: 'Failure'});
+        }
+        else {
+            return res.send({feedback: 'Success'});
+        }
+    })
+})
+
 
 
 app.use(express.static('Frontend'));
+app.use(express.static('image'));
 app.get('*', function(req, res) {
     res.status(404).send('Null');
 });

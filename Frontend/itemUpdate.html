@@ -8,209 +8,216 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
 
 </head>
-    <style>
-        h1 {
-            text-align: center;
-        }
-    </style>
-    </head>
+<style>
+h1 {
+    text-align: center;
+}
+</style>
+</head>
 <body>
 
-<div ng-app="userModel" ng-controller="itemCtrl">
-    <nav class="navbar navbar-inverse bg-inverse">
+    <div ng-app="userModel" ng-controller="itemCtrl">
+        <nav class="navbar navbar-inverse bg-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header"><a class="navbar-brand" href="#">動感校園</a></div>
+                <ul class="nav navbar-nav">
+                    <li><a href="#" ng-click="showItemlist()">項目列表</a></li>
+                    <li class="active"><a href="#" ng-click="addItem()">創建項目</a></li>
+                    <li><a href="#" ng-click="showMsg()">訊息</a></li>
+                    <li><a href="#" ng-click="userList()">用戶列表</a></li>
+                    <li><a href="#" ng-click="showresource()">資源</a></li>
+                </ul>
+                <div class="navbar-right">
+                    <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">登出</button>
+                </div>
+            </div>
+        </nav>
         <div class="container-fluid">
-            <div class="navbar-header"><a class="navbar-brand" href="#">ActiveSchool</a></div>
-            <ul class="nav navbar-nav">
-                <li><a href="#" ng-click="showItemlist()">Activity list</a></li>
-                <li><a href="#" ng-click="addItem()">New Activity</a></li>
-                <li><a href="#" ng-click="userList()">Users</a></li>
-            </ul>
-            <div class="navbar-right">
-                <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">Logout</button>
-            </div>
-        </div>
-    </nav>
-    <div class="container-fluid">
-    <h1>Activity</h1>
-    <input type="checkbox" ng-model="isActive">
-    <form name="itemform">
-        <div class="form-group">
-            <label>Organization</label>
-            <input class="form-control" ng-model='itemorgan'  special-char-directive required/>
-        </div>
-        <div class="form-group">
-            <label>No.</label>
-            <input class="form-control" ng-model='itemno' special-char-directive required/>
-        </div>
-        <div class="form-group">
-            <label>Activity Course</label>
-            <input class="form-control" ng-model='itemactivity' special-char-directive required/>
-        </div>
-        <div class="form-group">
-            <label>Target Student</label>
-            <input class="form-control" ng-model='itemtarget' special-char-directive required/>
-        </div>
-        <div class="form-group">
-            <label>Maximum of teachers</label>
-            <input class="form-control" ng-model='itemmaxteacher' special-char-directive required/>
-        </div>
-        <div class="form-group">
-            <label>Teachers : Student</label>
-            <div class="form-inline">
+            <h1>Activity</h1>
+            <input type="checkbox" ng-model="isActive">
+            <form name="itemform">
                 <div class="form-group">
-                    <input class="form-control" placeholder="1" disabled/>
+                    <label>Organization</label>
+                    <input class="form-control" ng-model='itemorgan'  special-char-directive required/>
                 </div>
                 <div class="form-group">
-                    <input class="form-control" ng-model='itemratio' special-char-directive required/>
-
+                    <label>No.</label>
+                    <input class="form-control" ng-model='itemno' special-char-directive required/>
                 </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Date</label>
-            <input class="form-control" ng-model='itemdate' special-char-directive required/>
-        </div>
-        <div class="form-group">
-            <label>Suggest period</label>
-            <div ng-repeat="time in times">
-                <input class="form-control" type="text" ng-model="time.value" special-char-directive required/>
-                <button type="button" class="btn btn-default addButton" ng-click="addtime()" ng-hide="time.show"><i class="fa fa-plus"></i></button>
-                <button type="button" class="btn btn-default decreaseButton" ng-click="decreasetime(time)" ng-show="time.show"><i class="fa fa-minus" ng-show="!item.show"></i></button>
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Options</label>
-            <input class="form-control" ng-model='itemoptions' special-char-directive required/>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-success" ng-click='updateItem()' ng-disabled="itemform.$invalid">Submit</button>
-            <button class="btn btn-default" ng-click='cancel()'>Cancel</button>
-        </div>
-    </form>
-</div>
+                <div class="form-group">
+                    <label>Activity Course</label>
+                    <input class="form-control" ng-model='itemactivity' special-char-directive required/>
+                </div>
+                <div class="form-group">
+                    <label>Target Student</label>
+                    <input class="form-control" ng-model='itemtarget' special-char-directive required/>
+                </div>
+                <div class="form-group">
+                    <label>Maximum of teachers</label>
+                    <input class="form-control" ng-model='itemmaxteacher' special-char-directive required/>
+                </div>
+                <div class="form-group">
+                    <label>Teachers : Student</label>
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <input class="form-control" placeholder="1" disabled/>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" ng-model='itemratio' special-char-directive required/>
 
-<script>
-var app = angular.module('userModel', ["ngCookies"]);
-app.controller('itemCtrl', function($scope, $http, $window, $cookies) {
-    var count = 0;
-    var iid = location.search.substring(1);
-    $scope.times = [{show: false, index: count}];
-    count ++;
-    $scope.addtime = function() {
-        $scope.times.push({show: true, index:count});
-        count ++;
-    };
-    $scope.decreasetime = function(time) {
-        $scope.times.splice(time.index, 1);
-    };
-    $http.post('/admin/item/detail/'+iid, {})
-    .then(function(response) {
-        console.log(response);
-        if (response.data.feedback === 'Failure') {
-            $window.location.href = '/login.html';
-        }
-        $scope.itemorgan = response.data.data.organization;
-        $scope.itemno = response.data.data.No;
-        $scope.itemactivity = response.data.data.activity;
-        $scope.itemtarget = response.data.data.target;
-        $scope.itemmaxteacher = response.data.data.maxteacher;
-        $scope.itemratio = response.data.data.ratio;
-        $scope.itemdate = response.data.data.date;
-        $scope.itemtime = response.data.data.time;
-        $scope.itemoptions = response.data.data.options;
-        $scope.isActive = response.data.data.status === 'active';
-        for (idx in $scope.itemtime) {
-            if (idx > 0) {
-                $scope.addtime();
-            }
-            $scope.times[idx].value = $scope.itemtime[idx].value;
-        }
-    });
-    $scope.userList = function() {
-            $window.location.href = '/adminUser.html';
-        }
-    $scope.updateItem = function() {
-        var itemtime = [];
-        for (time in $scope.times) {
-            if ($scope.times[time].value !== "") {
-                itemtime.push({value: $scope.times[time].value});
-            }
-        }
-        var status = 'closed';
-        if ($scope.isActive) {
-            status = 'active';
-        }
-        $http.post('/admin/item/update/'+iid, {
-            organization: $scope.itemorgan,
-            No: $scope.itemno,
-            activity: $scope.itemactivity,
-            target: $scope.itemtarget,
-            maxteacher: $scope.itemmaxteacher,
-            ratio: $scope.itemratio,
-            date: $scope.itemdate,
-            time: itemtime,
-            options: $scope.itemoptions,
-            status: status,
-        }).then(function(response) {
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input class="form-control" ng-model='itemdate' special-char-directive required/>
+                </div>
+                <div class="form-group">
+                    <label>Suggest period</label>
+                    <div ng-repeat="time in times">
+                        <input class="form-control" type="text" ng-model="time.value" special-char-directive required/>
+                        <button type="button" class="btn btn-default addButton" ng-click="addtime()" ng-hide="time.show"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-default decreaseButton" ng-click="decreasetime(time)" ng-show="time.show"><i class="fa fa-minus" ng-show="!item.show"></i></button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Options</label>
+                    <input class="form-control" ng-model='itemoptions' special-char-directive required/>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success" ng-click='updateItem()' ng-disabled="itemform.$invalid">Submit</button>
+                    <button class="btn btn-default" ng-click='cancel()'>Cancel</button>
+                </div>
+            </form>
+        </div>
 
-            if (response.data.feedback === 'Success') {
-                $window.location.reload();
+        <script>
+        var app = angular.module('userModel', ["ngCookies"]);
+        app.controller('itemCtrl', function($scope, $http, $window, $cookies) {
+            var count = 0;
+            var iid = location.search.substring(1);
+            $scope.times = [{show: false, index: count}];
+            count ++;
+            $scope.addtime = function() {
+                $scope.times.push({show: true, index:count});
+                count ++;
+            };
+            $scope.decreasetime = function(time) {
+                $scope.times.splice(time.index, 1);
+            };
+            $http.post('/admin/item/detail/'+iid, {})
+            .then(function(response) {
+                console.log(response);
+                if (response.data.feedback === 'Failure') {
+                    $window.location.href = '/login.html';
+                }
+                $scope.itemorgan = response.data.data.organization;
+                $scope.itemno = response.data.data.No;
+                $scope.itemactivity = response.data.data.activity;
+                $scope.itemtarget = response.data.data.target;
+                $scope.itemmaxteacher = response.data.data.maxteacher;
+                $scope.itemratio = response.data.data.ratio;
+                $scope.itemdate = response.data.data.date;
+                $scope.itemtime = response.data.data.time;
+                $scope.itemoptions = response.data.data.options;
+                $scope.isActive = response.data.data.status === 'active';
+                for (idx in $scope.itemtime) {
+                    if (idx > 0) {
+                        $scope.addtime();
+                    }
+                    $scope.times[idx].value = $scope.itemtime[idx].value;
+                }
+            });
+            $scope.showresource = function() {
+                $window.location.href = "/adminAlbum.html";
             }
-            else {
+            $scope.showMsg = function() {
+                $window.location.href = "/adminMsg.html";
+            };
+            $scope.userList = function() {
+                $window.location.href = '/adminUser.html';
+            }
+            $scope.showItemlist = function() {
+                $window.location.href = "/admin.html";
+            }
+            $scope.addItem = function() {
+                $window.location.href = "/item.html";
+            }
+            $scope.Logout = function() {
+                $http.post('/users/logout', {})
+                .then(function logoutSuccess(response) {
+                    console.log(response);
+                    $cookies.remove('uid');
+                    $window.location.href = '/';
+                });
+            };
+            $scope.updateItem = function() {
+                var itemtime = [];
+                for (time in $scope.times) {
+                    if ($scope.times[time].value !== "") {
+                        itemtime.push({value: $scope.times[time].value});
+                    }
+                }
+                var status = 'closed';
+                if ($scope.isActive) {
+                    status = 'active';
+                }
+                $http.post('/admin/item/update/'+iid, {
+                    organization: $scope.itemorgan,
+                    No: $scope.itemno,
+                    activity: $scope.itemactivity,
+                    target: $scope.itemtarget,
+                    maxteacher: $scope.itemmaxteacher,
+                    ratio: $scope.itemratio,
+                    date: $scope.itemdate,
+                    time: itemtime,
+                    options: $scope.itemoptions,
+                    status: status,
+                }).then(function(response) {
+
+                    if (response.data.feedback === 'Success') {
+                        $window.location.reload();
+                    }
+                    else {
+                        $window.location.href = '/admin.html';
+                    }
+
+                });
+            };
+            $scope.cancel = function() {
                 $window.location.href = '/admin.html';
             }
-
-        });
-    };
-    $scope.showItemlist = function() {
-        $window.location.href = "/admin.html";
-    }
-    $scope.addItem = function() {
-        $window.location.href = "/item.html";
-    }
-    $scope.Logout = function() {
-        $http.post('/users/logout', {})
-        .then(function logoutSuccess(response) {
-            console.log(response);
-            $cookies.remove('uid');
-            $window.location.href = '/';
-        });
-    };
-
-    $scope.cancel = function() {
-        $window.location.href = '/admin.html';
-    }
-})
-.directive('specialCharDirective', function() {
-    function link(scope, elem, attrs, ngModel) {
-        ngModel.$parsers.push(function(viewValue) {
-            var reg = /^[a-zA-Z0-9-:,.， \u4E00-\u9FCC]*$/;
-            if (viewValue.match(reg)) {
-                return viewValue;
+        })
+        .directive('specialCharDirective', function() {
+            function link(scope, elem, attrs, ngModel) {
+                ngModel.$parsers.push(function(viewValue) {
+                    var reg = /^[a-zA-Z0-9-:,.， \u4E00-\u9FCC]*$/;
+                    if (viewValue.match(reg)) {
+                        return viewValue;
+                    }
+                    var transformedValue = ngModel.$modelValue;
+                    ngModel.$setViewValue(transformedValue);
+                    ngModel.$render();
+                    return transformedValue;
+                });
             }
-            var transformedValue = ngModel.$modelValue;
-            ngModel.$setViewValue(transformedValue);
-            ngModel.$render();
-            return transformedValue;
+
+            return {
+                restrict: 'A',
+                require: 'ngModel',
+                link: link
+            };
         });
-    }
+        </script>
 
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        link: link
-    };
-});
-</script>
-
-</body>
-</html>
+    </body>
+    </html>

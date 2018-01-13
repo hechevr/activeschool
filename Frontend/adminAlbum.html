@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>Activity</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
+
+</head>
+<body>
+    <div ng-app='myModel' ng-controller='adminController'>
+        <nav class="navbar navbar-inverse bg-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header"><a class="navbar-brand" href="#">動感校園</a></div>
+                <ul class="nav navbar-nav">
+                    <li><a href="#" ng-click="showItemlist()">項目列表</a></li>
+                    <li><a href="#" ng-click="addItem()">創建項目</a></li>
+                    <li><a href="#" ng-click="showMsg()">訊息</a></li>
+                    <li><a href="#" ng-click="userList()">用戶列表</a></li>
+                    <li class="active"><a href="#" ng-click="showresource()">資源</a></li>
+                </ul>
+                <div class="navbar-right">
+                    <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">登出</button>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <label ng-show="showerror">Error</label>
+            <div>
+                <img src="/image/Photonew/1.jpg" class="img-responsive" style="height:300px">
+                <input type="file" onchange="angular.element(this).scope().uploadFile(this.files, 1)">
+            </div>
+
+            <div>
+                <img src="/image/Photonew/2.jpg" class="img-responsive" style="height:300px">
+                <input type="file" onchange="angular.element(this).scope().uploadFile(this.files, 2)">
+            </div>
+
+            <div>
+                <img src="/image/Photonew/3.jpg" class="img-responsive" style="height:300px">
+                <input type="file" onchange="angular.element(this).scope().uploadFile(this.files, 3)">
+            </div>
+
+            <div>
+                <img src="/image/Photonew/4.jpg" class="img-responsive" style="height:300px">
+                <input type="file" onchange="angular.element(this).scope().uploadFile(this.files, 4)">
+            </div>
+
+            <div>
+                <img src="/image/Photonew/5.jpg" class="img-responsive" style="height:300px">
+                <input type="file" onchange="angular.element(this).scope().uploadFile(this.files, 5)">
+            </div>
+
+            <div>
+                <img src="/image/Photonew/6.jpg" class="img-responsive" style="height:300px">
+                <input type="file" onchange="angular.element(this).scope().uploadFile(this.files, 6)">
+            </div>
+
+            <div>
+                <img src="/image/Photonew/7.jpg" class="img-responsive" style="height:300px">
+                <input type="file" onchange="angular.element(this).scope().uploadFile(this.files, 7)">
+            </div>
+
+            <div>
+                <img src="/image/Photonew/8.jpg" class="img-responsive" style="height:300px">
+                <input type="file" onchange="angular.element(this).scope().uploadFile(this.files, 8)">
+            </div>
+
+            <div>
+                <img src="/image/Photonew/9.jpg" class="img-responsive" style="height:300px">
+                <input type="file" onchange="angular.element(this).scope().uploadFile(this.files, 9)">
+            </div>
+
+            <div >
+                <img src="/image/Photonew/10.jpg" class="img-responsive" style="height:300px">
+                <input type="file" onchange="angular.element(this).scope().uploadFile(this.files, 10)">
+            </div>
+
+            <div>
+                <img src="/image/Photonew/11.jpg" class="img-responsive" style="height:300px">
+                <input type="file" onchange="angular.element(this).scope().uploadFile(this.files, 11)">
+            </div>
+
+            <div>
+                <img src="/image/Photonew/12.jpg" class="img-responsive" style="height:300px">
+                <input type="file" onchange="angular.element(this).scope().uploadFile(this.files, 12)">
+            </div>
+
+            <label>Upload new form</label>
+            <label>Application</label>
+            <input type="file" onchange="angular.element(this).scope().uploadPDF(this.files, 'application')">
+            <label>Letter</label>
+            <input type="file" onchange="angular.element(this).scope().uploadPDF(this.files, 'letter')">
+            <label>Info</label>
+            <input type="file" onchange="angular.element(this).scope().uploadPDF(this.files, 'info')">
+        </div>
+    </div>
+
+    <script>
+    var app = angular.module("myModel", ["ngCookies"]);
+    app.controller("adminController", function($scope, $window, $http, $cookies) {
+        $scope.showerror = false;
+        $scope.userList = function() {
+            $window.location.href = '/adminUser.html';
+        }
+        $scope.showItemlist = function() {
+            $window.location.href = "/admin.html";
+        }
+        $scope.showMsg = function() {
+            $window.location.href = "/adminMsg.html";
+        }
+        $scope.addItem = function() {
+            $window.location.href = "/item.html";
+        }
+        $scope.Logout = function() {
+            $http.post('/users/logout', {})
+            .then(function logoutSuccess(response) {
+                console.log(response);
+                $cookies.remove('uid');
+                $window.location.href = '/login.html';
+            });
+        }
+        $scope.showresource = function() {
+            $window.location.href = "/adminAlbum.html";
+        }
+        $scope.uploadFile = function(files, code) {
+            var fd = new FormData();
+            //Take the first selected file
+            fd.append("image", files[0]);
+
+            $http.post("/admin/photo/"+code, fd, {
+                withCredentials: true,
+                headers: {'Content-Type': undefined },
+                transformRequest: angular.identity
+            }).then(function(response) {
+                console.log(response);
+                if (response.data.feedback !== 'Success') {
+                    $scope.showerror = true;
+                }
+                else {
+                    $window.location.reload();
+                }
+            });
+
+        };
+        $scope.uploadPDF = function(files, code) {
+            var fd = new FormData();
+            //Take the first selected file
+            fd.append("pdf", files[0]);
+
+            $http.post("/admin/pdf/"+code, fd, {
+                withCredentials: true,
+                headers: {'Content-Type': undefined },
+                transformRequest: angular.identity
+            }).then(function(response) {
+                console.log(response);
+                if (response.data.feedback !== 'Success') {
+                    $scope.showerror = true;
+                }
+                else {
+                    $window.location.reload();
+                }
+            });
+
+        };
+    });
+    </script>
+</body>
+</html>
