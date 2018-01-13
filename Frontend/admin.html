@@ -119,6 +119,9 @@
             item.show = !item.show
             console.log("show detail");
         }
+        $scope.showresource = function() {
+            $window.location.href = "/adminAlbum.html";
+        }
         $scope.update = function(item) {
             $window.location.href = '/itemUpdate.html?'+item._id;
         }

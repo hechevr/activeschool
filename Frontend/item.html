@@ -115,9 +115,7 @@ h1 {
         $scope.decreasetime = function(time) {
             $scope.times.splice(time.index, 1);
         };
-        $scope.showresource = function() {
-            $window.location.href = "/adminAlbum.html";
-        }
+
         $scope.submit = function() {
             var itemtime = [];
             for (time in $scope.times) {
@@ -145,6 +143,9 @@ h1 {
                 }
             });
         };
+        $scope.showresource = function() {
+            $window.location.href = "/adminAlbum.html";
+        }
         $scope.showMsg = function() {
             $window.location.href = "/adminMsg.html";
         };
