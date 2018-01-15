@@ -362,7 +362,7 @@ exports.item = {
                     callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
                     return;
                 }
-                db.collection('item').find({status:'active'}).toArray(function(err, result) {
+                db.collection('item').find({status:'active'}).sort({No: 1}).toArray(function(err, result) {
                     if (err) {
                         callback({feedback:'Failure', msg: 'Fail to get'});
                         return;
@@ -402,7 +402,7 @@ exports.item = {
                 callback({feedback: 'Failure', msg: 'Fail to connect to mongo'});
                 return;
             }
-            db.collection('item').find(condition).sort({No: 1}).toArray(function(err, result) {
+            db.collection('item').find(condition).toArray(function(err, result) {
                 if (err) {
                     callback({feedback: 'Failure', msg: 'Fail to get'});
                     return;
