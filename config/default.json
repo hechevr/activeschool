@@ -7,7 +7,7 @@
         "sendemail": "true",
         "service": "gmail",
         "address": "hkactiveschool@gmail.com",
-        "password": "activeschool123456",
+        "password": "",
         "subject": "Hello",
         "text": "Hello World"
     }

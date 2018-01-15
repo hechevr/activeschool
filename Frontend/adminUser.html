@@ -33,6 +33,27 @@
                         </div>
                     </div>
                 </nav>
+                <div class="modal fade" id="warningModal" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" style="color:red">Warning</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>你確定要刪除用戶<label ng-bind="deleteActivity.activity"></label>麼？</p>
+                                    <p>此操作不可撤回</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" ng-click="deleteUser(deleteActivity)">Delete</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 <div class="container-fluid">
         <h1>用戶列表</h1>
         <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc;float:right;" ng-click="initializeUser()">初始化</button>
@@ -46,7 +67,7 @@
                 <th>用戶密碼</th>
             </tr>
             <tr ng-repeat='user in users'>
-                <td><button class="btn btn-default" ng-click="deleteUser(user)"><i class="glyphicon glyphicon-trash"></i></button></td>
+                <td><button class="btn btn-default" ng-click="showWarningDialog(user)" data-toggle="modal" data-target="#warningModal"><i class="glyphicon glyphicon-trash"></i></button></td>
                 <td><a  href="#" ng-click="setactive(user)" ng-show="!(user.status==='active')">Set Active</a><a href="#" ng-show="(user.status==='active')" ng-click="setdecline(user)">Set decline</a></td>
                 <td><a href="#" ng-bind="user.name" ng-click="selectUser(user)"></a></td>
                 <td ng-show="isUpdateUser">
@@ -78,6 +99,7 @@
     app.controller("adminController", function($scope, $window, $http, $cookies) {
         $scope.isUpdateUser = false;
         $scope.showAddForm = false;
+        $scope.deleteActivity = {};
         $http.post('/admin/users', {})
         .then(function(response) {
             console.log(response);
@@ -106,6 +128,9 @@
                 var rnum = Math.floor(Math.random() * pattern.length);
                 $scope.newuser.password += pattern.charAt(rnum);
             }
+        }
+        $scope.showWarningDialog = function(item) {
+            deleteActivity = item;
         }
         const check_valid = function(stringInput) {
             var pattern = /^[a-zA-Z0-9]*$/;
