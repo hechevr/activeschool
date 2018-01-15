@@ -43,8 +43,9 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>你確定要刪除用戶<label ng-bind="deleteActivity.activity"></label>麼？</p>
+                                    <p>你確定要刪除用戶<label ng-bind="deleteActivity.name"></label>麼？</p>
                                     <p>此操作不可撤回</p>
+                                    <p ng-show="showerror">錯誤，請聯繫管理員</p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" ng-click="deleteUser(deleteActivity)">Delete</button>
@@ -100,6 +101,7 @@
         $scope.isUpdateUser = false;
         $scope.showAddForm = false;
         $scope.deleteActivity = {};
+        $scope.showerror = false;
         $http.post('/admin/users', {})
         .then(function(response) {
             console.log(response);
@@ -129,8 +131,9 @@
                 $scope.newuser.password += pattern.charAt(rnum);
             }
         }
-        $scope.showWarningDialog = function(item) {
-            deleteActivity = item;
+        $scope.showWarningDialog = function(user) {
+            console.log(user);
+            $scope.deleteActivity = user;
         }
         const check_valid = function(stringInput) {
             var pattern = /^[a-zA-Z0-9]*$/;
@@ -193,7 +196,7 @@
                     $window.location.reload();
                 }
                 else {
-                    console.log(response);
+                    $showerror = true;
                 }
             });
         }
