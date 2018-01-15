@@ -17,13 +17,13 @@
 
 <body>
     <div ng-app="userModel" ng-controller="itemlistController">
-        <nav class="navbar navbar-inverse bg-inverse">
+        <nav class="navbar navbar-inverse bg-inverse navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header"><a class="navbar-brand" href="#">動感校園</a></div>
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="#" ng-click="showItemlist()">項目列表</a></li>
                     <li><a href="#" ng-click="showProfile()">已選項目</a></li>
-                    <li><a href="#" ng-click="oldprofile={name:user.name};newprofile={};showerror=false;" data-toggle="modal" data-target="#myModal">更新信息</a></li>
+                    <!--<li><a href="#" ng-click="oldprofile={name:user.name};newprofile={};showerror=false;" data-toggle="modal" data-target="#myModal">更新信息</a></li>-->
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">下载</a>
                         <ul class="dropdown-menu">
@@ -40,11 +40,10 @@
             </div>
         </nav>
 
-        <!-- Modal -->
+        <!--
         <div class="modal fade" id="myModal" role="dialog">
             <div class="modal-dialog">
 
-                <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -77,8 +76,8 @@
 
             </div>
         </div>
-
-        <div class="container-fluid">
+    -->
+        <div style="width:100%;margin-top:100px">
             <h2 style="color:#33a6cc;">動感校園 <span style="color:Black" ng-bind="activetitle"> </span>活動 / 課程時間表</h2>
             <table class="table table-bordered">
                 <thead class="thead thead-inverse">
@@ -88,7 +87,7 @@
                         <th>活動課程</th>
                         <th>對象</th>
                         <th>導師人數上限</th>
-                        <th>師生比例:學生人數上限</th>
+                        <th>師生比例<br>學生人數上限</th>
                         <th>日期</th>
                         <th>備註</th>
                     </tr>
@@ -132,7 +131,7 @@
         $scope.itemlist = [];
         $scope.comment = "";
         $http.get('/title').then(function(response) {
-            console.log(response);
+            // console.log(response);
             if (response.data.feedback === 'Success') {
                 $scope.activetitle = response.data.value;
             }
@@ -142,7 +141,7 @@
         });
         $http.post("/itemlistdata", {})
         .then(function(response) {
-            console.log(response);
+            // console.log(response);
             if (response.data.feedback === 'Failure') {
                 $window.location.href = '/login.html';
             }
@@ -168,20 +167,20 @@
         });
         $http.post("/comment/"+uid, {})
         .then(function(response) {
-            console.log(response);
+            // console.log(response);
             $scope.comment = response.data.comment;
             $scope.email = response.data.email;
             $scope.userstatus = !(response.data.status === 'active');
         });
         $scope.showdetail = function(item) {
             item.show = !item.show
-            console.log("show detail");
+            // console.log("show detail");
         }
         $scope.cancel = function() {
             $window.location.href = "/";
         }
         $scope.submit = function() {
-            console.log("click submit");
+            // console.log("click submit");
             var items = [];
             for (i in $scope.itemlist) {
                 var item = $scope.itemlist[i];
@@ -202,15 +201,15 @@
                     items.push({_id: item._id, time});
                 }
             }
-            console.log($scope.comment);
+            // console.log($scope.comment);
             $http.post('/selection/'+uid, {items:items, comment: $scope.comment, email: $scope.email})
             .then(function(response) {
-                console.log(response);
+                // console.log(response);
                 if (response.data.feedback === 'Success') {
                     $window.location.href = '/itemlist.html';
                 }
                 else {
-                    console.log('Fail');
+                    // console.log('Fail');
                 }
             })
         };
@@ -223,16 +222,17 @@
         $scope.Logout = function() {
             $http.post('/users/logout', {})
             .then(function logoutSuccess(response) {
-                console.log(response);
+                // console.log(response);
                 $cookies.remove('uid');
                 $window.location.href = '/';
             });
         };
+        /*
         $scope.updateprofile = function() {
             if ($scope.oldprofile.email != undefined && $scope.oldprofile.password != undefined && $scope.newprofile.email != undefined && $scope.newprofile.password != undefined) {
                 $http.post("/users/update/"+uid, {oldprofile:$scope.oldprofile, newprofile:$scope.newprofile})
                 .then(function(response) {
-                    console.log(response);
+                    // console.log(response);
                     if (response.data.feedback === 'Success') {
                         $window.location.reload();
                     }
@@ -252,6 +252,7 @@
                 $scope.errormsg = "Invalid Input";
             }
         }
+        */
         $scope.download = function(index) {
             if (index === 1) {
                 $window.open("/resourcenew/application.pdf");

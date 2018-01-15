@@ -7,53 +7,53 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
 
 </head>
 <body>
     <div ng-app='myModel' ng-controller='adminController'>
-            <nav class="navbar navbar-inverse bg-inverse">
-                    <div class="container-fluid">
-                        <div class="navbar-header"><a class="navbar-brand" href="#">動感校園</a></div>
-                        <ul class="nav navbar-nav">
-                            <li><a href="#" ng-click="showItemlist()">項目列表</a></li>
-                            <li><a href="#" ng-click="addItem()">創建項目</a></li>
-                            <li class="active"><a href="#" ng-click="showMsg()">訊息</a></li>
-                            <li><a href="#" ng-click="userList()">用戶列表</a></li>
-<li><a href="#" ng-click="showresource()">資源</a></li>
-                        </ul>
-                        <div class="navbar-right">
-                            <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">登出</button>
-                        </div>
-                    </div>
-                </nav>
-                <div class="container-fluid">
-        <h1>用戶列表</h1>
-        <label ng-show="showerror" style="color:red; text-align:right;">错误</label>
-        <table class='table table-bordered'>
-            <tr>
-                <th>用戶姓名</th>
-                <th>訊息</th>
-                <th>刪除</th>
-            </tr>
-            <tr ng-repeat='user in users' ng-show="user.show">
-                <td><a href="#" ng-bind="user.name" ng-click="selectUser(user)"></a></td>
-                <td ng-bind="user.comment"></td>
-                <td>
-                    <button class="btn btn-sm" style="background-color: transparent; border-color: black;" ng-click="deleteMsg(user)"><span class="glyphicon glyphicon-trash"></span></button>
-                </td>
-            </tr>
-        </table>
-    </div>
+        <nav class="navbar navbar-inverse bg-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header"><a class="navbar-brand" href="#">動感校園</a></div>
+                <ul class="nav navbar-nav">
+                    <li><a href="#" ng-click="showItemlist()">項目列表</a></li>
+                    <li><a href="#" ng-click="addItem()">創建項目</a></li>
+                    <li class="active"><a href="#" ng-click="showMsg()">訊息</a></li>
+                    <li><a href="#" ng-click="userList()">用戶列表</a></li>
+                    <li><a href="#" ng-click="showresource()">資源</a></li>
+                </ul>
+                <div class="navbar-right">
+                    <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">登出</button>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid" style="margin-top:100px">
+            <h1>用戶訊息</h1>
+            <label ng-show="showerror" style="color:red; text-align:right;">错误</label>
+            <table class='table table-bordered'>
+                <tr>
+                    <th>用戶姓名</th>
+                    <th>訊息</th>
+                    <th>刪除</th>
+                </tr>
+                <tr ng-repeat='user in users' ng-show="user.show">
+                    <td><a href="#" ng-bind="user.name" ng-click="selectUser(user)"></a></td>
+                    <td ng-bind="user.comment"></td>
+                    <td>
+                        <button class="btn btn-sm" style="background-color: transparent; border-color: black;" ng-click="deleteMsg(user)"><span class="glyphicon glyphicon-trash"></span></button>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 
-<script>
+    <script>
     var app = angular.module("myModel", ["ngCookies"]);
     app.controller("adminController", function($scope, $window, $http, $cookies) {
         $scope.isUpdateUser = false;
@@ -61,7 +61,7 @@
         $scope.showerror = false;
         $http.get('/admin/msg')
         .then(function(response) {
-            console.log(response);
+            // console.log(response);
             if (response.data.feedback === 'Success') {
                 $scope.users = response.data.data;
                 for (idx in $scope.users) {
@@ -111,7 +111,7 @@
         $scope.deleteMsg = function(user) {
             $http.get('/admin/msg/delete/' + user._id)
             .then(function(response) {
-                console.log(response);
+                // console.log(response);
                 if (response.data.feedback === 'Success') {
                     $window.location.reload();
                 }
@@ -123,12 +123,12 @@
         $scope.Logout = function() {
             $http.post('/users/logout', {})
             .then(function logoutSuccess(response) {
-                console.log(response);
+                // console.log(response);
                 $cookies.remove('uid');
                 $window.location.href = '/login.html';
             });
         }
     });
-</script>
+    </script>
 </body>
 </html>

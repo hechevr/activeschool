@@ -26,7 +26,7 @@ h1 {
 <body>
 
     <div ng-app="userModel" ng-controller="itemCtrl">
-        <nav class="navbar navbar-inverse bg-inverse">
+        <nav class="navbar navbar-inverse bg-inverse navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header"><a class="navbar-brand" href="#">動感校園</a></div>
                 <ul class="nav navbar-nav">
@@ -41,7 +41,7 @@ h1 {
                 </div>
             </div>
         </nav>
-        <div class="container-fluid">
+        <div class="container-fluid" style="margin-top:100px">
             <h1>Activity</h1>
             <input type="checkbox" ng-model="isActive">
             <form name="itemform">
@@ -116,7 +116,7 @@ h1 {
             };
             $http.post('/admin/item/detail/'+iid, {})
             .then(function(response) {
-                console.log(response);
+                // console.log(response);
                 if (response.data.feedback === 'Failure') {
                     $window.location.href = '/login.html';
                 }
@@ -155,7 +155,7 @@ h1 {
             $scope.Logout = function() {
                 $http.post('/users/logout', {})
                 .then(function logoutSuccess(response) {
-                    console.log(response);
+                    // console.log(response);
                     $cookies.remove('uid');
                     $window.location.href = '/';
                 });

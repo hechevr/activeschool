@@ -156,35 +156,35 @@ app.post('/items', function(req, res) {
 });
 /*
 app.post('/items/selection', function(req, res) {
-    console.log('get item selection');
-    if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Not login'});
-    var obj = {
-        item: req.body.item
-    };
-    databaseIO.selection.getObj(obj, function(feedback) {
-        if (feedback.feedback === 'Success') {
-            return res.send({feedback: feedback.feedback, data: feedback.data});
-        }
-        else {
-            return res.send({feedback: feedback});
-        }
-    });
+console.log('get item selection');
+if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Not login'});
+var obj = {
+item: req.body.item
+};
+databaseIO.selection.getObj(obj, function(feedback) {
+if (feedback.feedback === 'Success') {
+return res.send({feedback: feedback.feedback, data: feedback.data});
+}
+else {
+return res.send({feedback: feedback});
+}
+});
 });
 
 app.post('users/selection', function(req, res) {
-    console.log('get user selection');
-    if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Not Login'});
-    var obj = {
-        user: req.body.user
-    };
-    databaseIO.selection.getObj(obj, function(feedback) {
-        if (feedback.feedback === 'Success') {
-            return res.send({feedback: feedback.feedback, data:feedback.data});
-        }
-        else {
-            return res.send({feedback: feedback});
-        }
-    });
+console.log('get user selection');
+if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Not Login'});
+var obj = {
+user: req.body.user
+};
+databaseIO.selection.getObj(obj, function(feedback) {
+if (feedback.feedback === 'Success') {
+return res.send({feedback: feedback.feedback, data:feedback.data});
+}
+else {
+return res.send({feedback: feedback});
+}
+});
 });
 */
 
@@ -201,16 +201,17 @@ app.post('/itemlistdata', function(req, res) {
 
 app.post('/users/login', function(req, res) {
     // console.log(req.body);
-    var username = req.body.name;
+    var email = req.body.email;
     var password = req.body.password;
 
     // console.log(username);
     // console.log(password);
-    if (!check_validation('user', username)) return res.send({feedback: 'Failure'});
+    if (!email || !password) return res.send({feedback: 'Failure'});
+    if (!check_validation('email', email)) return res.send({feedback: 'Failure'});
     if (!check_validation('password', password)) return res.send({feedback: 'Failure'});
     var condition;
-    if (username) {
-        condition = {name: username, password: password};
+    if (email) {
+        condition = {email: email, password: password};
     }
     else {
         return res.send({feedback: 'Failure', msg: 'Fail to login'});
@@ -232,42 +233,43 @@ app.post('/users/logout', function(req, res) {
         return res.send({feedback:'Success'});
     });
 });
-
+/*
 app.post('/users/update/:uid', function(req, res) {
-    var uid = req.params.uid;
-    if (!check_login(req, res)) return res.send({feedback:'Failure', msg:'Fail to Login'});
-    if (req.session.uid !== uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
-    if (!check_validation('email',req.body.oldprofile.email)) return res.send({feedback: 'Failure'});
-    if (!check_validation('password', req.body.oldprofile.password)) return res.send({feedback: 'Failure'});
-    if (!check_validation('email',req.body.newprofile.email)) return res.send({feedback: 'Failure', msg: 'Wrong format'});
-    if (!check_validation('password', req.body.newprofile.password)) return res.send({feedback: 'Failure', msg: 'Wrong format'});
-    databaseIO.user.getOne(
-        {
-            _id:mongo.ObjectID(uid),
-            email:req.body.oldprofile.email,
-            password:req.body.oldprofile.password,
-        }, function(feedback) {
-            if (feedback.feedback != 'Success' || !feedback.data) return res.send({feedback:'Failure', msg:'Wrong info'});
-            else {
-                databaseIO.user.updateInfo(
-                    {_id: mongo.ObjectID(uid)},
-                    {
-                        password: req.body.newprofile.password,
-                        email: req.body.newprofile.email
-                    },
-                    function(fb) {
-                        if (fb.feedback === 'Success') {
-                            return res.send({feedback: 'Success'});
-                        }
-                        else {
-                            return res.send({feedback: 'Failure'});
-                        }
-                    }
+var uid = req.params.uid;
+if (!check_login(req, res)) return res.send({feedback:'Failure', msg:'Fail to Login'});
+if (req.session.uid !== uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+if (!check_validation('email',req.body.oldprofile.email)) return res.send({feedback: 'Failure'});
+if (!check_validation('password', req.body.oldprofile.password)) return res.send({feedback: 'Failure'});
+if (!check_validation('email',req.body.newprofile.email)) return res.send({feedback: 'Failure', msg: 'Wrong format'});
+if (!check_validation('password', req.body.newprofile.password)) return res.send({feedback: 'Failure', msg: 'Wrong format'});
+databaseIO.user.getOne(
+{
+_id:mongo.ObjectID(uid),
+email:req.body.oldprofile.email,
+password:req.body.oldprofile.password,
+}, function(feedback) {
+if (feedback.feedback != 'Success' || !feedback.data) return res.send({feedback:'Failure', msg:'Wrong info'});
+else {
+databaseIO.user.updateInfo(
+{_id: mongo.ObjectID(uid)},
+{
+password: req.body.newprofile.password,
+email: req.body.newprofile.email
+},
+function(fb) {
+if (fb.feedback === 'Success') {
+return res.send({feedback: 'Success'});
+}
+else {
+return res.send({feedback: 'Failure'});
+}
+}
 
-            )
-            }
-        })
+)
+}
+})
 });
+*/
 app.post('/selection/:uid', function(req, res) {
     if (!check_login(req, res)) return res.send({feedback:'Failure', msg:'Fail to Login'});
     var items = req.body.items;
@@ -434,8 +436,11 @@ app.post('/admin/user/update/:uid', function(req, res) {
     if (!check_id(uid)) return res.send({feedback: 'Failure', msg: 'Wrong id'});
     console.log(req.body);
     if (req.body.email != undefined) {
-        if (!check_validation('email', req.body.email)) return res.send({feedback: 'Failure', msg: 'Invalid email'});
-        databaseIO.user.update({_id: mongo.ObjectID(uid)}, {email: req.body.email}, function(feedback) {
+        if (!check_validation('email', req.body.email)) return res.send({feedback: 'Failure', msg: 'Invalid format'});
+        if (!check_validation('user', req.body.name)) return res.send({feedback: 'Failure', msg: 'Invalid format'});
+        if (!check_validation('password', req.body.password)) return res.send({feedback: 'Failure', msg: 'Invalid format'});
+
+        databaseIO.user.update({_id: mongo.ObjectID(uid)}, {email: req.body.email, name: req.body.name, password: req.body.password}, function(feedback) {
             if (feedback.feedback === 'Success') {
                 return res.send({feedback: 'Success'});
             }
@@ -476,7 +481,7 @@ app.post('/admin/users', function(req, res) {
 })
 /*
 databaseIO.DB.initialize(function(feedback) {
-    console.log(feedback);
+console.log(feedback);
 });
 */
 app.post('/admin/initialize', function(req, res) {
@@ -485,13 +490,18 @@ app.post('/admin/initialize', function(req, res) {
         console.log(feedback);
         if (feedback.feedback === 'Success') {
             databaseIO.user.updateStatus({}, {comment: "", status:'active'}, function(feedback) {
-                if (feedback.feedback === 'Success') {
-                    return res.send({feedback: 'Success'});
-                }
-                else {
+                if (feedback.feedback !== 'Success') {
                     return res.send({feedback: 'Failure'});
                 }
             });
+            databaseIO.item.updateStatus({}, {status: 'decline'}, function(fb) {
+                if (fb.feedback !== "Success") {
+                    return res.send({feedback: 'Failure'});
+                }
+                else {
+                    return res.send({feedback: 'Success'});
+                }
+            })
         }
         else {
             return res.send({feedback: 'Failure'});
@@ -540,5 +550,5 @@ app.get('*', function(req, res) {
     res.status(404).send('Null');
 });
 app.listen(port, "0.0.0.0", function() {
-	console.log('Listening to port: ' + port);
+    console.log('Listening to port: ' + port);
 });

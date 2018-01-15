@@ -6,7 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -29,66 +29,66 @@
                         <h1  style="color:#555"><strong>動感校園</strong> 登錄</h1>
                         <!--
                         <div class="description">
-                            <p>香港精英运动员协会 動感校園</p>
-                        </div>-->
-                    </div>
+                        <p>香港精英运动员协会 動感校園</p>
+                    </div>-->
                 </div>
+            </div>
+            <div class="row">
                 <div class="row">
-                    <div class="row">
-                        <div class="col-sm-6 col-sm-offset-3 form-box">
-                            <div class="form-top">
-                                <div class="form-top-left">
-                                    <h3>登錄</h3>
-                                    <p>輸入你的用戶名和密碼</p>
-                                </div>
-                                <div class="form-top-right">
-                                    <i class="fa fa-key"></i>
-                                    <!--<image src="/resource/logo_ico.jpg" width="120px"></image>-->
-                                </div>
-                                <!--
-                                <div class="form-bottom-logo">
-                                    <image src="/resource/eact_ico.jpg" width="100px"></image>
-                                    <image src="/resource/hkjc_ico.png" width="100px"></image>
-                                    <image src="/resource/hkeaa_ico.jpg" width="100px"></image>
-                                </div>
-                                -->
+                    <div class="col-sm-6 col-sm-offset-3 form-box">
+                        <div class="form-top">
+                            <div class="form-top-left">
+                                <h3>登錄</h3>
+                                <p>輸入你的電郵和電話號碼</p>
                             </div>
-                            <div class="form-bottom">
-                                <form role="form" class="login-form">
-                                    <div class="form-group">
-                                        <label class="sr-only">用戶名</label>
-                                        <input ng-model='username' type="text" class="form-username form-control" placeholder='用戶名' special-char-directive required/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="sr-only">密碼</label>
-                                        <input ng-model='password' type='password' class="form-password form-control" placeholder='密碼' special-char-directive required/>
-                                    </div>
-                                    <div class="alert alert-danger" ng-show="failToLogin">
-                                        <strong>錯誤</strong> 無效的用戶名或密碼
-                                    </div>
-                                    <button type="submit" class="btn" ng-click="submit()">登錄</button>
-                                </form>
+                            <div class="form-top-right">
+                                <i class="fa fa-key"></i>
+                                <!--<image src="/resource/logo_ico.jpg" width="120px"></image>-->
                             </div>
-
+                            <!--
+                            <div class="form-bottom-logo">
+                            <image src="/resource/eact_ico.jpg" width="100px"></image>
+                            <image src="/resource/hkjc_ico.png" width="100px"></image>
+                            <image src="/resource/hkeaa_ico.jpg" width="100px"></image>
                         </div>
-                    </div>
+                    -->
                 </div>
+                <div class="form-bottom">
+                    <form name="loginForm" role="form" class="login-form">
+                        <div class="form-group">
+                            <label class="sr-only">電郵</label>
+                            <input ng-model='username' type="email" class="form-username form-control" placeholder='電郵' required/>
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only">電話號碼</label>
+                            <input ng-model='password' type='password' class="form-password form-control" placeholder='密碼' special-char-directive required/>
+                        </div>
+                        <div class="alert alert-danger" ng-show="failToLogin">
+                            <strong>錯誤</strong> 無效的電郵或電話號碼
+                        </div>
+                        <button type="submit" class="btn" ng-click="submit()" ng-disabled="loginForm.$invalid">登錄</button>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>
+</div>
+</div>
+</div>
 </body>
 <script>
 var app = angular.module('userModel', ['ngCookies']);
 app.controller('myCtrl', function($scope, $http, $window, $cookies) {
     $scope.failToLogin = false;
     $scope.submit = function submit() {
-        console.log('click submit');
+        // console.log('click submit');
         $http.post('/users/login', {
             type: 'user',
-            name: $scope.username,
+            email: $scope.username,
             password: $scope.password
         }).then(function submitSuccess(response) {
-            console.log(response);
+            // console.log(response);
             if (response.data.feedback === 'Success') {
                 $window.location.href = '/';
                 $cookies.put('uid', response.data._id);
@@ -99,7 +99,7 @@ app.controller('myCtrl', function($scope, $http, $window, $cookies) {
         });
     }
     $scope.cancel = function cancel() {
-        console.log('click cancel');
+        // console.log('click cancel');
         $scope.username = '';
         $scope.password = '';
     }

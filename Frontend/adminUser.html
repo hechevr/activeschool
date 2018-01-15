@@ -7,95 +7,127 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
 
 </head>
 <body>
     <div ng-app='myModel' ng-controller='adminController'>
-            <nav class="navbar navbar-inverse bg-inverse">
-                    <div class="container-fluid">
-                        <div class="navbar-header"><a class="navbar-brand" href="#">動感校園</a></div>
-                        <ul class="nav navbar-nav">
-                            <li><a href="#" ng-click="showItemlist()">項目列表</a></li>
-                            <li><a href="#" ng-click="addItem()">創建項目</a></li>
-                            <li><a href="#" ng-click="showMsg()">訊息</a></li>
-                            <li class="active"><a href="#" ng-click="userList()">用戶列表</a></li>
-<li><a href="#" ng-click="showresource()">資源</a></li>
-                        </ul>
-                        <div class="navbar-right">
-                            <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">登出</button>
-                        </div>
-                    </div>
-                </nav>
-                <div class="modal fade" id="warningModal" role="dialog">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title" style="color:red">Warning</h4>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>你確定要刪除用戶<label ng-bind="deleteActivity.name"></label>麼？</p>
-                                    <p>此操作不可撤回</p>
-                                    <p ng-show="showerror">錯誤，請聯繫管理員</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" ng-click="deleteUser(deleteActivity)">Delete</button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                <div class="container-fluid">
-        <h1>用戶列表</h1>
-        <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc;float:right;" ng-click="initializeUser()">初始化</button>
-        <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc;float:right;" ng-click="isUpdateUser=!isUpdateUser">更新電郵</button>
-        <table class='table table-bordered'>
-            <tr>
-                <th>刪除</th>
-                <th>狀態</th>
-                <th>用戶姓名</th>
-                <th>用戶電郵</th>
-                <th>用戶密碼</th>
-            </tr>
-            <tr ng-repeat='user in users'>
-                <td><button class="btn btn-default" ng-click="showWarningDialog(user)" data-toggle="modal" data-target="#warningModal"><i class="glyphicon glyphicon-trash"></i></button></td>
-                <td><a  href="#" ng-click="setactive(user)" ng-show="!(user.status==='active')">Set Active</a><a href="#" ng-show="(user.status==='active')" ng-click="setdecline(user)">Set decline</a></td>
-                <td><a href="#" ng-bind="user.name" ng-click="selectUser(user)"></a></td>
-                <td ng-show="isUpdateUser">
-                    <form name="updateUserForm">
-                        <input type="email" ng-model="user.email" placeholder="Input your email" required>
-                        <button class="btn btn-default" ng-click="updateUser(user)" ng-disabled="updateUserForm.$invalid"><i class="fa fa-repeat"></i></button>
-                    </form>
-                </td>
-                <td ng-bind="user.email" ng-show="!isUpdateUser"></td>
-                <td ng-bind="user.password"></td>
-            </tr>
-        </table>
-        <button type="button" class="btn btn-default" ng-click="adduser()"><i class="fa fa-plus"></i></button>
-        <form name="newUserForm" ng-show="showAddForm">
-            <div class="form-group">
-                <input ng-model='newuser.username' placeholder='用戶姓名' type="text" special-char-directive required/>
-                <input ng-model="newuser.email" placeholder="用戶電郵" type="email" required>
-                <input ng-model='newuser.password' placeholder='用戶密碼' special-char-directive required/>
-                <a href="#" ng-click="randomPassword()">隨機密碼</a>
-                <button class="btn" type="submit" style="background-color: transparent; color: green; border-color: green;" ng-click="submit()" ng-disabled="newUserForm.$invalid">確定</button>
-                <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">取消</button>
+        <nav class="navbar navbar-inverse bg-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header"><a class="navbar-brand" href="#">動感校園</a></div>
+                <ul class="nav navbar-nav">
+                    <li><a href="#" ng-click="showItemlist()">項目列表</a></li>
+                    <li><a href="#" ng-click="addItem()">創建項目</a></li>
+                    <li><a href="#" ng-click="showMsg()">訊息</a></li>
+                    <li class="active"><a href="#" ng-click="userList()">用戶列表</a></li>
+                    <li><a href="#" ng-click="showresource()">資源</a></li>
+                </ul>
+                <div class="navbar-right">
+                    <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">登出</button>
+                </div>
             </div>
-        </form>
-    </div>
+        </nav>
+        <div class="modal fade" id="warningModal" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" style="color:red">Warning</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>你確定要刪除用戶<label ng-bind="deleteActivity.name"></label>麼？</p>
+                        <p>此操作不可撤回</p>
+                        <p ng-show="showerror">錯誤，請聯繫管理員</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" ng-click="deleteUser(deleteActivity)">Delete</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="initialModal" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" style="color:red">Warning</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>你確定要初始化麼？</p>
+                        <p>此操作不可撤回</p>
+                        <p ng-show="showerror">錯誤，請聯繫管理員</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" ng-click="initializeUser()">Confirm</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <h1>用戶列表</h1>
+            <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc;float:right;" data-toggle="modal" data-target="#initialModal">初始化</button>
+            <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc;float:right;" ng-click="isUpdateUser=!isUpdateUser">更新電郵</button>
+            <table class='table table-bordered'>
+                <tr>
+                    <th>刪除</th>
+                    <th>狀態</th>
+                    <th>用戶姓名</th>
+                    <th>用戶電郵</th>
+                    <th>用戶密碼</th>
+                </tr>
+                <tr ng-repeat='user in users'>
+                    <td><button class="btn btn-default" ng-click="showWarningDialog(user)" data-toggle="modal" data-target="#warningModal"><i class="glyphicon glyphicon-trash"></i></button></td>
+                    <td><a  href="#" ng-click="setactive(user)" ng-show="!(user.status==='active')">Set Active</a><a href="#" ng-show="(user.status==='active')" ng-click="setdecline(user)">Set decline</a></td>
+                    <td ng-show="isUpdateUser">
+                        <form name="updateUserForm">
+                            <input type="text" ng-model="user.name" placeholder="Input your name" required>
+                        </form>
+                    </td>
+                    <td ng-show="!isUpdateUser"><a href="#" ng-bind="user.name" ng-click="selectUser(user)"></a></td>
+                    <td ng-show="isUpdateUser">
+                        <form name="updateUserForm">
+                            <input type="email" ng-model="user.email" placeholder="Input your email" required>
+                        </form>
+                    </td>
+                    <td ng-bind="user.email" ng-show="!isUpdateUser"></td>
+                    <td ng-show="isUpdateUser">
+                        <form name="updateUserForm">
+                            <input type="text" ng-model="user.password" placeholder="Input your password" required>
+                            <button class="btn btn-default" ng-click="updateUser(user)" ng-disabled="updateUserForm.$invalid"><i class="fa fa-repeat"></i></button>
+                        </form>
+                    </td>
+                    <td ng-bind="user.password" ng-show="!isUpdateUser"></td>
+                </tr>
+            </table>
+            <button type="button" class="btn btn-default" ng-click="adduser()"><i class="fa fa-plus"></i></button>
+            <form name="newUserForm" ng-show="showAddForm">
+                <div class="form-group">
+                    <input ng-model='newuser.username' placeholder='用戶姓名' type="text" special-char-directive required/>
+                    <input ng-model="newuser.email" placeholder="用戶電郵" type="email" required>
+                    <input ng-model='newuser.password' placeholder='用戶密碼' special-char-directive required/>
+                    <a href="#" ng-click="randomPassword()">隨機密碼</a>
+                    <button class="btn" type="submit" style="background-color: transparent; color: green; border-color: green;" ng-click="submit()" ng-disabled="newUserForm.$invalid">確定</button>
+                    <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">取消</button>
+                </div>
+            </form>
+        </div>
     </div>
 
-<script>
+    <script>
     var app = angular.module("myModel", ["ngCookies"]);
     app.controller("adminController", function($scope, $window, $http, $cookies) {
         $scope.isUpdateUser = false;
@@ -104,7 +136,7 @@
         $scope.showerror = false;
         $http.post('/admin/users', {})
         .then(function(response) {
-            console.log(response);
+            // console.log(response);
             if (response.data.feedback === 'Success') {
                 $scope.users = response.data.data;
             }
@@ -132,7 +164,7 @@
             }
         }
         $scope.showWarningDialog = function(user) {
-            console.log(user);
+            // console.log(user);
             $scope.deleteActivity = user;
         }
         const check_valid = function(stringInput) {
@@ -146,7 +178,7 @@
         }
         $scope.initializeUser = function() {
             $http.post("/admin/initialize", {}).then(function(response) {
-                console.log(response);
+                // console.log(response);
                 if (response.feedback === 'Success') {
                     $window.location.reload();
                 }
@@ -156,7 +188,7 @@
             });
         }
         $scope.submit = function() {
-            console.log('click submit');
+            // console.log('click submit');
             if (check_valid($scope.newuser.username) && check_valid($scope.newuser.password)) {
                 $http.post('/users', {
                     type: 'user',
@@ -164,7 +196,7 @@
                     email: $scope.newuser.email,
                     password: $scope.newuser.password
                 }).then(function submitSuccess(response) {
-                    console.log(response);
+                    // console.log(response);
                     if (response.data.feedback.feedback === 'Success') {
                         $window.location.reload();
                     }
@@ -206,7 +238,7 @@
         $scope.Logout = function() {
             $http.post('/users/logout', {})
             .then(function logoutSuccess(response) {
-                console.log(response);
+                // console.log(response);
                 $cookies.remove('uid');
                 $window.location.href = '/login.html';
             });
@@ -216,7 +248,7 @@
             {
                 status: 'active'
             }).then(function(response) {
-                console.log(response);
+                // console.log(response);
                 if (response.feedback === 'Success') {
                     $window.location.reload();
                 }
@@ -230,7 +262,7 @@
             {
                 status: 'decline'
             }).then(function(response) {
-                console.log(response);
+                // console.log(response);
                 if (response.feedback === 'Success') {
                     $window.location.reload();
                 }
@@ -241,39 +273,41 @@
         }
         $scope.updateUser = function(user) {
             $http.post("/admin/user/update/" + user._id,
-        {
-            email: user.email
-        }).then(function(response) {
-            console.log(response);
-            if (response.feedback === "Success") {
-                $window.location.reload();
-            }
-            else {
-                $window.location.reload();
-            }
-        });
+            {
+                name: user.name,
+                email: user.email,
+                password: user.password
+            }).then(function(response) {
+                // console.log(response);
+                if (response.feedback === "Success") {
+                    $window.location.reload();
+                }
+                else {
+                    $window.location.reload();
+                }
+            });
         }
     })
     .directive('specialCharDirective', function() {
-    function link(scope, elem, attrs, ngModel) {
-        ngModel.$parsers.push(function(viewValue) {
-            var reg = /^[a-zA-Z0-9]*$/;
-            if (viewValue.match(reg)) {
-                return viewValue;
-            }
-            var transformedValue = ngModel.$modelValue;
-            ngModel.$setViewValue(transformedValue);
-            ngModel.$render();
-            return transformedValue;
-        });
-    }
+        function link(scope, elem, attrs, ngModel) {
+            ngModel.$parsers.push(function(viewValue) {
+                var reg = /^[a-zA-Z0-9]*$/;
+                if (viewValue.match(reg)) {
+                    return viewValue;
+                }
+                var transformedValue = ngModel.$modelValue;
+                ngModel.$setViewValue(transformedValue);
+                ngModel.$render();
+                return transformedValue;
+            });
+        }
 
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        link: link
-    };
-});
-</script>
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: link
+        };
+    });
+    </script>
 </body>
 </html>
