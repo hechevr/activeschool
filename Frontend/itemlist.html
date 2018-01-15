@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Activity</title>
@@ -77,16 +77,16 @@
             </div>
         </div>
     -->
-        <div style="width:100%;margin-top:100px">
+        <div class="container-fluid">
             <h2 style="color:#33a6cc;">動感校園 <span style="color:Black" ng-bind="activetitle"> </span>活動 / 課程時間表</h2>
-            <table class="table table-bordered">
+            <table class="table table-bordered" style="width:100%">
                 <thead class="thead thead-inverse">
                     <tr>
                         <th>活動組織</th>
                         <th>No.</th>
                         <th>活動課程</th>
                         <th>對象</th>
-                        <th>導師人數上限</th>
+                        <th>導師<br>人數上限</th>
                         <th>師生比例<br>學生人數上限</th>
                         <th>日期</th>
                         <th>備註</th>
@@ -97,15 +97,15 @@
                     <td ng-bind="item.organization"></td>
                     <td ng-bind="item.No"></td>
                     <td ng-bind="item.activity"></td>
-                    <td ng-bind="item.target"></td>
+                    <td ng-bind="item.target" style="min-width:90px"></td>
                     <td ng-bind="item.maxteacher"></td>
                     <td ng-bind="item.ratio"></td>
-                    <td ng-bind="item.date"></td>
-                    <td ng-bind="item.options"></td>
+                    <td ng-bind="item.date" style="max-width:120px"></td>
+                    <td ng-bind="item.options" style="max-width:120px; word-wrap: break-word;"></td>
                 </tr>
                 <tr ng-repeat-end ng-repeat="t in item.time" ng-show="item.show && t.show">
                     <td><input type="checkbox" ng-model="t.checked" ng-show="t.show" ng-disabled="userstatus"/></td>
-                    <td colspan="7" ng-bind="t.value"></td>
+                    <td colspan="8" ng-bind="t.value"></td>
                 </tr>
             </table>
 
