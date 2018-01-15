@@ -161,6 +161,9 @@
                         $scope.itemlist[idx].time[t].show = true;
                     }
                 }
+                if ($scope.itemlist[idx].options === 'NULL') {
+                    $scope.itemlist[idx].options = "";
+                }
             }
         });
         $http.post("/comment/"+uid, {})
