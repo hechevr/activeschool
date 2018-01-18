@@ -113,6 +113,7 @@
                     <td ng-bind="user.password" ng-show="!isUpdateUser"></td>
                 </tr>
             </table>
+            
             <button type="button" class="btn btn-default" ng-click="adduser()"><i class="fa fa-plus"></i></button>
             <form name="newUserForm" ng-show="showAddForm">
                 <div class="form-group">
@@ -121,10 +122,29 @@
                     <input ng-model='newuser.password' placeholder='用戶密碼'/>
                     <a href="#" ng-click="randomPassword()">隨機密碼</a>
                     <button ng-click="autoCheck()">Auto check</button>
-                    <button class="btn" type="submit" style="background-color: transparent; color: green; border-color: green;" ng-click="submit()" ng-disabled="newUserForm.$invalid">確定</button>
+                    <button class="btn" type="submit" style="background-color: transparent; color: green; border-color: green;" ng-click="submit(newuser)" ng-disabled="newUserForm.$invalid">確定</button>
                     <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">取消</button>
                 </div>
             </form>
+
+            <input ng-model="tabledata">
+            <button ng-click="parseTableData()">start</button>
+            <table>
+                <tr>
+                    <th>add</th>
+                    <th>name</th>
+                    <th>password</th>
+                    <th>email</th>
+                    <th>result</th>
+                </tr>
+                <tr ng-repeat="user in ulist">
+                    <td ><button ng-click="addSingle(user)">add</button></td>
+                    <td ng-bind="user.username"></td>
+                    <td ng-bind="user.password"></td>
+                    <td ng-bind="user.email"></td>
+                    <td ng-bind="user.msg"></td>
+                </tr>
+            </table>
         </div>
     </div>
 
@@ -135,6 +155,7 @@
         $scope.showAddForm = false;
         $scope.deleteActivity = {};
         $scope.showerror = false;
+        $scope.ulist = [];
         $http.post('/admin/users', {})
         .then(function(response) {
             // console.log(response);
@@ -145,6 +166,32 @@
                 $window.location.href = '/login.html';
             }
         });
+        $scope.parseTableData = function() {
+            var userlist = $scope.tabledata.split(" ");
+            var pattern = /[^a-zA-Z0-9\u4E00-\u9FCC]/g;
+            $scope.ulist = [];
+            for (u in userlist) {
+                var userinfo = userlist[u].split("\t");
+                newuser = {
+                    username: userinfo[0].replace(pattern, ""),
+                    email: userinfo[2],
+                    password: userinfo[1].replace(pattern, ""),
+                    msg: ""
+                }
+                $scope.ulist.push(newuser);
+            }
+        }
+        $scope.addSingle = function(u) {        
+            $http.post('/users', {
+                    type: 'user',
+                    name: u.username,
+                    email: u.email,
+                    password: u.password
+                }).then(function submitSuccess(response) {
+                    u.msg = response.data.feedback.feedback;
+                });
+
+        }
         $scope.showresource = function() {
             $window.location.href = "/adminAlbum.html";
         }
@@ -193,14 +240,14 @@
                 }
             });
         }
-        $scope.submit = function() {
-            console.log('click submit');
-            if (check_valid($scope.newuser.username) && check_valid($scope.newuser.password)) {
+        $scope.submit = function(newuser) {
+            // console.log('click submit');
+            if (check_valid(newuser.username) && check_valid(newuser.password)) {
                 $http.post('/users', {
                     type: 'user',
-                    name: $scope.newuser.username,
-                    email: $scope.newuser.email,
-                    password: $scope.newuser.password
+                    name: newuser.username,
+                    email: newuser.email,
+                    password: newuser.password
                 }).then(function submitSuccess(response) {
                     console.log(response);
                     if (response.data.feedback.feedback === 'Success') {
