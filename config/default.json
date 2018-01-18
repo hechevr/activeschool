@@ -1,12 +1,12 @@
 {
-    "admin": "5a43327e4a4055270419ab9a",
+    "admin": "",
     "mongo": {
         "address": "mongodb://localhost:27017/test"
     },
     "email": {
         "sendemail": "true",
         "service": "gmail",
-        "address": "hkactiveschool@gmail.com",
+        "address": "",
         "password": "",
         "subject": "Hello",
         "text": "Hello World"
