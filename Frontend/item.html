@@ -173,7 +173,7 @@ h1 {
     .directive('specialCharDirective', function() {
         function link(scope, elem, attrs, ngModel) {
             ngModel.$parsers.push(function(viewValue) {
-                var reg = /^[a-zA-Z0-9-:,.， \u4E00-\u9FCC]*$/;
+                var reg = /^[a-zA-Z0-9-:,.，\/()（） \u4E00-\u9FCC]*$/;
                 if (viewValue.match(reg)) {
                     return viewValue;
                 }
