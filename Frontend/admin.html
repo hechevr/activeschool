@@ -34,26 +34,26 @@
 
         <div class="modal fade" id="warningModal" role="dialog">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" style="color:red">Warning</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>你確定要刪除項目<label ng-bind="deleteActivity.activity"></label>麼？</p>
-                        <p>此操作不可撤回</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" ng-click="deleteItem(deleteActivity)">Delete</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    </div>
-                </div>
+                        <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" style="color:red">Warning</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>你確定要刪除項目<label ng-bind="deleteActivity.activity"></label>麼？</p>
+                                    <p>此操作不可撤回</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" ng-click="deleteItem(deleteActivity)">Delete</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>
             </div>
         </div>
 
-        <div style="width:full;margin-top:100px">
+        <div style="width:100%;margin-top:100px">
 
             <h2  style="color:#33a6cc;text-align:center;">動感校園 <span style="color:Black" ng-bind="activetitle"> 2017/18 (2017年10月9日至2018年2月23日) </span><button display="inline" class="btn btn-sm" style="background-color: transparent; border-color: transparent;" ng-click="updatetitle=!updatetitle;"><span class="glyphicon glyphicon-pencil"></span></button>活動 / 課程時間表</h2>
             <div ng-show="updatetitle" style="text-align:center">
@@ -86,7 +86,7 @@
                     <td><a href="#" ng-bind="item.organization" ng-click="showOrgan(item)"></a></td>
                     <td ng-bind="item.No"></td>
                     <td><a href="#" ng-bind="item.activity" ng-click="showActivity(item)"></a></td>
-                    <td ng-bind="item.target"></td>
+                    <td ng-bind="item.target" style="min-width:90px"></td>
                     <td ng-bind="item.maxteacher"></td>
                     <td ng-bind="item.ratio"></td>
                     <td ng-bind="item.date" style="max-width:120px"></td>

@@ -116,10 +116,11 @@
             <button type="button" class="btn btn-default" ng-click="adduser()"><i class="fa fa-plus"></i></button>
             <form name="newUserForm" ng-show="showAddForm">
                 <div class="form-group">
-                    <input ng-model='newuser.username' placeholder='用戶姓名' type="text" special-char-directive required/>
+                    <input ng-model='newuser.username' placeholder='用戶姓名' type="text"/>
                     <input ng-model="newuser.email" placeholder="用戶電郵" type="email" required>
-                    <input ng-model='newuser.password' placeholder='用戶密碼' special-char-directive required/>
+                    <input ng-model='newuser.password' placeholder='用戶密碼'/>
                     <a href="#" ng-click="randomPassword()">隨機密碼</a>
+                    <button ng-click="autoCheck()">Auto check</button>
                     <button class="btn" type="submit" style="background-color: transparent; color: green; border-color: green;" ng-click="submit()" ng-disabled="newUserForm.$invalid">確定</button>
                     <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">取消</button>
                 </div>
@@ -147,6 +148,11 @@
         $scope.showresource = function() {
             $window.location.href = "/adminAlbum.html";
         }
+        $scope.autoCheck = function() {
+            var reg = /[^a-zA-Z0-9\u4E00-\u9FCC]/g;
+            $scope.newuser.username = $scope.newuser.username.replace(reg, "");
+            $scope.newuser.password = $scope.newuser.password.replace(reg, "");
+        }
         $scope.selectUser = function(user) {
             $window.location.href = '/profile.html?' + user._id;
         }
@@ -168,7 +174,7 @@
             $scope.deleteActivity = user;
         }
         const check_valid = function(stringInput) {
-            var pattern = /^[a-zA-Z0-9]*$/;
+            var pattern = /^[a-zA-Z0-9\u4E00-\u9FCC]*$/;
             if (stringInput.match(pattern) != null && stringInput.length != 0) {
                 return true;
             }
@@ -188,7 +194,7 @@
             });
         }
         $scope.submit = function() {
-            // console.log('click submit');
+            console.log('click submit');
             if (check_valid($scope.newuser.username) && check_valid($scope.newuser.password)) {
                 $http.post('/users', {
                     type: 'user',
@@ -196,7 +202,7 @@
                     email: $scope.newuser.email,
                     password: $scope.newuser.password
                 }).then(function submitSuccess(response) {
-                    // console.log(response);
+                    console.log(response);
                     if (response.data.feedback.feedback === 'Success') {
                         $window.location.reload();
                     }
