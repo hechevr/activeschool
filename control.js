@@ -57,7 +57,7 @@ exports.send_email = function(address) {
 }
 exports.check_validation = function(type, string) {
     if (type === 'user') {
-        var res = string.match(/[A-Z0-9\u4E00-\u9FCC]{3,10}/i);
+        var res = string.match(/[A-Z0-9\u4E00-\u9FCC]{3,20}/i);
         if (res && res[0] === string) {
             return true;
         }
