@@ -27,9 +27,9 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">下载</a>
                         <ul class="dropdown-menu">
-                            <li><a href="#" ng-click="download(1)">申請表</a></li>
-                            <li><a href="#" ng-click="download(2)">動感校園報名信</a></li>
-                            <li><a href="#" ng-click="download(3)">約章</a></li>
+                            <li><a href="#" ng-click="download(1)" ng-bind="activedownload[0]"></a></li>
+                            <li><a href="#" ng-click="download(2)" ng-bind="activedownload[1]"></a></li>
+                            <li><a href="#" ng-click="download(3)" ng-bind="activedownload[2]"></a></li>
                         </ul>
                     </li>
                     <li><a href="/album.html">相冊</a></li>
@@ -122,6 +122,17 @@
     app.controller("itemlistController", function($scope, $http, $window, $cookies){
         var uid = location.search.substring(1);
         $scope.itemlist = [];
+        $http.get('/title').then(function(response) {
+            // console.log(response);
+            if (response.data.feedback === 'Success') {
+                $scope.activetitle = response.data.value;
+                $scope.activenumber = response.data.number;
+                $scope.activedownload = response.data.download.split(',');
+            }
+            else {
+                $scope.activetitle = "";
+            }
+        });
         $http.post("/admin/user/detail/"+uid, [])
         .then(function(response) {
             if (response.data.feedback === 'Failure' || response.data.data === null) {

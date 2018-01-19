@@ -62,6 +62,8 @@
                     <input style="color:Black" ng-model="activetitle">
                     <h2>Set selection limit</h2>
                     <input type="number" ng-model="activenumber">
+                    <h2>Set download title</h2>
+                    <input ng-model="activedownload">
                     <p ng-show="showerror" style="color:red">無效的輸入</p>
                     <button class="btn btn-sm" style="background-color: transparent; border-color: black;" ng-click="titleupdate(item)">確定</button>
                 </form>
@@ -120,6 +122,7 @@
             if (response.data.feedback === 'Success') {
                 $scope.activetitle = response.data.value;
                 $scope.activenumber = response.data.number;
+                $scope.activedownload = response.data.download;
             }
             else {
                 $scope.activetitle = "";
@@ -233,7 +236,7 @@
             }
         }
         $scope.titleupdate = function() {
-            $http.post('/title/update', {title: $scope.activetitle, number: $scope.activenumber}).then(function(response) {
+            $http.post('/title/update', {title: $scope.activetitle, number: $scope.activenumber, download: $scope.activedownload}).then(function(response) {
                 console.log(response);
                 if (response.data.feedback === 'Success') {
                     $window.location.reload();
