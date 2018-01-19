@@ -76,8 +76,8 @@ app.get('/title', function(req, res) {
         if (feedback.feedback === 'Failure') {
             return res.send({feedback: 'Failure', msg: 'Fail to get title'});
         }
-        console.log(feedback);
-        return res.send({feedback: 'Success', value: feedback.data.value});
+        // console.log(feedback);
+        return res.send({feedback: 'Success', value: feedback.data.value, number: feedback.data.number});
     });
 });
 
@@ -86,11 +86,12 @@ app.post('/title/update', function(req, res) {
         return res.send({feedback:'Failure', msg: 'Not valid user'});
     }
     if (!check_validation('title', req.body.title)) return res.send({feedback: 'Failure', msg: 'Wrong format'});
-    databaseIO.config.update({name: 'title'}, {value: req.body.title}, function(feedback) {
+    if (typeof(req.body.number) !== 'number') return res.send({feedback: 'Failure', msg: 'Wrong Format'});
+    databaseIO.config.update({name: 'title'}, {value: req.body.title, number: req.body.number}, function(feedback) {
         if (feedback.feedback === 'Failure') {
             return res.send({feedback:'Failure', msg: 'Fail to update title'});
         }
-        console.log(feedback);
+        // console.log(feedback);
         return res.send({feedback: 'Success'});
     });
 });

@@ -78,7 +78,7 @@ exports.config = {
                 callback({feedback: 'Failure', msg:'Fail to connect to mong'});
                 return;
             }
-            db.collection('config').updateOne(oldObj, {$set: {value: newObj.value}}, function(err, res) {
+            db.collection('config').updateOne(oldObj, {$set: {value: newObj.value, number: newObj.number}}, function(err, res) {
                 if (err) {
                     callback({feedback: 'Failure', msg: 'Fail to update obj'});
                     return;
