@@ -30,6 +30,7 @@
                             <li><a href="#" ng-click="download(1)" ng-bind="activedownload[0]"></a></li>
                             <li><a href="#" ng-click="download(2)" ng-bind="activedownload[1]"></a></li>
                             <li><a href="#" ng-click="download(3)" ng-bind="activedownload[2]"></a></li>
+                            <li><a href="#" ng-click="download(4)" ng-bind="activedownload[3]"></a></li>
                         </ul>
                     </li>
                     <li class="active"><a href="/album.html">相冊</a></li>
@@ -202,7 +203,10 @@ app.controller("itemlistController", function($scope, $http, $window, $cookies){
             $window.open("/resourcenew/letter.pdf");
         }
         else if (index == 3) {
-            $window.open("/resourcenew/info.pdf")
+            $window.open("/resourcenew/info.pdf");
+        }
+        else if (index == 4) {
+            $window.open("/resourcenew/timetable.pdf");
         }
     }
 });

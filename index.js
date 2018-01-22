@@ -530,7 +530,7 @@ app.post('/admin/photo/:pid', uploadImg.single('image'), function(req, res) {
 
 app.post('/admin/pdf/:pid', uploadPdf.single('pdf'), function(req, res) {
     var pid = req.params.pid;
-    if (pid !== 'application' && pid !== 'info' && pid !== 'letter') return res.send({feedback: 'Failure', msg: 'wrong pid'});
+    if (pid !== 'application' && pid !== 'info' && pid !== 'letter' && pid !== 'timetable') return res.send({feedback: 'Failure', msg: 'wrong pid'});
     var file = './Frontend/resourcenew/' + pid + '.pdf';
     fs.rename(req.file.path, file, function(err) {
         if (err) {

@@ -30,6 +30,7 @@
                             <li><a href="#" ng-click="download(1)" ng-bind="activedownload[0]"></a></li>
                             <li><a href="#" ng-click="download(2)" ng-bind="activedownload[1]"></a></li>
                             <li><a href="#" ng-click="download(3)" ng-bind="activedownload[2]"></a></li>
+                            <li><a href="#" ng-click="download(4)" ng-bind="activedownload[3]"></a></li>
                         </ul>
                     </li>
                     <li><a href="/album.html">相冊</a></li>
@@ -37,7 +38,7 @@
                 <div class="navbar-right">
                         <span ng-bind="selectedItem"></span>
                         <span>/</span>
-                        <span ng-bind="activenumber"></span>     
+                        <span ng-bind="activenumber"></span>
                     <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">登出</button>
                 </div>
             </div>
@@ -137,7 +138,7 @@
         $scope.comment = "";
         $scope.selectedItem = 0;
         $http.get('/title').then(function(response) {
-            // console.log(response);
+            console.log(response);
             if (response.data.feedback === 'Success') {
                 $scope.activetitle = response.data.value;
                 $scope.activenumber = response.data.number;
@@ -284,6 +285,9 @@
             }
             else if (index == 3) {
                 $window.open("/resourcenew/info.pdf")
+            }
+            else if (index == 4) {
+                $window.open("/resourcenew/timetable.pdf")
             }
         }
     })

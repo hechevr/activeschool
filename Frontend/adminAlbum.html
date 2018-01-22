@@ -95,12 +95,15 @@
             </div>
 
             <label>Upload new form</label>
+            <br>
             <label>Application</label>
             <input type="file" onchange="angular.element(this).scope().uploadPDF(this.files, 'application')">
             <label>Letter</label>
             <input type="file" onchange="angular.element(this).scope().uploadPDF(this.files, 'letter')">
             <label>Info</label>
             <input type="file" onchange="angular.element(this).scope().uploadPDF(this.files, 'info')">
+            <label>Timetable</label>
+            <input type="file" onchange="angular.element(this).scope().uploadPDF(this.files, 'timetable')"
         </div>
     </div>
 
