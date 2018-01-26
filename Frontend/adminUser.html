@@ -189,7 +189,7 @@
         }
         $scope.submit = function() {
             // console.log('click submit');
-            if (check_valid($scope.newuser.username) && check_valid($scope.newuser.password)) {
+            if (check_valid($scope.newuser.password)) {
                 $http.post('/users', {
                     type: 'user',
                     name: $scope.newuser.username,

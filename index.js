@@ -101,7 +101,8 @@ app.post('/users', function(req, res) {
     console.log('post user');
     console.log(req.body);
     if (!check_validation('user', req.body.name) || !check_validation('email', req.body.email) || !check_validation('password', req.body.password)) {
-        return res.send({feedback: 'Failure'});
+        res.send({feedback: 'Failure'});
+        return;
     }
     var newuser = {
         type: 'user',
@@ -112,6 +113,7 @@ app.post('/users', function(req, res) {
         date: new Date().toString(),
     };
     databaseIO.user.add(newuser, function(feedback) {
+        console.log(feedback);
         if (feedback.feedback === 'Success') {
             return res.send({feedback: feedback});
         }
