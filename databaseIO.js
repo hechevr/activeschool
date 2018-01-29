@@ -123,7 +123,7 @@ exports.user = {
                 callback({feedback:'Failure', msg: 'Fail to connect to mongo'});
                 return;
             }
-            db.collection('user').find({}).toArray(function(err, result) {
+            db.collection('user').find({}).sort({date: -1}).toArray(function(err, result) {
                 if (err) {
                     callback({feedback:'Failure', msg: 'Fail to get'});
                     return;
