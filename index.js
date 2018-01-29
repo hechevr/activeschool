@@ -110,7 +110,7 @@ app.post('/users', function(req, res) {
         email: req.body.email,
         password: req.body.password,
         status: "active",
-        date: new Date().toString(),
+        date: new Date().getTime().toString(),
     };
     databaseIO.user.add(newuser, function(feedback) {
         console.log(feedback);
@@ -289,7 +289,7 @@ app.post('/selection/:uid', function(req, res) {
             }
         });
     }
-    databaseIO.user.update({_id: mongo.ObjectID(uid)}, {comment: req.body.comment, status: "decline", date: new Date().toString()}, function(feedback) {
+    databaseIO.user.update({_id: mongo.ObjectID(uid)}, {comment: req.body.comment, status: "decline", date: new Date().getTime().toString()}, function(feedback) {
         if (feedback.feedback === 'Success') {
             if (req.body.email != undefined && req.body.email != null) {
                 send_email(req.body.email);
