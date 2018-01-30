@@ -87,7 +87,7 @@ exports.check_validation = function(type, string) {
         if (string.length === 0) {
             return true;
         }
-        var res = string.match(/[A-Z0-9:\-,.，。()（）/ \u4E00-\u9FCC]{0,300}/i);
+        var res = string.match(/[A-Z0-9:\-,.，。()（）/ \u4E00-\u9FCC]{0,500}/i);
         console.log(res);
         if (res && res[0] === string) {
             return true;

@@ -116,7 +116,7 @@
             </table>
 
             <div>
-                <textarea class="form-control" style="resize: none; width:100%" row="3" ng-model="comment" maxlength=300 ng-disabled="userstatus" special-char-directive></textarea>
+                <textarea class="form-control" style="resize: none; width:100%" row="3" ng-model="comment" maxlength=500 ng-disabled="userstatus" special-char-directive></textarea>
             </div>
             <br>
             <div>
@@ -294,7 +294,7 @@
     .directive('specialCharDirective', function() {
         function link(scope, elem, attrs, ngModel) {
             ngModel.$parsers.push(function(viewValue) {
-                var reg = /^[a-zA-Z0-9-:,.，。（） \u4E00-\u9FCC]*$/;
+                var reg = /^[a-zA-Z0-9-:,.，。()（）/ \u4E00-\u9FCC]*$/;
                 if (viewValue.match(reg)) {
                     return viewValue;
                 }
