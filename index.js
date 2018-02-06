@@ -98,6 +98,7 @@ app.post('/title/update', function(req, res) {
 
 
 app.post('/users', function(req, res) {
+    if (!check_admin(req, res)) return res.send({feedback: 'Failure'});
     console.log('post user');
     console.log(req.body);
     if (!check_validation('user', req.body.name) || !check_validation('email', req.body.email) || !check_validation('password', req.body.password)) {
@@ -110,7 +111,7 @@ app.post('/users', function(req, res) {
         email: req.body.email,
         password: req.body.password,
         status: "active",
-        date: new Date().getTime().toString(),
+        date: new Date().getTime(),
     };
     databaseIO.user.add(newuser, function(feedback) {
         console.log(feedback);
@@ -289,7 +290,7 @@ app.post('/selection/:uid', function(req, res) {
             }
         });
     }
-    databaseIO.user.update({_id: mongo.ObjectID(uid)}, {comment: req.body.comment, status: "decline", date: new Date().getTime().toString()}, function(feedback) {
+    databaseIO.user.update({_id: mongo.ObjectID(uid)}, {comment: req.body.comment, status: "decline", date: new Date().getTime()}, function(feedback) {
         if (feedback.feedback === 'Success') {
             if (req.body.email != undefined && req.body.email != null) {
                 send_email(req.body.email);
@@ -488,6 +489,7 @@ console.log(feedback);
 });
 */
 app.post('/admin/initialize', function(req, res) {
+    if (!check_admin(req, res)) return res.send({feedback: "Failure"});
     console.log('initialize');
     databaseIO.user.update({}, {comment: "", status:'active'}, function(feedback) {
         console.log(feedback);
@@ -513,7 +515,7 @@ app.post('/admin/initialize', function(req, res) {
 });
 
 app.post('/admin/photo/:pid', uploadImg.single('image'), function(req, res) {
-    // if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
     var pid = req.params.pid;
     var pidint = parseInt(pid);
     if (pidint === null) return res.send({feedback: 'Failure', msg: 'wrong pid'});
@@ -531,6 +533,7 @@ app.post('/admin/photo/:pid', uploadImg.single('image'), function(req, res) {
 });
 
 app.post('/admin/pdf/:pid', uploadPdf.single('pdf'), function(req, res) {
+    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
     var pid = req.params.pid;
     if (pid !== 'application' && pid !== 'info' && pid !== 'letter' && pid !== 'timetable') return res.send({feedback: 'Failure', msg: 'wrong pid'});
     var file = './Frontend/resourcenew/' + pid + '.pdf';
@@ -543,7 +546,11 @@ app.post('/admin/pdf/:pid', uploadPdf.single('pdf'), function(req, res) {
             return res.send({feedback: 'Success'});
         }
     })
-})
+});
+
+app.post('/test', function(req, res) {
+    return res.send({feedback: 'Hello World'});
+}); 
 
 
 
