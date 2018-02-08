@@ -150,7 +150,6 @@
         });
         $http.post("/itemlistdata", {})
         .then(function(response) {
-            // console.log(response);
             if (response.data.feedback === 'Failure') {
                 $window.location.href = '/login.html';
             }
@@ -158,16 +157,26 @@
             for (idx in $scope.itemlist) {
                 $scope.itemlist[idx].show = false;
                 for (t in $scope.itemlist[idx].time) {
-                    if ($scope.itemlist[idx].time[t].user === uid) {
+                    
+                    if ($scope.itemlist[idx].time[t].user === undefined || typeof($scope.itemlist[idx].time[t].user) == 'string') {
+                        $scope.itemlist[idx].time[t].user = [];
+                        $scope.itemlist[idx].time[t].show = true;
+                        $scope.itemlist[idx].time[t].checked = false;
+                    }
+                    if ($scope.itemlist[idx].time[t].user.indexOf(uid) >= 0) {
                         $scope.itemlist[idx].time[t].show = true;
                         $scope.itemlist[idx].time[t].checked = true;
                         $scope.selectedItem ++;
                     }
+                    /*
                     else if ($scope.itemlist[idx].time[t].user !== undefined && $scope.itemlist[idx].time[t].user != "") {
                         $scope.itemlist[idx].time[t].show = false;
                     }
+                    */
                     else {
                         $scope.itemlist[idx].time[t].show = true;
+                        $scope.itemlist[idx].time[t].checked = false;
+
                     }
                 }
                 if ($scope.itemlist[idx].options === 'NULL') {
@@ -192,7 +201,6 @@
                 if ($scope.selectedItem > $scope.activenumber) {
                     t.checked = false;
                     $scope.selectedItem --;
-                    console.log(t);
                 }
             }
             else {
@@ -210,12 +218,14 @@
                 var time = [];
                 var selected = false;
                 for (t in item.time) {
-                    if (item.time[t].checked && item.time[t].user !== uid) {
-                        item.time[t].user = uid;
+                    if (item.time[t].checked && !(item.time[t].user.indexOf(uid) >= 0)) {
+                        // item.time[t].user = uid;
+                        item.time[t].user.push(uid);
                         selected = true;
                     }
-                    else if (!item.time[t].checked && item.time[t].user === uid) {
-                        item.time[t].user = "";
+                    else if (!item.time[t].checked && (item.time[t].user.indexOf(uid) >= 0)) {
+                        var idx = item.time[t].user.indexOf(uid);
+                        item.time[t].user.splice(idx, 1);
                         selected = true;
                     }
                     time.push({value: item.time[t].value, user: item.time[t].user});
@@ -225,6 +235,9 @@
                 }
             }
             // console.log($scope.comment);
+            if ($scope.comment == undefined) {
+                $scopoe.comment = "";
+            }
             $http.post('/selection/'+uid, {items:items, comment: $scope.comment, email: $scope.email})
             .then(function(response) {
                 // console.log(response);
