@@ -100,11 +100,14 @@
                     <td ng-bind="item.date" style="max-width:120px"></td>
                     <td ng-bind="item.options" style="max-width:120px"></td>
                 </tr>
-                <tr ng-repeat-end ng-repeat="t in item.time" ng-show="item.show && item.showitem">
+                <tr ng-repeat-end ng-repeat="t in item.time" ng-show="item.show">
                     <td></td>
                     <td></td>
                     <td ng-bind="t.value"></td>
-                    <td colspan='7'><a href="#" ng-bind='t.user' ng-click="checkUser(t.user)"></a></td>
+                    <td><a href="#" ng-bind='t.usercount' ng-click="showSelectedItem(t)"></a></td>
+                    <td colspan='6'>
+                        <a href="#" ng-repeat="u in t.user" ng-bind="u" ng-show="t.showuser" ng-click="checkUser(u)"></a>
+                    </td>
                 </tr>
             </table>
             <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">返回</button>
@@ -139,12 +142,13 @@
                 $scope.itemlist[idx].show = false;
                 $scope.itemlist[idx].showitem = true;
                 for (t in $scope.itemlist[idx].time) {
-                    if ($scope.itemlist[idx].time[t].user !== undefined && $scope.itemlist[idx].time[t].user != "") {
-                        $scope.itemlist[idx].time[t].show = false;
+                    if ($scope.itemlist[idx].time[t].user == undefined) {
+                        $scope.itemlist[idx].time[t].user = [];
                     }
-                    else {
-                        $scope.itemlist[idx].time[t].show = true;
-                    }
+                    $scope.itemlist[idx].time[t].usercount = $scope.itemlist[idx].time[t].user.length;
+                    $scope.itemlist[idx].time[t].show = true;
+                    $scope.itemlist[idx].time[t].showuser = false;
+
                 }
             }
         });
@@ -169,6 +173,9 @@
                 $scope.itemlist[idx].show = false;
                 $scope.itemlist[idx].showitem = true;
             }
+        }
+        $scope.showSelectedItem = function(t) {
+            t.showuser = !t.showuser;
         }
         $scope.submit = function() {
             // console.log("click submit");

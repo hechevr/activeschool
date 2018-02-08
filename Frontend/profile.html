@@ -165,7 +165,10 @@
                     };
 
                     for (t in response.data.itemlist[idx].time) {
-                        if (response.data.itemlist[idx].time[t].user === uid) {
+                        if (response.data.itemlist[idx].time[t].user == undefined) {
+                            response.data.itemlist[idx].time[t].user = [];
+                        }
+                        if (response.data.itemlist[idx].time[t].user.indexOf(uid) >= 0) {
                             response.data.itemlist[idx].time[t].show = true;
                             hasUser = true;
                             item.time.push(response.data.itemlist[idx].time[t]);
