@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" >
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+    <link rel="stylesheet" href="css/form-elements.css">
+    <link rel="stylesheet" href="css/style-login.css">
+
+</head>
+<body style="background-image:url('image/background.jpg');background-repeat:no-repeat; background-size:cover;">
+    <div class="top-content" ng-app="userModel" ng-controller="myCtrl">
+        <div class="inner-bg">
+            <div class="container">
+                <div class="row">
+                    <div style="text-align:center; padding-top:150px">
+                        <h1  style="color:#555"><strong>動感校園</strong> 登錄</h1>
+                        <!--
+                        <div class="description">
+                        <p>香港精英运动员协会 動感校園</p>
+                    </div>-->
+                </div>
+            </div>
+            <div class="row">
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-3 form-box">
+                        <div class="form-top">
+                            <div class="form-top-left">
+                                <p>系統已關閉，請聯繫管理員</p>
+                            </div>
+                            <!--
+                            <div class="form-bottom-logo">
+                            <image src="/resource/eact_ico.jpg" width="100px"></image>
+                            <image src="/resource/hkjc_ico.png" width="100px"></image>
+                            <image src="/resource/hkeaa_ico.jpg" width="100px"></image>
+                        </div>
+                    -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</body>
+<script>
+var app = angular.module('userModel', ['ngCookies']);
+app.controller('myCtrl', function($scope, $http, $window, $cookies) {
+    $scope.failToLogin = false;
+    $scope.submit = function submit() {
+        // console.log('click submit');
+        $http.post('/users/login', {
+            type: 'user',
+            email: $scope.username,
+            password: $scope.password
+        }).then(function submitSuccess(response) {
+            // console.log(response);
+            if (response.data.feedback === 'Success') {
+                $window.location.href = '/';
+                $cookies.put('uid', response.data._id);
+            }
+            else {
+                $scope.failToLogin = true;
+            }
+        });
+    }
+    $scope.cancel = function cancel() {
+        // console.log('click cancel');
+        $scope.username = '';
+        $scope.password = '';
+    }
+})
+.directive('specialCharDirective', function() {
+    function link(scope, elem, attrs, ngModel) {
+        ngModel.$parsers.push(function(viewValue) {
+            var reg = /^[a-zA-Z0-9]*$/;
+            if (viewValue.match(reg)) {
+                return viewValue;
+            }
+            var transformedValue = ngModel.$modelValue;
+            ngModel.$setViewValue(transformedValue);
+            ngModel.$render();
+            return transformedValue;
+        });
+    }
+
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: link
+    };
+});
+
+</script>
+
+
+</html>

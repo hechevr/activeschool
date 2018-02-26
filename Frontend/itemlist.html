@@ -138,11 +138,24 @@
         $scope.comment = "";
         $scope.selectedItem = 0;
         $http.get('/title').then(function(response) {
-            console.log(response);
+            // console.log(response);
             if (response.data.feedback === 'Success') {
                 $scope.activetitle = response.data.value;
                 $scope.activenumber = response.data.number;
                 $scope.activedownload = response.data.download.split(',');
+                
+                if (response.data.status != undefined) {
+                    if (response.data.status !== true) {
+                        $http.post('/users/logout', {})
+                        .then(function logoutSuccess(response) {
+                            // console.log(response);
+                            $cookies.remove('uid');
+                            $window.location.href = "/warning.html"
+                        });
+                    }
+                }
+
+                
             }
             else {
                 $scope.activetitle = "";
