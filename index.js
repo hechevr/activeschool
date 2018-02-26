@@ -553,6 +553,64 @@ app.post('/test', function(req, res) {
     return res.send({feedback: 'Hello World'});
 }); 
 
+app.get("/admin/data", function(req, res) {
+
+    databaseIO.item.get('all', function(response) {
+
+        if (response.feedback == 'Success') {
+            databaseIO.user.get(function(resp) {
+                if (resp.feedback == 'Success') {
+                    var dataTB = JSON.stringify(response.data);
+                    
+                    for (u in resp.data) {
+                        var us = resp.data[u];
+                        dataTB = dataTB.replace(us._id.toString(), us.name);
+                    }
+
+                    var dataTBJSON = JSON.parse(dataTB);
+                    var dataTable = [];
+                    for (i in dataTBJSON) {
+                        var item = dataTBJSON[i];
+
+                        for (t in item.time) {
+
+                            var timeslat = item.time[t];
+
+                            if (timeslat.user != undefined && timeslat.user.length > 0) {
+                                dataTable.push({'activity': item.activity, 'time': timeslat.value, 'user': timeslat.user.toString()});
+                            }
+                        }
+                        
+                    }
+
+                    var json2csv = require('json2csv');
+                    var fields = ['activity', 'time', 'user'];
+                    var fieldNames = ['Activity name', 'Time', 'User'];
+
+                    const csv = json2csv.parse(dataTable, {fields});
+                      
+                    /*
+                    fs.writeFile('file.csv', '\ufeff' + csv, 'utf8', function(err) {
+                        if (err) console.log(err);
+                        console.log('file saved');
+                    });
+                    */
+                    
+                    res.attachment('file.csv');
+                    return res.send('\ufeff' + csv);
+                }
+                else {
+                    return res.send({feedback:"Failure"});
+                }
+            })
+        }
+        else {
+            return res.send({feedback:"Failure"});
+        }
+        
+    })
+})
+
 
 
 app.use(express.static('Frontend'));
