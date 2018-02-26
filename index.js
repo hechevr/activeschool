@@ -555,6 +555,7 @@ app.post('/test', function(req, res) {
 
 app.get("/admin/data", function(req, res) {
 
+    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
     databaseIO.item.get('all', function(response) {
 
         if (response.feedback == 'Success') {
