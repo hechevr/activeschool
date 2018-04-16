@@ -1,0 +1,1 @@
+{ "options" : { "create" : "config" }, "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "ns" : "test.config", "name" : "_id_" } ] }
