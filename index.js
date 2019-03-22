@@ -14,7 +14,7 @@ app.use(bodyParser());
 app.use(cookieParser('secret'));
 app.use(session());
 
-var port = 80;
+var port = 8080;
 
 var databaseIO = require('./databaseIO');
 var check_login = require('./control.js').check_login;
