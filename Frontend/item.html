@@ -56,6 +56,7 @@ h1 {
                     <label>活動課程</label>
                     <input class="form-control" ng-model='itemactivity' special-char-directive required/>
                 </div>
+                <!--
                 <div class="form-group">
                     <label>對象</label>
                     <input class="form-control" ng-model='itemtarget' special-char-directive required/>
@@ -92,6 +93,8 @@ h1 {
                     <label>備註</label>
                     <input class="form-control" ng-model='itemoptions' special-char-directive required/>
                 </div>
+                -->
+
                 <div class="form-group">
                     <button type="submit" class="btn btn-success" ng-click='submit()' ng-disabled="itemform.$invalid">提交</button>
                     <button class="btn btn-default" ng-click='cancel()'>取消</button>
@@ -118,22 +121,17 @@ h1 {
         };
 
         $scope.submit = function() {
-            var itemtime = [];
-            for (time in $scope.times) {
-                if ($scope.times[time].value !== "") {
-                    itemtime.push({value: $scope.times[time].value});
-                }
-            }
             $http.post('/items', {
                 organization: $scope.itemorgan,
                 No: $scope.itemno,
                 activity: $scope.itemactivity,
-                target: $scope.itemtarget,
-                maxteacher: $scope.itemmaxteacher,
-                ratio: $scope.itemratio,
-                date: $scope.itemdate,
-                time: itemtime,
-                options: $scope.itemoptions
+                target: "",
+                maxteacher: "",
+                ratio: "",
+                date: "",
+                time: "",
+                options: "",
+                data: []
             }).then(function(response) {
                 // console.log(response);
                 if(response.data.feedback.feedback === "Success") {

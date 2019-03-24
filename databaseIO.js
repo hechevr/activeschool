@@ -2,6 +2,7 @@ var mongoClient = require('mongodb').MongoClient;
 var config = require('config');
 
 var url = config.get("mongo.address");
+// var url = "mongodb+srv://hechevr:3959369@activeschool-itwoi.mongodb.net/test?retryWrites=true";
 
 exports.DB = {
     initialize: function(callback) {
@@ -458,6 +459,28 @@ exports.item = {
         });
     },
 
+        // update item info
+        updateselection: function(objOld, objNew, callback) {
+            mongoClient.connect(url, function(err, db) {
+                if (err) {
+                    callback({feedback: 'Failure', msg: 'Fail to connect to database'});
+                    return;
+                }
+                console.log(objOld);
+                console.log(objNew);
+                db.collection('item').updateMany(objOld, {$set: {data: objNew.data}}, function(err, res) {
+                    if (err) {
+                        callback({feedback: 'Failure', msg: 'Fail to update data'});
+                        return;
+                    }
+                    console.log('update item');
+                    db.close();
+                    callback({feedback: 'Success'});
+                    return;
+                });
+            });
+        },
+
     updateStatus: function(objOld, objNew, callback) {
         mongoClient.connect(url, function(err, db) {
             if (err) {
@@ -495,6 +518,7 @@ exports.item = {
                     ratio: objNew.ratio,
                     date: objNew.date,
                     time: objNew.time,
+                    data: objNew.data,
                     options: objNew.options}}, function(err, res) {
                         if (err) {
                             callback({feedback: 'Failure', msg: 'Fail to update data'});

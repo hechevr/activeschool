@@ -4,6 +4,7 @@
   "description": "activeschool project",
   "main": "index.js",
   "dependencies": {
+    "angularjs-datepicker": "^2.1.23",
     "config": "^1.28.1",
     "express": "4.16.2",
     "json2csv": "^4.0.0-alpha.0",

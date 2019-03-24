@@ -222,7 +222,7 @@ app.post('/users/login', function(req, res) {
     }
     databaseIO.user.getOne(condition, function(feedback) {
         console.log(feedback);
-        if (feedback.feedback !== 'Success') return res.send({feedback: 'Failure 1', msg: 'Fail to login'});
+        if (feedback.feedback !== 'Success') return res.send({feedback: 'Failure 1', msg: 'Fail to log`in`'});
         if (!feedback.data) return res.send({feedback: 'Failure 2', msg: 'Fail to login'});
         req.session.uid = feedback.data._id;
         return res.send({feedback: 'Success', _id: feedback.data._id});
@@ -305,13 +305,44 @@ app.post('/selection/:uid', function(req, res) {
 
 });
 
+app.post('/updateselection/:uid', function(req, res) {
+    if (!check_login(req, res)) return res.send({feedback:'Failure', msg:'Fail to Login'});
+    var items = req.body.items;
+    var uid = req.params.uid;
+    console.log(req.body);
+    if (req.session.uid !== uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+    if (!check_validation('item', req.body.comment)) return res.send({feedback: 'Failure', msg:'Not valid number'});
+    for (idx in items) {
+        var updateditem = {
+            _id: mongo.ObjectID(items[idx]._id)
+        };
+        databaseIO.item.updateselection(updateditem, {data: items[idx].data}, function(feedback) {
+            if (feedback.feedback === 'Failure') {
+                return res.send({feedback: 'Failure', msg: 'Fail to update item'});
+            }
+        });
+    }
+    databaseIO.user.update({_id: mongo.ObjectID(uid)}, {comment: req.body.comment, status: "decline", date: new Date().getTime()}, function(feedback) {
+        if (feedback.feedback === 'Success') {
+            if (req.body.email != undefined && req.body.email != null) {
+                send_email(req.body.email);
+            }
+            return res.send({feedback: 'Success'});
+        }
+        else {
+            return res.send({feedback: 'Failure'});
+        }
+    });
+
+});
+
 app.post('/comment/:uid', function(req, res) {
     if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Not Logged in'});
     var uid = req.params.uid;
     if (!check_id(uid)) return res.send({feedback: 'Failure', msg: 'Wrong id'});
     databaseIO.user.getOne({_id: mongo.ObjectID(uid)}, function(feedback) {
         if (feedback.feedback === 'Success') {
-            // console.log(feedback);
+            console.log(feedback);
             return res.send({feedback: 'Success', comment: feedback.data.comment, status: feedback.data.status, email:feedback.data.email});
         }
         else {
@@ -401,7 +432,8 @@ app.post('/admin/item/update/:iid', function(req, res) {
         ratio: req.body.ratio,
         date: req.body.date,
         time: req.body.time,
-        options: req.body.options
+        options: req.body.options,
+        data: req.body.data
     };
     databaseIO.item.updateAll(updateditem, newitem, function(feedback) {
         if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure', msg: 'Fail to update item'});
@@ -565,14 +597,51 @@ app.get("/admin/data", function(req, res) {
                     
                     for (u in resp.data) {
                         var us = resp.data[u];
-                        dataTB = dataTB.replace(us._id.toString(), us.name);
+                        dataTB = dataTB.split(us._id.toString()).join(us.name);
                     }
 
                     var dataTBJSON = JSON.parse(dataTB);
                     var dataTable = [];
                     for (i in dataTBJSON) {
                         var item = dataTBJSON[i];
+                        var organization = item.organization;
+                        var No = item.No;
+                        var activity = item.activity;
+                        dataTable.push({                                
+                            "organization": organization,
+                            "No.": No,
+                            "activity": activity,
+                            "target": "",
+                            "Teacher Number": "",
+                            "ratio": "",
+                            "date": "",
+                            "time": "",
+                            "options": "",
+                            "user": "",
+                        });
+                        for (t in item.data) {
+                            var target = item.data[t].target;
+                            var maxteacher = item.data[t].maxteacher;
+                            var ratio = item.data[t].ratio;
+                            var date = item.data[t].date;
+                            var time = item.data[t].time;
+                            var options = item.data[t].options;
+                            var user = item.data[t].user;
+                            dataTable.push({
+                                "organization": "",
+                                "No.": "",
+                                "activity": "",
+                                "target": target,
+                                "Teacher Number": maxteacher,
+                                "ratio": ratio,
+                                "date": date,
+                                "time": time,
+                                "options": options,
+                                "user": user,
+                            });
+                        }
 
+                        /*
                         for (t in item.time) {
 
                             var timeslat = item.time[t];
@@ -581,22 +650,16 @@ app.get("/admin/data", function(req, res) {
                                 dataTable.push({'activity': item.activity, 'time': timeslat.value, 'user': timeslat.user.toString()});
                             }
                         }
+                        */
                         
                     }
 
                     var json2csv = require('json2csv');
-                    var fields = ['activity', 'time', 'user'];
-                    var fieldNames = ['Activity name', 'Time', 'User'];
+                    var fields = ['organization', 'No.', 'activity', "target", "Teacher Number", "ratio", "date", "time", "options", "user"];
+                    var fieldNames = ['活動組織', 'No.', '活動課程', "對象", "導師人數上限", "師生比例學生人數上限", "日期", "備註", "Time", "用戶"];
 
                     const csv = json2csv.parse(dataTable, {fields});
-                      
-                    /*
-                    fs.writeFile('file.csv', '\ufeff' + csv, 'utf8', function(err) {
-                        if (err) console.log(err);
-                        console.log('file saved');
-                    });
-                    */
-                    
+                
                     res.attachment('file.csv');
                     return res.send('\ufeff' + csv);
                 }

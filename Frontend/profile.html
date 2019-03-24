@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Activity</title>
@@ -13,30 +14,52 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
 
+    <!-- Bootstrap Date-Picker Plugin -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"
+    />
+
 </head>
 
 <body>
     <div ng-app="userModel" ng-controller="itemlistController">
         <nav class="navbar navbar-inverse bg-inverse navbar-fixed-top">
             <div class="container-fluid">
-                <div class="navbar-header"><a class="navbar-brand" href="#">動感校園</a></div>
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">動感校園</a>
+                </div>
                 <ul class="nav navbar-nav">
-                    <li><a href="#" ng-click="showItemlist()">項目列表</a></li>
-                    <li class="active"><a href="#" ng-click="showProfile()">已選項目</a></li>
+                    <li>
+                        <a href="#" ng-click="showItemlist()">項目列表</a>
+                    </li>
+                    <li class="active">
+                        <a href="#" ng-click="showProfile()">已選項目</a>
+                    </li>
                     <!--<li><a href="#" ng-click="oldprofile={name:user.name};newprofile={};" data-toggle="modal" data-target="#myModal">更新信息</a></li>-->
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">下载</a>
                         <ul class="dropdown-menu">
-                            <li><a href="#" ng-click="download(1)" ng-bind="activedownload[0]"></a></li>
-                            <li><a href="#" ng-click="download(2)" ng-bind="activedownload[1]"></a></li>
-                            <li><a href="#" ng-click="download(3)" ng-bind="activedownload[2]"></a></li>
-                            <li><a href="#" ng-click="download(4)" ng-bind="activedownload[3]"></a></li>
+                            <li>
+                                <a href="#" ng-click="download(1)" ng-bind="activedownload[0]"></a>
+                            </li>
+                            <li>
+                                <a href="#" ng-click="download(2)" ng-bind="activedownload[1]"></a>
+                            </li>
+                            <li>
+                                <a href="#" ng-click="download(3)" ng-bind="activedownload[2]"></a>
+                            </li>
+                            <li>
+                                <a href="#" ng-click="download(4)" ng-bind="activedownload[3]"></a>
+                            </li>
                         </ul>
                     </li>
-                    <li><a href="/album.html">相冊</a></li>
+                    <li>
+                        <a href="/album.html">相冊</a>
+                    </li>
                 </ul>
                 <div class="navbar-right">
-                    <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="Logout()">登出</button>
+                    <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc"
+                        ng-click="Logout()">登出</button>
                 </div>
             </div>
         </nav>
@@ -80,197 +103,296 @@
             </div>
         </div>
         -->
-        <div style="margin-top:100px; width:100%">
+        <div style="margin-top:100px; width:100%" class="container-fluid">
             <h1 style="font-weight:700" ng-bind="user.name"></h1>
 
 
-            <table class="table table-bordered">
+            <table style="table-layout:fixed; border-collapse: separate; border: none; background: transparent;" class="table table-dark">
+                <col width="40px">
+                <col width="40px">
+                <col width="40px">
+                <col width="40px">
+                <col width="40px">
+                <col width="40px">
+                <col width="40px">
+                <col width="40px">
+                <col width="40px">
+
                 <thead class="thead thead-inverse">
                     <tr>
-                        <th>活動組織</th>
-                        <th>No.</th>
-                        <th>活動課程</th>
-                        <th>對象</th>
-                        <th>導師人數上限</th>
-                        <th>師生比例:學生人數上限</th>
-                        <th>日期</th>
-                        <th>備註</th>
+                        <th align="center" style="border-top-left-radius: 20px;">活動組織</th>
+                        <th align="center">No.</th>
+                        <th align="center">活動課程</th>
+                        <th align="center" colspan="6" style="border-top-right-radius: 20px;">
+                            <table class="table" style="border:none; table-layout:fixed; background: transparent;" cellspacing="0" cellpadding="0">
+                                <col width="40px">
+                                <col width="40px">
+                                <col width="40px">
+                                <col width="40px">
+                                <col width="40px">
+                                <col width="40px">
+                                <tr style="border:none;">
+                                    <td align="left" style="border:none;">對象</td>
+                                    <td align="left" style="border:none;">導師
+                                        <br>人數上限</td>
+                                    <td align="left" style="border:none;">師生比例
+                                        <br>學生人數上限</td>
+                                    <td align="left" style="border:none;">日期</td>
+                                    <td align="left" style="border:none;">備註</td>
+                                    <td align="left" style="border:none;">Time</td>
+                                </tr>
+                            </table>
+                        </th>
                     </tr>
                 </thead>
+                <tr class="table-active" ng-repeat="item in itemlist">
 
-                <tr class="table-active" ng-repeat-start="item in itemlist">
                     <td ng-bind="item.organization"></td>
                     <td ng-bind="item.No"></td>
-                    <td ng-bind="item.activity"></td>
-                    <td ng-bind="item.target"></td>
-                    <td ng-bind="item.maxteacher"></td>
-                    <td ng-bind="item.ratio"></td>
-                    <td ng-bind="item.date"></td>
-                    <td ng-bind="item.options"></td>
+                    <td>
+                        <div>
+                            <span style="float:left;" ng-bind="item.activity"></span>
+                        </div>
+                    </td>
+                    <td colspan="6">
+                        <table class="table borderless" style="border:none; table-layout:fixed; background: transparent;" cellspacing="0" cellpadding="0">
+                            <col width="40px">
+                            <col width="40px">
+                            <col width="40px">
+                            <col width="40px">
+                            <col width="40px">
+                            <col width="40px">
+                            <tr ng-repeat="t in item.data" style="border:none;">
+                                <td style="border:none;">
+                                    <span ng-bind="t.target"></span>
+                                </td>
+                                <td style="border:none;">
+                                    <span ng-bind="t.maxteacher"></span>
+
+                                </td>
+                                <td style="border:none;">
+                                    <span ng-bind="t.ratio"></span>
+                                </td>
+                                <td style="border:none;">
+                                    <div>
+                                        <span ng-bind="t.date" style="float: left"></span>
+                                    </div>
+                                </td>
+                                <td style="border:none;">
+                                    <span ng-bind="t.options">
+                                    </span>
+                                </td>
+                                <td style="border:none;">
+                                    <div>
+                                        <span ng-bind="t.timestart"></span>
+                                        <span>-</span>
+                                        <span ng-bind="t.timeend"></span>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
-                <tr ng-repeat-end ng-repeat="t in item.time">
-                    <td ng-bind="t.value" colspan='8'></td>
-                </tr>
+
+
             </table>
             <textarea style="resize: none; width:100%" row="3" ng-bind="user.comment" readonly></textarea>
             <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">返回</button>
+
         </div>
     </div>
     <script src='http://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js'></script>
 
     <script>
-    var app = angular.module("userModel", ['ngCookies']);
-    app.controller("itemlistController", function($scope, $http, $window, $cookies){
-        var uid = location.search.substring(1);
-        $scope.itemlist = [];
-        $http.get('/title').then(function(response) {
-            // console.log(response);
-            if (response.data.feedback === 'Success') {
-                $scope.activetitle = response.data.value;
-                $scope.activenumber = response.data.number;
-                $scope.activedownload = response.data.download.split(',');
-
-                if (response.data.status != undefined) {
-                    if (response.data.status !== true) {
-                        $http.post('/users/logout', {})
-                        .then(function logoutSuccess(response) {
-                            // console.log(response);
-                            $cookies.remove('uid');
-                            $window.location.href = "/warning.html"
-                        });
-                    }
-                }
-            }
-            else {
-                $scope.activetitle = "";
-            }
-        });
-        $http.post("/admin/user/detail/"+uid, [])
-        .then(function(response) {
-            if (response.data.feedback === 'Failure' || response.data.data === null) {
-                $window.location.href = '/login.html';
-            }
-            // console.log(response);
-            $scope.user = response.data.data;
-
-            $http.post("/itemlistdata", {})
-            .then(function(response) {
-                if (response.data.feedback === 'Failure') {
-                    $window.location.href = '/login.html';
-                }
+        var app = angular.module("userModel", ['ngCookies']);
+        app.controller("itemlistController", function ($scope, $http, $window, $cookies) {
+            var uid = location.search.substring(1);
+            $scope.itemlist = [];
+            console.log($scope.itemlist);
+            $http.get('/title').then(function (response) {
                 // console.log(response);
-                for (idx in response.data.itemlist) {
-                    response.data.itemlist[idx].show = false;
-                    var hasUser = false;
+                if (response.data.feedback === 'Success') {
+                    $scope.activetitle = response.data.value;
+                    $scope.activenumber = response.data.number;
+                    $scope.activedownload = response.data.download.split(',');
 
-                    var item = {
-                        organization: response.data.itemlist[idx].organization,
-                        No: response.data.itemlist[idx].No,
-                        activity: response.data.itemlist[idx].activity,
-                        target: response.data.itemlist[idx].target,
-                        maxteacher: response.data.itemlist[idx].maxteacher,
-                        ratio: response.data.itemlist[idx].ratio,
-                        date: response.data.itemlist[idx].date,
-                        options: response.data.itemlist[idx].options,
-                        time:[]
-                    };
-
-                    for (t in response.data.itemlist[idx].time) {
-                        if (response.data.itemlist[idx].time[t].user == undefined) {
-                            response.data.itemlist[idx].time[t].user = [];
-                        }
-                        if (response.data.itemlist[idx].time[t].user.indexOf(uid) >= 0) {
-                            response.data.itemlist[idx].time[t].show = true;
-                            hasUser = true;
-                            item.time.push(response.data.itemlist[idx].time[t]);
+                    if (response.data.status != undefined) {
+                        if (response.data.status !== true) {
+                            $http.post('/users/logout', {})
+                                .then(function logoutSuccess(response) {
+                                    // console.log(response);
+                                    $cookies.remove('uid');
+                                    $window.location.href = "/warning.html"
+                                });
                         }
                     }
-                    if (hasUser) {
-                        $scope.itemlist.push(item);
-                    }
+                }
+                else {
+                    $scope.activetitle = "";
                 }
             });
-        });
-        $scope.download = function(index) {
-            if (index === 1) {
-                $window.open("/resourcenew/application.pdf");
-            }
-            else if (index == 2) {
-                $window.open("/resourcenew/letter.pdf");
-            }
-            else if (index == 3) {
-                $window.open("/resourcenew/info.pdf")
-            }
-            else if (index == 4) {
-                $window.open("/resourcenew/timetable.pdf")
-            }
-        }
-
-        $scope.cancel = function() {
-            $window.history.back();
-        }
-        $scope.showProfile = function() {
-            $window.location.href = "/profile.html?"+uid;
-        }
-        $scope.showItemlist = function() {
-            $window.location.href = "/itemlist.html";
-        }
-        /*
-        $scope.updateprofile = function() {
-            if ($scope.oldprofile.email != undefined && $scope.oldprofile.password != undefined && $scope.newprofile.email != undefined && $scope.newprofile.password != undefined) {
-                $http.post("/users/update/"+uid, {oldprofile:$scope.oldprofile, newprofile:$scope.newprofile})
-                .then(function(response) {
-                    // console.log(response);
-                    if (response.data.feedback === 'Success') {
-                        $window.location.reload();
+            $http.post("/admin/user/detail/" + uid, [])
+                .then(function (response) {
+                    if (response.data.feedback === 'Failure' || response.data.data === null) {
+                        $window.location.href = '/login.html';
                     }
-                    else {
-                        $scope.showerror = true;
-                        if (response.data.msg != undefined) {
-                            $scope.errormsg = response.data.msg;
+                    // console.log(response);
+                    $scope.user = response.data.data;
+
+                    $http.post("/itemlistdata", {})
+                        .then(function (response) {
+                            if (response.data.feedback === 'Failure') {
+                                $window.location.href = '/login.html';
+                            }
+                            console.log(response);
+                            for (idx in response.data.itemlist) {
+
+                                var hasUser = false;
+                                for (i in response.data.itemlist[idx].data) {
+                                    if (response.data.itemlist[idx].data[i].user === uid) {
+                                        hasUser = true;
+                                    }
+                                }
+                                if (hasUser == true) {
+                                    var item = {
+                                        organization: response.data.itemlist[idx].organization,
+                                        No: response.data.itemlist[idx].No,
+                                        activity: response.data.itemlist[idx].activity,
+                                        data: [],
+                                    };
+                                    for (i in response.data.itemlist[idx].data) {
+                                        if (response.data.itemlist[idx].data[i].user == uid) {
+                                            item.data.push(response.data.itemlist[idx].data[i]);
+                                        }
+                                    }
+                                    $scope.itemlist.push(item);
+
+                                }
+                            }
+                        });
+
+                    /*
+                    $http.post("/itemlistdata", {})
+                    .then(function(response) {
+                        if (response.data.feedback === 'Failure') {
+                            $window.location.href = '/login.html';
+                        }
+                        // console.log(response);
+                        for (idx in response.data.itemlist) {
+                            response.data.itemlist[idx].show = false;
+                            var hasUser = false;
+        
+                            var item = {
+                                organization: response.data.itemlist[idx].organization,
+                                No: response.data.itemlist[idx].No,
+                                activity: response.data.itemlist[idx].activity,
+                                target: response.data.itemlist[idx].target,
+                                maxteacher: response.data.itemlist[idx].maxteacher,
+                                ratio: response.data.itemlist[idx].ratio,
+                                date: response.data.itemlist[idx].date,
+                                options: response.data.itemlist[idx].options,
+                                time:[]
+                            };
+        
+                            for (t in response.data.itemlist[idx].time) {
+                                if (response.data.itemlist[idx].time[t].user == undefined) {
+                                    response.data.itemlist[idx].time[t].user = [];
+                                }
+                                if (response.data.itemlist[idx].time[t].user.indexOf(uid) >= 0) {
+                                    response.data.itemlist[idx].time[t].show = true;
+                                    hasUser = true;
+                                    item.time.push(response.data.itemlist[idx].time[t]);
+                                }
+                            }
+                            if (hasUser) {
+                                $scope.itemlist.push(item);
+                            }
+                        }
+                    });
+                    */
+                });
+            $scope.download = function (index) {
+                if (index === 1) {
+                    $window.open("/resourcenew/application.pdf");
+                }
+                else if (index == 2) {
+                    $window.open("/resourcenew/letter.pdf");
+                }
+                else if (index == 3) {
+                    $window.open("/resourcenew/info.pdf")
+                }
+                else if (index == 4) {
+                    $window.open("/resourcenew/timetable.pdf")
+                }
+            }
+
+            $scope.cancel = function () {
+                $window.history.back();
+            }
+            $scope.showProfile = function () {
+                $window.location.href = "/profile.html?" + uid;
+            }
+            $scope.showItemlist = function () {
+                $window.location.href = "/itemlist.html";
+            }
+            /*
+            $scope.updateprofile = function() {
+                if ($scope.oldprofile.email != undefined && $scope.oldprofile.password != undefined && $scope.newprofile.email != undefined && $scope.newprofile.password != undefined) {
+                    $http.post("/users/update/"+uid, {oldprofile:$scope.oldprofile, newprofile:$scope.newprofile})
+                    .then(function(response) {
+                        // console.log(response);
+                        if (response.data.feedback === 'Success') {
+                            $window.location.reload();
                         }
                         else {
-                            $scope.errormsg = "error";
+                            $scope.showerror = true;
+                            if (response.data.msg != undefined) {
+                                $scope.errormsg = response.data.msg;
+                            }
+                            else {
+                                $scope.errormsg = "error";
+                            }
                         }
-                    }
-                })
-            }
-            else {
-                $scope.showerror = true;
-                $scope.errormsg = "Invalid Input";
-            }
-        }
-        */
-        $scope.Logout = function() {
-            $http.post('/users/logout', {})
-            .then(function logoutSuccess(response) {
-                // console.log(response);
-                $cookies.remove('uid');
-                $window.location.href = '/';
-            });
-        };
-    })
-    .directive('specialCharDirective', function() {
-        function link(scope, elem, attrs, ngModel) {
-            ngModel.$parsers.push(function(viewValue) {
-                var reg = /^[a-zA-Z0-9]*$/;
-                if (viewValue.match(reg)) {
-                    return viewValue;
+                    })
                 }
-                var transformedValue = ngModel.$modelValue;
-                ngModel.$setViewValue(transformedValue);
-                ngModel.$render();
-                return transformedValue;
-            });
-        }
+                else {
+                    $scope.showerror = true;
+                    $scope.errormsg = "Invalid Input";
+                }
+            }
+            */
+            $scope.Logout = function () {
+                $http.post('/users/logout', {})
+                    .then(function logoutSuccess(response) {
+                        // console.log(response);
+                        $cookies.remove('uid');
+                        $window.location.href = '/';
+                    });
+            };
+        })
+            .directive('specialCharDirective', function () {
+                function link(scope, elem, attrs, ngModel) {
+                    ngModel.$parsers.push(function (viewValue) {
+                        var reg = /^[a-zA-Z0-9]*$/;
+                        if (viewValue.match(reg)) {
+                            return viewValue;
+                        }
+                        var transformedValue = ngModel.$modelValue;
+                        ngModel.$setViewValue(transformedValue);
+                        ngModel.$render();
+                        return transformedValue;
+                    });
+                }
 
-        return {
-            restrict: 'A',
-            require: 'ngModel',
-            link: link
-        };
-    });
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: link
+                };
+            });
     </script>
 
 </body>
+
 </html>
