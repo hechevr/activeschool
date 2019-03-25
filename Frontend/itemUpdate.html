@@ -78,6 +78,9 @@
 
                 <div class="card" ng-repeat="t in data">
                     <div style="margin:10px">
+                        <button ng-click="delete(t)" style="float:right; border:none;background:transparent;">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
                         <button ng-click="link(t)" style="border:none; background:transparent;">
                             <h3 style="color:steelblue" ng-bind="t.user">
                             </h3>
@@ -230,6 +233,13 @@
             };
             $scope.cancel = function () {
                 $window.location.href = '/admin.html';
+            };
+            $scope.delete = function(t) {
+                var index = $scope.data.indexOf(t);
+                if (index > -1) {
+                    $scope.data.splice(index, 1);
+                }
+
             }
         })
             .directive('specialCharDirective', function () {
