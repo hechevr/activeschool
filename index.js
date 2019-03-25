@@ -608,16 +608,16 @@ app.get("/admin/data", function(req, res) {
                         var No = item.No;
                         var activity = item.activity;
                         dataTable.push({                                
-                            "organization": organization,
+                            "活動組織": organization,
                             "No.": No,
-                            "activity": activity,
-                            "target": "",
-                            "Teacher Number": "",
-                            "ratio": "",
-                            "date": "",
-                            "time": "",
-                            "options": "",
-                            "user": "",
+                            "活動課程": activity,
+                            "對象": "",
+                            "導師人數上限": "",
+                            "師生比例學生人數上限": "",
+                            "日期": "",
+                            "時間": "",
+                            "備註": "",
+                            "用戶": "",
                         });
                         for (t in item.data) {
                             var target = item.data[t].target;
@@ -628,16 +628,16 @@ app.get("/admin/data", function(req, res) {
                             var options = item.data[t].options;
                             var user = item.data[t].user;
                             dataTable.push({
-                                "organization": "",
+                                "活動組織": "",
                                 "No.": "",
-                                "activity": "",
-                                "target": target,
-                                "Teacher Number": maxteacher,
-                                "ratio": ratio,
-                                "date": date,
-                                "time": time,
-                                "options": options,
-                                "user": user,
+                                "活動課程": "",
+                                "對象": target,
+                                "導師人數上限": maxteacher,
+                                "師生比例學生人數上限": ratio,
+                                "日期": date,
+                                "時間": time,
+                                "備註": options,
+                                "用戶": user,
                             });
                         }
 
@@ -655,10 +655,10 @@ app.get("/admin/data", function(req, res) {
                     }
 
                     var json2csv = require('json2csv');
-                    var fields = ['organization', 'No.', 'activity', "target", "Teacher Number", "ratio", "date", "time", "options", "user"];
-                    var fieldNames = ['活動組織', 'No.', '活動課程', "對象", "導師人數上限", "師生比例學生人數上限", "日期", "備註", "Time", "用戶"];
+                    // var fields = ['organization', 'No.', 'activity', "target", "Teacher Number", "ratio", "date", "time", "options", "user"];
+                    var fieldNames = ['活動組織', 'No.', '活動課程', "對象", "導師人數上限", "師生比例學生人數上限", "日期", "備註", "時間", "用戶"];
 
-                    const csv = json2csv.parse(dataTable, {fields});
+                    const csv = json2csv.parse(dataTable, {fieldNames});
                 
                     res.attachment('file.csv');
                     return res.send('\ufeff' + csv);
