@@ -7,8 +7,8 @@ var session = require('express-session');
 var mongo = require('mongodb');
 
 var app = express();
-var uploadImg = multer({dest: './Frontend/image/Photonew'});
-var uploadPdf = multer({dest: './Frontend/resourcenew'})
+var uploadImg = multer({ dest: './Frontend/image/Photonew' });
+var uploadPdf = multer({ dest: './Frontend/resourcenew' })
 
 app.use(bodyParser());
 app.use(cookieParser('secret'));
@@ -23,26 +23,26 @@ var send_email = require('./control.js').send_email;
 var check_validation = require('./control.js').check_validation;
 var check_id = require('./control.js').check_id;
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     if (check_login(req, res)) {
         if (check_admin(req, res)) {
-            fs.readFile('Frontend/admin.html', function(err, data) {
-                res.writeHead(200, {'Content-Type': 'text/html'});
+            fs.readFile('Frontend/admin.html', function (err, data) {
+                res.writeHead(200, { 'Content-Type': 'text/html' });
                 res.write(data);
                 res.end();
             });
         }
         else {
-            fs.readFile('Frontend/itemlist.html', function(err, data) {
-                res.writeHead(200, {'Content-Type': 'text/html'});
+            fs.readFile('Frontend/itemlist.html', function (err, data) {
+                res.writeHead(200, { 'Content-Type': 'text/html' });
                 res.write(data);
                 res.end();
             });
         }
     }
     else {
-        fs.readFile('Frontend/login.html', function(err, data) {
-            res.writeHead(200, {'Content-Type': 'text/html'});
+        fs.readFile('Frontend/login.html', function (err, data) {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
             res.write(data);
             res.end();
         })
@@ -50,17 +50,17 @@ app.get('/', function(req, res) {
 
 });
 
-app.get('/admin.html', function(req, res) {
+app.get('/admin.html', function (req, res) {
     if (check_admin(req, res)) {
-        fs.readFile('Frontend/admin.html', function(err, data) {
-            res.writeHead(200, {'Content-Type': 'text/html'});
+        fs.readFile('Frontend/admin.html', function (err, data) {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
             res.write(data);
             res.end();
         });
     }
     else {
-        fs.readFile('Frontend/login.html', function(err, data) {
-            res.writeHead(200, {'Content-Type': 'text/html'});
+        fs.readFile('Frontend/login.html', function (err, data) {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
             res.write(data);
             res.end();
         });
@@ -68,41 +68,41 @@ app.get('/admin.html', function(req, res) {
 
 });
 
-app.get('/title', function(req, res) {
+app.get('/title', function (req, res) {
     if (!check_login(req, res)) {
-        return res.send({feedback: 'Failure', msg:'Not valid user'});
+        return res.send({ feedback: 'Failure', msg: 'Not valid user' });
     }
-    databaseIO.config.getOne({name: 'title'}, function(feedback) {
+    databaseIO.config.getOne({ name: 'title' }, function (feedback) {
         if (feedback.feedback === 'Failure') {
-            return res.send({feedback: 'Failure', msg: 'Fail to get title'});
+            return res.send({ feedback: 'Failure', msg: 'Fail to get title' });
         }
         // console.log(feedback);
-        return res.send({feedback: 'Success', value: feedback.data.value, number: feedback.data.number, download: feedback.data.download, status: feedback.data.status});
+        return res.send({ feedback: 'Success', value: feedback.data.value, number: feedback.data.number, download: feedback.data.download, status: feedback.data.status });
     });
 });
 
-app.post('/title/update', function(req, res) {
+app.post('/title/update', function (req, res) {
     if (!check_admin(req, res)) {
-        return res.send({feedback:'Failure', msg: 'Not valid user'});
+        return res.send({ feedback: 'Failure', msg: 'Not valid user' });
     }
-    if (!check_validation('title', req.body.title)) return res.send({feedback: 'Failure', msg: 'Wrong format'});
-    if (typeof(req.body.number) !== 'number') return res.send({feedback: 'Failure', msg: 'Wrong Format'});
-    databaseIO.config.update({name: 'title'}, {value: req.body.title, number: req.body.number, download: req.body.download, status: req.body.status}, function(feedback) {
+    if (!check_validation('title', req.body.title)) return res.send({ feedback: 'Failure', msg: 'Wrong format' });
+    if (typeof (req.body.number) !== 'number') return res.send({ feedback: 'Failure', msg: 'Wrong Format' });
+    databaseIO.config.update({ name: 'title' }, { value: req.body.title, number: req.body.number, download: req.body.download, status: req.body.status }, function (feedback) {
         if (feedback.feedback === 'Failure') {
-            return res.send({feedback:'Failure', msg: 'Fail to update title'});
+            return res.send({ feedback: 'Failure', msg: 'Fail to update title' });
         }
         // console.log(feedback);
-        return res.send({feedback: 'Success'});
+        return res.send({ feedback: 'Success' });
     });
 });
 
 
-app.post('/users', function(req, res) {
-    if (!check_admin(req, res)) return res.send({feedback: 'Failure'});
+app.post('/users', function (req, res) {
+    if (!check_admin(req, res)) return res.send({ feedback: 'Failure' });
     console.log('post user');
     console.log(req.body);
     if (!check_validation('user', req.body.name) || !check_validation('email', req.body.email) || !check_validation('password', req.body.password)) {
-        res.send({feedback: 'Failure'});
+        res.send({ feedback: 'Failure' });
         return;
     }
     var newuser = {
@@ -113,29 +113,29 @@ app.post('/users', function(req, res) {
         status: "active",
         date: new Date().getTime(),
     };
-    databaseIO.user.add(newuser, function(feedback) {
+    databaseIO.user.add(newuser, function (feedback) {
         console.log(feedback);
         if (feedback.feedback === 'Success') {
-            return res.send({feedback: feedback});
+            return res.send({ feedback: feedback });
         }
         else {
-            return res.send({feedback: feedback});
+            return res.send({ feedback: feedback });
         }
     });
     return;
 });
 
-app.post('/items', function(req, res) {
+app.post('/items', function (req, res) {
     console.log('post item');
-    if (!check_admin(req, res)) return res.send({feedback: "Failure", msg: "Not Login"});
-    if (!check_validation('item', req.body.organization)) return res.send({feedback: 'Failure'});
-    if (!check_validation('item', req.body.No)) return res.send({feedback: 'Failure'});
-    if (!check_validation('item', req.body.activity)) return res.send({feedback: 'Failure'});
-    if (!check_validation('item', req.body.target)) return res.send({feedback: 'Failure'});
-    if (!check_validation('item', req.body.maxteacher)) return res.send({feedback: 'Failure'});
-    if (!check_validation('item', req.body.ratio)) return res.send({feedback: 'Failure'});
-    if (!check_validation('item', req.body.date)) return res.send({feedback: 'Failure'});
-    if (!check_validation('item', req.body.options)) return res.send({feedback: 'Failure'});
+    if (!check_admin(req, res)) return res.send({ feedback: "Failure", msg: "Not Login" });
+    if (!check_validation('item', req.body.organization)) return res.send({ feedback: 'Failure' });
+    if (!check_validation('item', req.body.No)) return res.send({ feedback: 'Failure' });
+    if (!check_validation('item', req.body.activity)) return res.send({ feedback: 'Failure' });
+    if (!check_validation('item', req.body.target)) return res.send({ feedback: 'Failure' });
+    if (!check_validation('item', req.body.maxteacher)) return res.send({ feedback: 'Failure' });
+    if (!check_validation('item', req.body.ratio)) return res.send({ feedback: 'Failure' });
+    if (!check_validation('item', req.body.date)) return res.send({ feedback: 'Failure' });
+    if (!check_validation('item', req.body.options)) return res.send({ feedback: 'Failure' });
     var newitem = {
         status: 'active',
         organization: req.body.organization,
@@ -148,12 +148,12 @@ app.post('/items', function(req, res) {
         time: req.body.time,
         options: req.body.options
     };
-    databaseIO.item.add(newitem, function(feedback) {
+    databaseIO.item.add(newitem, function (feedback) {
         if (feedback.feedback === 'Success') {
-            return res.send({feedback: feedback});
+            return res.send({ feedback: feedback });
         }
         else {
-            return res.send({feedback: feedback});
+            return res.send({ feedback: feedback });
         }
     });
     return;
@@ -193,48 +193,48 @@ return res.send({feedback: feedback});
 */
 
 
-app.post('/itemlistdata', function(req, res) {
+app.post('/itemlistdata', function (req, res) {
     console.log('get itemlist');
-    if (!check_login(req, res)) return res.send({feedback: "Failure", msg: "Not login"});
-    databaseIO.item.get("active", function(feedback) {
+    if (!check_login(req, res)) return res.send({ feedback: "Failure", msg: "Not login" });
+    databaseIO.item.get("active", function (feedback) {
         // console.log(feedback);
-        if (feedback.feedback === "Failure") return res.send({feedback:'Failure', msg: 'Fail to get itemlist'});
-        return res.send({feedback: 'Success', itemlist: feedback.data});
+        if (feedback.feedback === "Failure") return res.send({ feedback: 'Failure', msg: 'Fail to get itemlist' });
+        return res.send({ feedback: 'Success', itemlist: feedback.data });
     })
 });
 
-app.post('/users/login', function(req, res) {
+app.post('/users/login', function (req, res) {
     // console.log(req.body);
     var email = req.body.email;
     var password = req.body.password;
 
     // console.log(username);
     // console.log(password);
-    if (!email || !password) return res.send({feedback: 'Failure'});
-    if (!check_validation('email', email)) return res.send({feedback: 'Failure'});
-    if (!check_validation('password', password)) return res.send({feedback: 'Failure'});
+    if (!email || !password) return res.send({ feedback: 'Failure' });
+    if (!check_validation('email', email)) return res.send({ feedback: 'Failure' });
+    if (!check_validation('password', password)) return res.send({ feedback: 'Failure' });
     var condition;
     if (email) {
-        condition = {email: email, password: password};
+        condition = { email: email, password: password };
     }
     else {
-        return res.send({feedback: 'Failure', msg: 'Fail to login'});
+        return res.send({ feedback: 'Failure', msg: 'Fail to login' });
     }
-    databaseIO.user.getOne(condition, function(feedback) {
+    databaseIO.user.getOne(condition, function (feedback) {
         console.log(feedback);
-        if (feedback.feedback !== 'Success') return res.send({feedback: 'Failure 1', msg: 'Fail to log`in`'});
-        if (!feedback.data) return res.send({feedback: 'Failure 2', msg: 'Fail to login'});
+        if (feedback.feedback !== 'Success') return res.send({ feedback: 'Failure 1', msg: 'Fail to log`in`' });
+        if (!feedback.data) return res.send({ feedback: 'Failure 2', msg: 'Fail to login' });
         req.session.uid = feedback.data._id;
-        return res.send({feedback: 'Success', _id: feedback.data._id});
+        return res.send({ feedback: 'Success', _id: feedback.data._id });
     });
 });
 
-app.post('/users/logout', function(req, res) {
+app.post('/users/logout', function (req, res) {
     // console.log(req.session);
-    if (!check_login(req, res)) return res.send({feedback:'Failure', msg:'Not logged in'});
-    req.session.destroy(function(err) {
-        if (err) return res.send({feedback:'Failure', msg:'Error occurs when logout'});
-        return res.send({feedback:'Success'});
+    if (!check_login(req, res)) return res.send({ feedback: 'Failure', msg: 'Not logged in' });
+    req.session.destroy(function (err) {
+        if (err) return res.send({ feedback: 'Failure', msg: 'Error occurs when logout' });
+        return res.send({ feedback: 'Success' });
     });
 });
 /*
@@ -274,151 +274,151 @@ return res.send({feedback: 'Failure'});
 })
 });
 */
-app.post('/selection/:uid', function(req, res) {
-    if (!check_login(req, res)) return res.send({feedback:'Failure', msg:'Fail to Login'});
+app.post('/selection/:uid', function (req, res) {
+    if (!check_login(req, res)) return res.send({ feedback: 'Failure', msg: 'Fail to Login' });
     var items = req.body.items;
     var uid = req.params.uid;
     console.log(req.body);
-    if (req.session.uid !== uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
-    if (!check_validation('item', req.body.comment)) return res.send({feedback: 'Failure', msg:'Not valid number'});
+    if (req.session.uid !== uid) return res.send({ feedback: 'Failure', msg: 'Not valid user' });
+    if (!check_validation('item', req.body.comment)) return res.send({ feedback: 'Failure', msg: 'Not valid number' });
     for (idx in items) {
         var updateditem = {
             _id: mongo.ObjectID(items[idx]._id)
         };
-        databaseIO.item.update(updateditem, {time: items[idx].time}, function(feedback) {
+        databaseIO.item.update(updateditem, { time: items[idx].time }, function (feedback) {
             if (feedback.feedback === 'Failure') {
-                return res.send({feedback: 'Failure', msg: 'Fail to update item'});
+                return res.send({ feedback: 'Failure', msg: 'Fail to update item' });
             }
         });
     }
-    databaseIO.user.update({_id: mongo.ObjectID(uid)}, {comment: req.body.comment, status: "decline", date: new Date().getTime()}, function(feedback) {
+    databaseIO.user.update({ _id: mongo.ObjectID(uid) }, { comment: req.body.comment, status: "decline", date: new Date().getTime() }, function (feedback) {
         if (feedback.feedback === 'Success') {
             if (req.body.email != undefined && req.body.email != null) {
                 send_email(req.body.email);
             }
-            return res.send({feedback: 'Success'});
+            return res.send({ feedback: 'Success' });
         }
         else {
-            return res.send({feedback: 'Failure'});
+            return res.send({ feedback: 'Failure' });
         }
     });
 
 });
 
-app.post('/updateselection/:uid', function(req, res) {
-    if (!check_login(req, res)) return res.send({feedback:'Failure', msg:'Fail to Login'});
+app.post('/updateselection/:uid', function (req, res) {
+    if (!check_login(req, res)) return res.send({ feedback: 'Failure', msg: 'Fail to Login' });
     var items = req.body.items;
     var uid = req.params.uid;
     console.log(req.body);
-    if (req.session.uid !== uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
-    if (!check_validation('item', req.body.comment)) return res.send({feedback: 'Failure', msg:'Not valid number'});
+    if (req.session.uid !== uid) return res.send({ feedback: 'Failure', msg: 'Not valid user' });
+    if (!check_validation('item', req.body.comment)) return res.send({ feedback: 'Failure', msg: 'Not valid number' });
     for (idx in items) {
         var updateditem = {
             _id: mongo.ObjectID(items[idx]._id)
         };
-        databaseIO.item.updateselection(updateditem, {data: items[idx].data}, function(feedback) {
+        databaseIO.item.updateselection(updateditem, { data: items[idx].data }, function (feedback) {
             if (feedback.feedback === 'Failure') {
-                return res.send({feedback: 'Failure', msg: 'Fail to update item'});
+                return res.send({ feedback: 'Failure', msg: 'Fail to update item' });
             }
         });
     }
-    databaseIO.user.update({_id: mongo.ObjectID(uid)}, {comment: req.body.comment, status: "decline", date: new Date().getTime()}, function(feedback) {
+    databaseIO.user.update({ _id: mongo.ObjectID(uid) }, { comment: req.body.comment, status: "decline", date: new Date().getTime() }, function (feedback) {
         if (feedback.feedback === 'Success') {
             if (req.body.email != undefined && req.body.email != null) {
                 send_email(req.body.email);
             }
-            return res.send({feedback: 'Success'});
+            return res.send({ feedback: 'Success' });
         }
         else {
-            return res.send({feedback: 'Failure'});
+            return res.send({ feedback: 'Failure' });
         }
     });
 
 });
 
-app.post('/comment/:uid', function(req, res) {
-    if (!check_login(req, res)) return res.send({feedback: 'Failure', msg: 'Not Logged in'});
+app.post('/comment/:uid', function (req, res) {
+    if (!check_login(req, res)) return res.send({ feedback: 'Failure', msg: 'Not Logged in' });
     var uid = req.params.uid;
-    if (!check_id(uid)) return res.send({feedback: 'Failure', msg: 'Wrong id'});
-    databaseIO.user.getOne({_id: mongo.ObjectID(uid)}, function(feedback) {
+    if (!check_id(uid)) return res.send({ feedback: 'Failure', msg: 'Wrong id' });
+    databaseIO.user.getOne({ _id: mongo.ObjectID(uid) }, function (feedback) {
         if (feedback.feedback === 'Success') {
             console.log(feedback);
-            return res.send({feedback: 'Success', comment: feedback.data.comment, status: feedback.data.status, email:feedback.data.email});
+            return res.send({ feedback: 'Success', comment: feedback.data.comment, status: feedback.data.status, email: feedback.data.email });
         }
         else {
-            return res.send({feedback: 'Failure'});
+            return res.send({ feedback: 'Failure' });
         }
     })
 });
 
-app.post('/admin/delete/:iid', function(req, res) {
-    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid admin'});
+app.post('/admin/delete/:iid', function (req, res) {
+    if (!check_admin(req, res)) return res.send({ feedback: 'Failure', msg: 'Not valid admin' });
     var uid = req.params.iid;
-    if (!check_id(uid)) return res.send({feedback: 'Failure', msg: 'Wrong id'});
-    databaseIO.item.delete({_id: mongo.ObjectID(uid)}, function(feedback) {
+    if (!check_id(uid)) return res.send({ feedback: 'Failure', msg: 'Wrong id' });
+    databaseIO.item.delete({ _id: mongo.ObjectID(uid) }, function (feedback) {
         if (feedback.feedback === 'Success') {
             // console.log(feedback);
-            return res.send({feedback: 'Success'});
+            return res.send({ feedback: 'Success' });
         }
         else {
-            return res.send({feedback: 'Failure'});
+            return res.send({ feedback: 'Failure' });
         }
     });
 });
 
 
-app.post('/admin/item/detail/:iid', function(req, res) {
-    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+app.post('/admin/item/detail/:iid', function (req, res) {
+    if (!check_admin(req, res)) return res.send({ feedback: 'Failure', msg: 'Not valid user' });
     var iid = req.params.iid;
-    if (iid.length != 24) return res.send({feedback: 'Failure'});
-    databaseIO.item.getOne({_id: mongo.ObjectID(iid)}, function(feedback) {
+    if (iid.length != 24) return res.send({ feedback: 'Failure' });
+    databaseIO.item.getOne({ _id: mongo.ObjectID(iid) }, function (feedback) {
         console.log(feedback);
-        if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure'});
+        if (feedback.feedback === 'Failure') return res.send({ feedback: 'Failure' });
         else {
-            return res.send({feedback: 'Success', data: feedback.data});
+            return res.send({ feedback: 'Success', data: feedback.data });
         }
     })
 });
 
-app.get('/admin/msg', function(req, res) {
-    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
-    databaseIO.user.getAll({status: 'decline'}, function(feedback) {
+app.get('/admin/msg', function (req, res) {
+    if (!check_admin(req, res)) return res.send({ feedback: 'Failure', msg: 'Not valid user' });
+    databaseIO.user.getAll({ status: 'decline' }, function (feedback) {
         if (feedback.feedback === 'Failure') {
-            res.send({feedback: 'Failure', msg: 'Fail to get msg'});
+            res.send({ feedback: 'Failure', msg: 'Fail to get msg' });
         }
         else {
-            res.send({feedback: 'Success', data: feedback.data});
+            res.send({ feedback: 'Success', data: feedback.data });
         }
     })
 });
 
-app.get('/admin/msg/delete/:uid', function(req, res) {
-    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+app.get('/admin/msg/delete/:uid', function (req, res) {
+    if (!check_admin(req, res)) return res.send({ feedback: 'Failure', msg: 'Not valid user' });
     var uid = req.params.uid;
-    databaseIO.user.update({_id: mongo.ObjectID(uid)}, {comment: ""}, function(feedback) {
+    databaseIO.user.update({ _id: mongo.ObjectID(uid) }, { comment: "" }, function (feedback) {
         if (feedback.feedback === 'Success') {
-            return res.send({feedback: 'Success'});
+            return res.send({ feedback: 'Success' });
         }
         else {
-            return res.send({feedback: 'Failure'});
+            return res.send({ feedback: 'Failure' });
         }
     })
 });
 
-app.post('/admin/itemlistdata', function(req, res) {
-    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: "Not valid user"});
-    databaseIO.item.get("all", function(feedback) {
+app.post('/admin/itemlistdata', function (req, res) {
+    if (!check_admin(req, res)) return res.send({ feedback: 'Failure', msg: "Not valid user" });
+    databaseIO.item.get("all", function (feedback) {
         // console.log(feedback);
-        if (feedback.feedback === "Failure") return res.send({feedback:'Failure', msg: 'Fail to get itemlist'});
-        return res.send({feedback: 'Success', itemlist: feedback.data});
+        if (feedback.feedback === "Failure") return res.send({ feedback: 'Failure', msg: 'Fail to get itemlist' });
+        return res.send({ feedback: 'Success', itemlist: feedback.data });
     })
 })
 
-app.post('/admin/item/update/:iid', function(req, res) {
-    if (!check_admin(req, res)) return res.send({feedback: "Failure", msg: "Not Login"});
+app.post('/admin/item/update/:iid', function (req, res) {
+    if (!check_admin(req, res)) return res.send({ feedback: "Failure", msg: "Not Login" });
 
     var iid = req.params.iid;
-    if (!check_id(iid)) return res.send({feedback: 'Failure', msg: 'Wrong id'});
+    if (!check_id(iid)) return res.send({ feedback: 'Failure', msg: 'Wrong id' });
     var updateditem = {
         _id: mongo.ObjectID(iid)
     };
@@ -435,84 +435,84 @@ app.post('/admin/item/update/:iid', function(req, res) {
         options: req.body.options,
         data: req.body.data
     };
-    databaseIO.item.updateAll(updateditem, newitem, function(feedback) {
-        if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure', msg: 'Fail to update item'});
-        return res.send({feedback: 'Success'});
+    databaseIO.item.updateAll(updateditem, newitem, function (feedback) {
+        if (feedback.feedback === 'Failure') return res.send({ feedback: 'Failure', msg: 'Fail to update item' });
+        return res.send({ feedback: 'Success' });
     });
 });
 
-app.post('/admin/user/detail/:uid', function(req, res) {
+app.post('/admin/user/detail/:uid', function (req, res) {
     var uid = req.params.uid;
-    if (!check_admin(req, res) && uid !== req.session.uid) return res.send({feedback: 'Failure', msg: 'Not valid user'});
-    if (!check_id(uid)) return res.send({feedback: 'Failure', msg: 'Wrong id'});
+    if (!check_admin(req, res) && uid !== req.session.uid) return res.send({ feedback: 'Failure', msg: 'Not valid user' });
+    if (!check_id(uid)) return res.send({ feedback: 'Failure', msg: 'Wrong id' });
     // console.log({_id: mongo.ObjectID(uid)});
-    databaseIO.user.getOne({_id: mongo.ObjectID(uid)}, function(feedback) {
-        if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure'});
+    databaseIO.user.getOne({ _id: mongo.ObjectID(uid) }, function (feedback) {
+        if (feedback.feedback === 'Failure') return res.send({ feedback: 'Failure' });
         else {
-            return res.send({feedback: 'Success', data: feedback.data});
+            return res.send({ feedback: 'Success', data: feedback.data });
         }
     })
 });
-app.post('/admin/user/delete/:uid', function(req, res) {
-    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+app.post('/admin/user/delete/:uid', function (req, res) {
+    if (!check_admin(req, res)) return res.send({ feedback: 'Failure', msg: 'Not valid user' });
     var uid = req.params.uid;
-    if (!check_id(uid)) return res.send({feedback: 'Failure', msg: 'Wrong id'});
+    if (!check_id(uid)) return res.send({ feedback: 'Failure', msg: 'Wrong id' });
     // console.log({_id: mongo.ObjectID(uid)});
-    databaseIO.user.delete({_id: mongo.ObjectID(uid)}, function(feedback) {
+    databaseIO.user.delete({ _id: mongo.ObjectID(uid) }, function (feedback) {
         if (feedback.feedback === 'Success') {
-            return res.send({feedback: 'Success'});
+            return res.send({ feedback: 'Success' });
         }
         else {
-            return res.send({feedback: 'Failure'});
+            return res.send({ feedback: 'Failure' });
         }
     })
 });
-app.post('/admin/user/update/:uid', function(req, res) {
-    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+app.post('/admin/user/update/:uid', function (req, res) {
+    if (!check_admin(req, res)) return res.send({ feedback: 'Failure', msg: 'Not valid user' });
     var uid = req.params.uid;
-    if (!check_id(uid)) return res.send({feedback: 'Failure', msg: 'Wrong id'});
+    if (!check_id(uid)) return res.send({ feedback: 'Failure', msg: 'Wrong id' });
     console.log(req.body);
     if (req.body.email != undefined) {
-        if (!check_validation('email', req.body.email)) return res.send({feedback: 'Failure', msg: 'Invalid format'});
-        if (!check_validation('user', req.body.name)) return res.send({feedback: 'Failure', msg: 'Invalid format'});
-        if (!check_validation('password', req.body.password)) return res.send({feedback: 'Failure', msg: 'Invalid format'});
+        if (!check_validation('email', req.body.email)) return res.send({ feedback: 'Failure', msg: 'Invalid format' });
+        if (!check_validation('user', req.body.name)) return res.send({ feedback: 'Failure', msg: 'Invalid format' });
+        if (!check_validation('password', req.body.password)) return res.send({ feedback: 'Failure', msg: 'Invalid format' });
 
-        databaseIO.user.update({_id: mongo.ObjectID(uid)}, {email: req.body.email, name: req.body.name, password: req.body.password}, function(feedback) {
+        databaseIO.user.update({ _id: mongo.ObjectID(uid) }, { email: req.body.email, name: req.body.name, password: req.body.password }, function (feedback) {
             if (feedback.feedback === 'Success') {
-                return res.send({feedback: 'Success'});
+                return res.send({ feedback: 'Success' });
             }
             else {
-                return res.send({feedback: 'Failure'});
+                return res.send({ feedback: 'Failure' });
             }
         });
     }
     else if (req.body.status != undefined) {
         if (req.body.status == 'active' || req.body.status == 'decline') {
-            databaseIO.user.updateStatus({_id: mongo.ObjectID(uid)}, {status: req.body.status}, function(feedback) {
+            databaseIO.user.updateStatus({ _id: mongo.ObjectID(uid) }, { status: req.body.status }, function (feedback) {
                 if (feedback.feedback === 'Success') {
-                    return res.send({feedback: 'Success'});
+                    return res.send({ feedback: 'Success' });
                 }
                 else {
-                    return res.send({feedback: 'Failure'});
+                    return res.send({ feedback: 'Failure' });
                 }
             });
         }
         else {
-            return res.send({feedback: 'Failure'});
+            return res.send({ feedback: 'Failure' });
         }
     }
     else {
-        return res.send({feedback: 'Failure'});
+        return res.send({ feedback: 'Failure' });
     }
 
 })
 
-app.post('/admin/users', function(req, res) {
-    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
-    databaseIO.user.get(function(feedback) {
-        if (feedback.feedback === 'Failure') return res.send({feedback: 'Failure'});
+app.post('/admin/users', function (req, res) {
+    if (!check_admin(req, res)) return res.send({ feedback: 'Failure', msg: 'Not valid user' });
+    databaseIO.user.get(function (feedback) {
+        if (feedback.feedback === 'Failure') return res.send({ feedback: 'Failure' });
         else {
-            return res.send({feedback: 'Success', data: feedback.data});
+            return res.send({ feedback: 'Success', data: feedback.data });
         }
     })
 })
@@ -521,80 +521,169 @@ databaseIO.DB.initialize(function(feedback) {
 console.log(feedback);
 });
 */
-app.post('/admin/initialize', function(req, res) {
-    if (!check_admin(req, res)) return res.send({feedback: "Failure"});
+app.post('/admin/initialize', function (req, res) {
+    if (!check_admin(req, res)) return res.send({ feedback: "Failure" });
     console.log('initialize');
-    databaseIO.user.update({}, {comment: "", status:'active'}, function(feedback) {
+    databaseIO.user.update({}, { comment: "", status: 'active' }, function (feedback) {
         console.log(feedback);
         if (feedback.feedback === 'Success') {
-            databaseIO.user.updateStatus({}, {comment: "", status:'active'}, function(feedback) {
+            databaseIO.user.updateStatus({}, { comment: "", status: 'active' }, function (feedback) {
                 if (feedback.feedback !== 'Success') {
-                    return res.send({feedback: 'Failure'});
+                    return res.send({ feedback: 'Failure' });
                 }
             });
-            databaseIO.item.updateStatus({}, {status: 'decline'}, function(fb) {
+            databaseIO.item.updateStatus({}, { status: 'decline' }, function (fb) {
                 if (fb.feedback !== "Success") {
-                    return res.send({feedback: 'Failure'});
+                    return res.send({ feedback: 'Failure' });
                 }
                 else {
-                    return res.send({feedback: 'Success'});
+                    return res.send({ feedback: 'Success' });
                 }
             })
         }
         else {
-            return res.send({feedback: 'Failure'});
+            return res.send({ feedback: 'Failure' });
         }
     });
 });
 
-app.post('/admin/photo/:pid', uploadImg.single('image'), function(req, res) {
-    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+app.post('/admin/photo/:pid', uploadImg.single('image'), function (req, res) {
+    if (!check_admin(req, res)) return res.send({ feedback: 'Failure', msg: 'Not valid user' });
     var pid = req.params.pid;
     var pidint = parseInt(pid);
-    if (pidint === null) return res.send({feedback: 'Failure', msg: 'wrong pid'});
-    if (pidint < 1 || pidint > 17) return res.send({feedback: 'Failure', msg: 'wrong pid'});
+    if (pidint === null) return res.send({ feedback: 'Failure', msg: 'wrong pid' });
+    if (pidint < 1 || pidint > 17) return res.send({ feedback: 'Failure', msg: 'wrong pid' });
     var file = "./Frontend/image/Photonew/" + pid + ".jpg";
-    fs.rename(req.file.path, file, function(err) {
+    fs.rename(req.file.path, file, function (err) {
         if (err) {
             console.log(err);
-            return res.send({feedback: 'Failure'});
+            return res.send({ feedback: 'Failure' });
         }
         else {
-            return res.send({feedback: 'Success'});
+            return res.send({ feedback: 'Success' });
         }
     });
 });
 
-app.post('/admin/pdf/:pid', uploadPdf.single('pdf'), function(req, res) {
-    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
+app.post('/admin/pdf/:pid', uploadPdf.single('pdf'), function (req, res) {
+    if (!check_admin(req, res)) return res.send({ feedback: 'Failure', msg: 'Not valid user' });
     var pid = req.params.pid;
-    if (pid !== 'application' && pid !== 'info' && pid !== 'letter' && pid !== 'timetable') return res.send({feedback: 'Failure', msg: 'wrong pid'});
+    if (pid !== 'application' && pid !== 'info' && pid !== 'letter' && pid !== 'timetable') return res.send({ feedback: 'Failure', msg: 'wrong pid' });
     var file = './Frontend/resourcenew/' + pid + '.pdf';
-    fs.rename(req.file.path, file, function(err) {
+    fs.rename(req.file.path, file, function (err) {
         if (err) {
             console.log(err);
-            return res.send({feedback: 'Failure'});
+            return res.send({ feedback: 'Failure' });
         }
         else {
-            return res.send({feedback: 'Success'});
+            return res.send({ feedback: 'Success' });
         }
     })
 });
 
-app.post('/test', function(req, res) {
-    return res.send({feedback: 'Hello World'});
-}); 
+app.post('/test', function (req, res) {
+    return res.send({ feedback: 'Hello World' });
+});
 
-app.get("/admin/data", function(req, res) {
-
-    if (!check_admin(req, res)) return res.send({feedback: 'Failure', msg: 'Not valid user'});
-    databaseIO.item.get('all', function(response) {
+app.get("/download/:uid", function (req, res) {
+    var uid = req.params.uid;
+    // if (!check_admin(req, res) && req.session.uid != uid) return res.send({ feedback: 'Failure', msg: 'Not valid user' });
+    databaseIO.item.get('all', function (response) {
 
         if (response.feedback == 'Success') {
-            databaseIO.user.get(function(resp) {
+            databaseIO.user.get(function (resp) {
                 if (resp.feedback == 'Success') {
                     var dataTB = JSON.stringify(response.data);
-                    
+                    var uname = "";
+                    for (u in resp.data) {
+                        var us = resp.data[u];
+                        if (uid == us._id) {
+                            uname = us.name;
+                        }
+                        dataTB = dataTB.split(us._id.toString()).join(us.name);
+                    }
+                    var dataTBJSON = JSON.parse(dataTB);
+                    var dataTable = [];
+
+                    for (i in dataTBJSON) {
+                        var item = dataTBJSON[i];
+                        var organization = item.organization;
+                        var No = item.No;
+                        var activity = item.activity;
+
+                        for (t in item.data) {
+
+                            var target = "=\"" + item.data[t].target + "\"";
+                            var maxteacher = "=\"" + item.data[t].maxteacher + "\"";
+                            var ratio = "=\"" + item.data[t].ratio + "\""; 
+                            var date = "=\"" + item.data[t].date + "\"";
+                            var time = "=\"" + item.data[t].timestart + " - " + item.data[t].timeend + "\"";
+                            var options = "=\"" + item.data[t].options+ "\""; 
+                            var user = "=\"" + item.data[t].user + "\"";
+
+                            /*
+                            var target = item.data[t].target;
+                            var maxteacher = item.data[t].maxteacher;
+                            var ratio = item.data[t].ratio;
+                            var date = item.data[t].date;
+                            var time = item.data[t].timestart + " - " + item.data[t].timeend;
+                            var options = item.data[t].options;
+                            var user = item.data[t].user;
+                            */
+                            if (item.data[t].user === uname) {
+                                dataTable.push({
+                                    "活動組織": organization,
+                                    "No.": No,
+                                    "活動課程": activity,
+                                    "對象": target,
+                                    "導師人數上限": maxteacher,
+                                    "師生比例學生人數上限": ratio,
+                                    "日期": date,
+                                    "時間": time,
+                                    "備註": options,
+                                    "用戶": user,
+                                });
+                            }
+                        }
+                    }
+                    if (dataTable.length == 0) {
+                        dataTable.push({
+                            "活動組織": "",
+                            "No.": "",
+                            "活動課程": "",
+                            "對象": "",
+                            "導師人數上限": "",
+                            "師生比例學生人數上限": "",
+                            "日期": "",
+                            "時間": "",
+                            "備註": "",
+                            "用戶": "",
+                        })
+                    }
+                    var json2csv = require('json2csv');
+                    // var fields = ['organization', 'No.', 'activity', "target", "Teacher Number", "ratio", "date", "time", "options", "user"];
+                    var fieldNames = ['活動組織', 'No.', '活動課程', "對象", "導師人數上限", "師生比例學生人數上限", "日期", "備註", "時間", "用戶"];
+
+                    const csv = json2csv.parse(dataTable, { fieldNames });
+
+                    res.attachment(uname+".csv");
+                    return res.send('\ufeff' + csv);
+                }
+            });
+        }
+    })
+});
+
+app.get("/admin/data", function (req, res) {
+
+    if (!check_admin(req, res)) return res.send({ feedback: 'Failure', msg: 'Not valid user' });
+    databaseIO.item.get('all', function (response) {
+
+        if (response.feedback == 'Success') {
+            databaseIO.user.get(function (resp) {
+                if (resp.feedback == 'Success') {
+                    var dataTB = JSON.stringify(response.data);
+
                     for (u in resp.data) {
                         var us = resp.data[u];
                         dataTB = dataTB.split(us._id.toString()).join(us.name);
@@ -607,7 +696,7 @@ app.get("/admin/data", function(req, res) {
                         var organization = item.organization;
                         var No = item.No;
                         var activity = item.activity;
-                        dataTable.push({                                
+                        dataTable.push({
                             "活動組織": organization,
                             "No.": No,
                             "活動課程": activity,
@@ -620,13 +709,13 @@ app.get("/admin/data", function(req, res) {
                             "用戶": "",
                         });
                         for (t in item.data) {
-                            var target = item.data[t].target;
-                            var maxteacher = item.data[t].maxteacher;
-                            var ratio = item.data[t].ratio;
-                            var date = item.data[t].date;
-                            var time = item.data[t].time;
-                            var options = item.data[t].options;
-                            var user = item.data[t].user;
+                            var target = "=\"" + item.data[t].target + "\"";
+                            var maxteacher = "=\"" + item.data[t].maxteacher + "\"";
+                            var ratio = "=\"" + item.data[t].ratio + "\""; 
+                            var date = "=\"" + item.data[t].date + "\"";
+                            var time = "=\"" + item.data[t].timestart + " - " + item.data[t].timeend + "\"";
+                            var options = "=\"" + item.data[t].options+ "\""; 
+                            var user = "=\"" + item.data[t].user + "\"";
                             dataTable.push({
                                 "活動組織": "",
                                 "No.": "",
@@ -651,27 +740,27 @@ app.get("/admin/data", function(req, res) {
                             }
                         }
                         */
-                        
+
                     }
 
                     var json2csv = require('json2csv');
                     // var fields = ['organization', 'No.', 'activity', "target", "Teacher Number", "ratio", "date", "time", "options", "user"];
                     var fieldNames = ['活動組織', 'No.', '活動課程', "對象", "導師人數上限", "師生比例學生人數上限", "日期", "備註", "時間", "用戶"];
 
-                    const csv = json2csv.parse(dataTable, {fieldNames});
-                
+                    const csv = json2csv.parse(dataTable, { fieldNames });
+
                     res.attachment('file.csv');
                     return res.send('\ufeff' + csv);
                 }
                 else {
-                    return res.send({feedback:"Failure"});
+                    return res.send({ feedback: "Failure" });
                 }
             })
         }
         else {
-            return res.send({feedback:"Failure"});
+            return res.send({ feedback: "Failure" });
         }
-        
+
     })
 })
 
@@ -679,9 +768,9 @@ app.get("/admin/data", function(req, res) {
 
 app.use(express.static('Frontend'));
 app.use(express.static('image'));
-app.get('*', function(req, res) {
+app.get('*', function (req, res) {
     res.status(404).send('Null');
 });
-app.listen(port, "0.0.0.0", function() {
+app.listen(port, "0.0.0.0", function () {
     console.log('Listening to port: ' + port);
 });

@@ -110,7 +110,83 @@
                         </th>
                     </tr>
                 </thead>
-                <tr class="table-active" ng-repeat-start="item in itemlist" ng-click="showdetail(item)">
+
+                <tr class="table-active" ng-style="{color: getColor(item)}" ng-repeat="item in newitemlist" ng-show="!userstatus">
+                    <td colspan="2">
+                    </td>
+                    <td>
+                        <button type="button" style="color:black; float:right; background-color: transparent; border: none;" ng-click="deleteData(item)">
+                            <i class="fa fa-minus fa-xs"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <span ng-bind="item.target"></span>
+                    </td>
+                    <td>
+                        <span ng-bind="item.maxteacher"></span>
+                    </td>
+                    <td>
+                        <span ng-bind="item.ratio"></span>
+                    </td>
+                    <td>
+                        <div>
+                            <span ng-bind="item.date"></span>
+                        </div>
+
+                    </td>
+                    <td>
+                        <span ng-bind="item.options"></span>
+                    </td>
+                    <td>
+                        <div style="display:flex; flex-direction:row;">
+                            <span ng-bind="item.timestart"></span>
+                            <span> - </span>
+                            <span ng-bind="item.timeend"></span>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr class="table-active" ng-show="!userstatus">
+                    <td colspan="2">
+                        <span ng-show="showerror">
+                            Not valid input
+                        </span>
+                    </td>
+                    <td>
+                        <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="addData(newitem)">
+                            <i class="fa fa-plus fa-xs"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <input style="width:100%; padding:2px;;" ng-model="newitem.target" maxlength="10">
+                    </td>
+                    <td>
+                        <input style="width:100%; padding:2px;" ng-model="newitem.maxteacher" maxlength="10">
+                    </td>
+                    <td>
+                        <input style="width:100%; padding:2px;" ng-model="newitem.ratio" maxlength="10">
+                    </td>
+                    <td>
+                        <div>
+                            <datepicker date-format="dd/MM/yyyy">
+                                <input style="width:100%; padding:2px;" ng-model="newitem.date" type="text" style="float: left" />
+                            </datepicker>
+                        </div>
+
+                    </td>
+                    <td>
+                        <input ng-model="newitem.options" style="width:100%; padding:2px; word-wrap: break-word;" maxlength="200">
+                    </td>
+                    <td>
+                        <div style="display:flex; flex-direction:row;">
+                            <input ng-model="newitem.timestart" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
+                            <span> - </span>
+                            <input ng-model="newitem.timeend" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
+                        </div>
+                    </td>
+                </tr>
+
+                <tr class="table-active" ng-repeat="item in itemlist" ng-click="addNewItem(item)">
 
                     <td ng-bind="item.organization"></td>
                     <td ng-bind="item.No"></td>
@@ -127,7 +203,7 @@
                             <col width="40px">
                             <col width="40px">
                             <col width="40px">
-                            <tr ng-repeat="t in item.data" style="border:none;">
+                            <tr ng-style="{color: getColor(t)}" ng-repeat="t in item.data" style="border:none;">
                                 <td style="border:none;">
                                     <span ng-bind="t.target"></span>
                                 </td>
@@ -141,10 +217,6 @@
                                 <td style="border:none;">
                                     <div>
                                         <span ng-bind="t.date" style="float: left"></span>
-                                        <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="deleteTimestep(item, t)"
-                                            ng-show="t.show && !userstatus">
-                                            <i class="fa fa-minus fa-xs"></i>
-                                        </button>
                                     </div>
                                 </td>
                                 <td style="border:none;">
@@ -165,52 +237,17 @@
 
                 </tr>
 
-                <tr ng-repeat-end ng-show="item.show">
-                    <td colspan="3">
-                        <span ng-show="item.showerror">
-                            Not valid input
-                        </span>
-                    </td>
-                    <td>
-                        <input style="width:100%; padding:2px;;" ng-model="item.newitem.target" maxlength="10">
-                    </td>
-                    <td>
-                        <input style="width:100%; padding:2px;" ng-model="item.newitem.maxteacher" maxlength="10">
-                    </td>
-                    <td>
-                        <input style="width:100%; padding:2px;" ng-model="item.newitem.ratio" maxlength="10">
-                    </td>
-                    <td>
-                        <div>
-                            <datepicker date-format="dd/MM/yyyy">
-                                <input style="width:100%; padding:2px;" ng-model="item.newitem.date" type="text" style="float: left" />
-
-                                <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="addData(item)">
-                                    <i class="fa fa-plus fa-xs"></i>
-                                </button>
-                            </datepicker>
-                        </div>
-
-                    </td>
-                    <td>
-                        <input ng-model="item.newitem.options" style="width:100%; padding:2px; word-wrap: break-word;" maxlength="200">
-                    </td>
-                    <td>
-                        <div style="display:flex; flex-direction:row;">
-                            <input ng-model="item.newitem.timestart" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
-                            <span> - </span>
-                            <input ng-model="item.newitem.timeend" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
-                        </div>
-                    </td>
-                </tr>
             </table>
 
+            <!--
 
             <div>
                 <textarea class="form-control" style="resize: none; width:100%" row="3" ng-model="comment" maxlength=500 ng-disabled="userstatus"
                     special-char-directive></textarea>
             </div>
-            <br>
+
+            -->
+
             <div>
                 <button class="btn" style="background-color: transparent; color: green; border-color: green;" ng-click="submit()" ng-disabled="userstatus">提交</button>
                 <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">取消</button>
@@ -229,6 +266,19 @@
             $scope.itemlist = [];
             $scope.comment = "";
             $scope.selectedItem = 0;
+            $scope.newitemlist = [];
+            $scope.newitemlistInitialized = false;
+            $scope.newitem = {
+                target: "",
+                maxteacher: "",
+                ratio: "",
+                date: "",
+                options: "",
+                timestart: "",
+                timeend: "",
+                user: "",
+                show: false,
+            }
             $http.get('/title').then(function (response) {
                 // console.log(response);
                 if (response.data.feedback === 'Success') {
@@ -274,6 +324,22 @@
                         if ($scope.itemlist[idx].options === 'NULL') {
                             $scope.itemlist[idx].options = "";
                         }
+                        // initialize newitemlist
+                        var haveElement = false;
+                        for (d in $scope.itemlist[idx].data) {
+                            if ($scope.itemlist[idx].data[d].user === uid) {
+                                haveElement = true;
+                                $scope.itemlist[idx].modified = true;
+                            }
+                        }
+                        if (haveElement && !$scope.newitemlistInitialized) {
+                            $scope.newitemlistInitialized = true;
+                            for (d in $scope.itemlist[idx].data) {
+                                if ($scope.itemlist[idx].data[d].user === uid) {
+                                    $scope.newitemlist.push($scope.itemlist[idx].data[d]);
+                                }
+                            }
+                        }
                     }
                 });
             $http.post("/comment/" + uid, {})
@@ -298,7 +364,7 @@
                         user: "",
                         show: false,
                     };
-                    item.modified = true;
+                    // item.modified = true;
                     item.showerror = false;
                 }
             }
@@ -354,7 +420,7 @@
                         $window.location.href = '/';
                     });
             };
-    
+
             $scope.download = function (index) {
                 if (index === 1) {
                     $window.open("/resourcenew/application.pdf");
@@ -369,24 +435,88 @@
                     $window.open("/resourcenew/timetable.pdf")
                 }
             }
-            $scope.addData = function (item) {
+            $scope.addData = function (newitem) {
+                if (!$scope.userstatus) {
+                    // check input format
+                    if ($scope.checkInput(newitem)) {
+                        newitem.user = uid;
+                        newitem.show = true;
+                        $scope.newitemlist.push(newitem);
 
-                // check input format
-                if ($scope.checkInput(item.newitem)) {
-                    item.newitem.user = uid;
-                    item.newitem.show = true;
-                    item.data.push(item.newitem);
-                    $scope.showdetail(item);
+                        $scope.newitem = {
+                            target: "",
+                            maxteacher: "",
+                            ratio: "",
+                            date: "",
+                            options: "",
+                            timestart: "",
+                            timeend: "",
+                            user: "",
+                            show: false,
+                        }
+                        // $scope.showdetail(item);
+                    }
+                    else {
+                        console.log("Not valid input!");
+                        showerror = true;
+                    }
                 }
-                else {
-                    console.log("Not valid input!");
-                    item.showerror = true;
+
+            }
+            $scope.deleteData = function (item) {
+                var index = $scope.newitemlist.indexOf(item);
+                if (index > -1) {
+                    $scope.newitemlist.splice(index, 1);
                 }
             }
             $scope.deleteTimestep = function (item, t) {
                 var index = item.data.indexOf(t);
                 if (index > -1) {
                     item.data.splice(index, 1);
+                }
+            }
+            $scope.addNewItem = function (item) {
+
+                if (!$scope.userstatus) {
+                    if (item.modified == true) {
+                    // remove newitem
+                    while (true) {
+                        //remove all element in item.data
+                        var haveElement = false;
+                        for (idx in item.data) {
+                            if (item.data[idx].user === uid) {
+                                haveElement = true;
+                                item.data.splice(idx, 1);
+                                break;
+                            }
+                        }
+                        if (haveElement == false) {
+                            break;
+                        }
+
+                    }
+                    item.modified = false;
+                }
+                else {
+                    for (idx in $scope.newitemlist) {
+                        var newitem = $scope.newitemlist[idx];
+                        if ($scope.checkInput(newitem)) {
+                            item.data.push(newitem);
+                            item.modified = true;
+                        }
+                    }
+                }
+
+                    
+                }
+               
+            }
+            $scope.getColor = function (item) {
+                if (item.user === uid) {
+                    return "blue";
+                }
+                else {
+                    return "black";
                 }
             }
 
