@@ -532,19 +532,27 @@ app.post('/admin/initialize', function (req, res) {
                     return res.send({ feedback: 'Failure' });
                 }
             });
-            databaseIO.item.updateStatus({}, { status: 'decline' }, function (fb) {
+            
+            databaseIO.item.updateStatus({}, { status: 'active' }, function (fb) {
                 if (fb.feedback !== "Success") {
                     return res.send({ feedback: 'Failure' });
                 }
                 else {
                     return res.send({ feedback: 'Success' });
                 }
-            })
+            });
+            
+            databaseIO.item.updateselection({}, { data: []}, function (feedback) {
+                if (feedback.feedback === 'Failure') {
+                    return res.send({ feedback: 'Failure', msg: 'Fail to update item' });
+                }
+            });
         }
         else {
             return res.send({ feedback: 'Failure' });
         }
     });
+
 });
 
 app.post('/admin/photo/:pid', uploadImg.single('image'), function (req, res) {
