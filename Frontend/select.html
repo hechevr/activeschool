@@ -18,6 +18,7 @@
     <!-- Bootstrap Date-Picker Plugin -->
     <link href="/css/src/css/angular-datepicker.css" rel="stylesheet" type="text/css" />
 
+
 </head>
 
 <body>
@@ -28,13 +29,13 @@
                     <a class="navbar-brand" href="#">動感校園</a>
                 </div>
                 <ul class="nav navbar-nav">
-                    <li class="active">
+                    <li>
                         <a href="#" ng-click="showItemlist()">項目列表</a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="#" ng-click="showProfile()">已選項目</a>
                     </li>
-                    <!--<li><a href="#" ng-click="oldprofile={name:user.name};newprofile={};showerror=false;" data-toggle="modal" data-target="#myModal">更新信息</a></li>-->
+                    <!--<li><a href="#" ng-click="oldprofile={name:user.name};newprofile={};" data-toggle="modal" data-target="#myModal">更新信息</a></li>-->
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">下载</a>
                         <ul class="dropdown-menu">
@@ -57,22 +58,17 @@
                     </li>
                 </ul>
                 <div class="navbar-right">
-                    <div ng-show=False>
-                        <span ng-bind="selectedItem"></span>
-                        <span>/</span>
-                        <span ng-bind="activenumber"></span>
-                    </div>
                     <button class="btn" style="font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc"
                         ng-click="Logout()">登出</button>
                 </div>
             </div>
         </nav>
-        <div class="container-fluid" style="margin-top:100px">
 
-                <button class="btn" style="float: right;font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc" ng-click="linkToEditPage()">編輯</button>
-            <h2 style="color:#33a6cc;">動感校園
-                <span style="color:Black" ng-bind="activetitle"> </span>活動 / 課程時間表
-            </h2>
+        <div style="margin-top:100px; width:100%" class="container-fluid">
+
+            <button class="btn" style="float: right;font-weight: 700; float: right; background-color: transparent; border-color: #33a6cc; color:#33a6cc"
+                ng-click="downloadFile()">下載表格</button>
+            <h1 style="font-weight:700" ng-bind="user.name"></h1>
 
             <table style="table-layout:fixed; border-collapse: separate; border: none; background: transparent;" class="table table-dark">
                 <col width="40px">
@@ -85,6 +81,7 @@
                 <col width="40px">
                 <col width="40px">
                 <col width="40px">
+
                 <thead class="thead thead-inverse">
                     <tr>
                         <th align="center" style="border-top-left-radius: 20px;">活動組織</th>
@@ -100,7 +97,7 @@
                                 <col width="40px">
                                 <col width="40px">
                                 <tr style="border:none;">
-                                    <td align="left" style="border:none;"></td>
+                                    <td style="border:none;"></td>
                                     <td align="left" style="border:none;">對象</td>
                                     <td align="left" style="border:none;">導師
                                         <br>人數上限</td>
@@ -114,8 +111,7 @@
                         </th>
                     </tr>
                 </thead>
-
-                <tr class="table-active" ng-repeat="item in itemlist" ng-click="showdetail(item)">
+                <tr class="table-active" ng-repeat="item in itemlist">
 
                     <td ng-bind="item.organization"></td>
                     <td ng-bind="item.No"></td>
@@ -133,14 +129,11 @@
                             <col width="40px">
                             <col width="40px">
                             <col width="40px">
-                            <tr ng-style="{color: getColor(t)}" ng-repeat="t in item.data" style="border:none;">
+                            <tr ng-repeat="t in item.data" style="border:none;">
                                 <td style="border:none;">
-                                    <!--
-                                    <button type="button" style="float:left; background-color: transparent; border: none;" ng-click="deleteTimestep(item, t)"
-                                        ng-show="t.show && !userstatus">
+                                    <button type="button" ng-show="!userstatus" style="float:left; background-color: transparent; border: none;" ng-click="deleteTimestep(item, t)">
                                         <i class="fa fa-minus fa-xs"></i>
                                     </button>
-                                    -->
                                 </td>
                                 <td style="border:none;">
                                     <span ng-bind="t.target"></span>
@@ -172,70 +165,76 @@
                             </tr>
                         </table>
                     </td>
-
                 </tr>
-                <!--
-<tr ng-repeat-end class="table-active" ng-show="item.show">
-                    <td colspan="3">
-                        <span ng-show="showerror">
-                            Not valid input
-                        </span>
+
+                <tr class="table-active" ng-show="showNewItemForm">
+                    <td ng-bind="selectedItem.organization"></td>
+                    <td ng-bind="selectedItem.No"></td>
+                    <td>
+                        <div>
+                            <span style="float:left;" ng-bind="selectedItem.activity"></span>
+                        </div>
                     </td>
                     <td>
-                        <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="addData(item)">
+                        <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="addData()">
                             <i class="fa fa-plus fa-xs"></i>
                         </button>
                     </td>
                     <td>
-                        <input style="width:100%; padding:2px;;" ng-model="item.newitem.target" maxlength="10">
+                        <input style="width:100%; padding:2px;;" ng-model="newitem.target" maxlength="10">
                     </td>
                     <td>
-                        <input style="width:100%; padding:2px;" ng-model="item.newitem.maxteacher" maxlength="10">
+                        <input style="width:100%; padding:2px;" ng-model="newitem.maxteacher" maxlength="10">
                     </td>
                     <td>
-                        <input style="width:100%; padding:2px;" ng-model="item.newitem.ratio" maxlength="10">
+                        <input style="width:100%; padding:2px;" ng-model="newitem.ratio" maxlength="10">
                     </td>
                     <td>
                         <div>
                             <datepicker date-format="dd/MM/yyyy">
-                                <input style="width:100%; padding:2px;" ng-model="item.newitem.date" type="text" style="float: left" />
+                                <input style="width:100%; padding:2px;" ng-model="newitem.date" type="text" style="float: left" />
                             </datepicker>
                         </div>
 
                     </td>
                     <td>
-                        <input ng-model="item.newitem.options" style="width:100%; padding:2px; word-wrap: break-word;" maxlength="200">
+                        <input ng-model="newitem.options" style="width:100%; padding:2px; word-wrap: break-word;" maxlength="200">
                     </td>
                     <td>
                         <div style="display:flex; flex-direction:row;">
-                            <input ng-model="item.newitem.timestart" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
+                            <input ng-model="newitem.timestart" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
                             <span> - </span>
-                            <input ng-model="item.newitem.timeend" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
+                            <input ng-model="newitem.timeend" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
                         </div>
                     </td>
                 </tr>
+                <tr class="table-active" ng-show="!userstatus">
+                    <td colspan="3">
+                        <select style="width:100%;" ng-model="selectedItem" ng-change="changelog(selectedItem)" data-ng-options="selectedItem as selectedItem.value for selectedItem in list">
+                            <option value=""></option>
+                        </select>
+                    </td>
+                    <td>
+                        <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="addNewItem()">
+                            <i class="fa fa-plus fa-xs"></i>
+                        </button>
+                    </td>
+                    <td colspan="6">
+                        <span style="color:red" ng-bind="errormessage"></span>
+                    </td>
 
-
-                -->
+                </tr>
 
             </table>
 
-            <!--
+
 
             <div>
-                <textarea class="form-control" style="resize: none; width:100%" row="3" ng-model="comment" maxlength=500 ng-disabled="userstatus"
-                    special-char-directive></textarea>
-            </div>
-
-            -->
-
-            <div>
-                <!--
                 <button class="btn" style="background-color: transparent; color: green; border-color: green;" ng-click="submit()" ng-disabled="userstatus">提交</button>
-                -->
                 <button class="btn" style="background-color: transparent; border-color:black;" ng-click="cancel()">取消</button>
                 <label ng-show="userstatus">您已經提交過申請，如果需要更改請聯繫管理員。</label>
             </div>
+
         </div>
     </div>
     <script src='http://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js'></script>
@@ -244,24 +243,11 @@
         var app = angular.module("userModel", ['ngCookies', '720kb.datepicker']);
         app.controller("itemlistController", function ($scope, $http, $window, $cookies) {
             var uid = $cookies.get("uid");
-            $scope.isActive = true;
-            $scope.userstatus = true;
             $scope.itemlist = [];
-            $scope.comment = "";
-            $scope.selectedItem = 0;
-            $scope.newitemlist = [];
-            $scope.newitemlistInitialized = false;
-            $scope.newitem = {
-                target: "",
-                maxteacher: "",
-                ratio: "",
-                date: "",
-                options: "",
-                timestart: "",
-                timeend: "",
-                user: "",
-                show: false,
-            }
+            $scope.list = [];
+            $scope.showNewItem = false;
+            $scope.selectedItem = null;
+            $scope.errormessage = "";
             $http.get('/title').then(function (response) {
                 // console.log(response);
                 if (response.data.feedback === 'Success') {
@@ -284,95 +270,88 @@
                     $scope.activetitle = "";
                 }
             });
-            $http.post("/itemlistdata", {})
+            $http.post("/admin/user/detail/" + uid, [])
                 .then(function (response) {
-                    if (response.data.feedback === 'Failure') {
+                    if (response.data.feedback === 'Failure' || response.data.data === null) {
                         $window.location.href = '/login.html';
                     }
-                    $scope.itemlist = response.data.itemlist;
-                    for (idx in $scope.itemlist) {
-                        $scope.itemlist[idx].show = false;
-                        $scope.itemlist[idx].modified = false;
-                        if ($scope.itemlist[idx].data == undefined) {
-                            $scope.itemlist[idx].data = [];
-                        }
-                        for (d in $scope.itemlist[idx].data) {
-                            if ($scope.itemlist[idx].data[d].user === uid) {
-                                $scope.itemlist[idx].data[d].show = true;
+                    // console.log(response);
+                    $scope.user = response.data.data;
+
+                    $http.post("/itemlistdata", {})
+                        .then(function (response) {
+                            if (response.data.feedback === 'Failure') {
+                                $window.location.href = '/login.html';
                             }
-                            else {
-                                $scope.itemlist[idx].data[d].show = false;
+                            $scope.list = response.data.itemlist;
+                            for (idx in $scope.list) {
+                                $scope.list[idx].value = $scope.list[idx].organization + " " + $scope.list[idx].No + " " + $scope.list[idx].activity;
+                                $scope.list[idx].modified = false;
                             }
-                        }
-                        if ($scope.itemlist[idx].options === 'NULL') {
-                            $scope.itemlist[idx].options = "";
-                        }
-                        /*
-                        // initialize newitemlist
-                        var haveElement = false;
-                        for (d in $scope.itemlist[idx].data) {
-                            if ($scope.itemlist[idx].data[d].user === uid) {
-                                haveElement = true;
-                                $scope.itemlist[idx].modified = true;
-                            }
-                        }
-                        if (haveElement && !$scope.newitemlistInitialized) {
-                            $scope.newitemlistInitialized = true;
-                            for (d in $scope.itemlist[idx].data) {
-                                if ($scope.itemlist[idx].data[d].user === uid) {
-                                    $scope.newitemlist.push($scope.itemlist[idx].data[d]);
+                            for (idx in response.data.itemlist) {
+
+                                var hasUser = false;
+                                for (i in response.data.itemlist[idx].data) {
+                                    if (response.data.itemlist[idx].data[i].user === uid) {
+                                        hasUser = true;
+                                    }
+                                }
+                                if (hasUser == true) {
+                                    var item = {
+                                        _id: response.data.itemlist[idx]._id,
+                                        organization: response.data.itemlist[idx].organization,
+                                        No: response.data.itemlist[idx].No,
+                                        activity: response.data.itemlist[idx].activity,
+                                        data: [],
+                                    };
+                                    for (i in response.data.itemlist[idx].data) {
+                                        if (response.data.itemlist[idx].data[i].user == uid) {
+                                            item.data.push(response.data.itemlist[idx].data[i]);
+                                        }
+                                    }
+                                    $scope.itemlist.push(item);
+
                                 }
                             }
-                        }
-                        */
-                    }
+                        });
                 });
+
             $http.post("/comment/" + uid, {})
                 .then(function (response) {
-                    // console.log(response);
                     $scope.comment = response.data.comment;
                     $scope.email = response.data.email;
                     $scope.userstatus = !(response.data.status === 'active');
                 });
-            $scope.showdetail = function (item) {
-                if (!$scope.userstatus) {
-                    item.show = !item.show
-                    // initialize new item
-                    item.newitem = {
-                        target: "",
-                        maxteacher: "",
-                        ratio: "",
-                        date: "",
-                        options: "",
-                        timestart: "",
-                        timeend: "",
-                        user: "",
-                        show: false,
-                    };
-                    item.modified = true;
-                    item.showerror = false;
+            $scope.download = function (index) {
+                if (index === 1) {
+                    $window.open("/resourcenew/application.pdf");
+                }
+                else if (index == 2) {
+                    $window.open("/resourcenew/letter.pdf");
+                }
+                else if (index == 3) {
+                    $window.open("/resourcenew/info.pdf")
+                }
+                else if (index == 4) {
+                    $window.open("/resourcenew/timetable.pdf")
                 }
             }
-            $scope.changeSelectedItem = function (t) {
-                if (t.checked) {
-                    $scope.selectedItem++;
-                    if ($scope.selectedItem > $scope.activenumber) {
-                        t.checked = false;
-                        $scope.selectedItem--;
-                    }
-                }
-                else {
-                    $scope.selectedItem--;
-                }
-            }
+
             $scope.cancel = function () {
-                $window.location.href = "/";
+                $window.history.back();
             }
+            $scope.showProfile = function () {
+                $window.location.href = "/profile.html?" + uid;
+            }
+            $scope.showItemlist = function () {
+                $window.location.href = "/itemlist.html";
+            }
+            
             $scope.submit = function () {
                 // console.log("click submit");
                 var items = [];
-                for (i in $scope.itemlist) {
-                    var item = $scope.itemlist[i];
+                for (i in $scope.list) {
+                    var item = $scope.list[i];
                     if (item.modified == true) {
                         items.push({ _id: item._id, data: item.data });
                     }
@@ -391,11 +370,86 @@
                         }
                     });
             };
-            $scope.showProfile = function () {
-                $window.location.href = "/profile.html?" + uid;
+            
+            $scope.addNewItem = function () {
+
+                // check selection
+                if ($scope.selectedItem == null) {
+                    $scope.errormessage = "請選擇一個選項";
+                }
+                else {
+                    $scope.errormessage = "";
+                    $scope.showNewItem = !$scope.showNewItem;
+
+                    $scope.newitem = {
+                        target: "",
+                        maxteacher: "",
+                        ratio: "",
+                        date: "",
+                        options: "",
+                        timestart: "",
+                        timeend: "",
+                        user: "",
+                    }
+                    $scope.showNewItemForm = !$scope.showNewItemForm;
+                }
+
             }
-            $scope.showItemlist = function () {
-                $window.location.href = "/itemlist.html";
+            $scope.addData = function () {
+                // check input format
+                if ($scope.checkInput($scope.newitem)) {
+                    var idx = -1;
+                    for (i in $scope.list) {
+                        if ($scope.list[i]._id == $scope.selectedItem._id) {
+                            idx = i;
+                        }
+                    }
+                    if (idx > -1 && idx < $scope.list.length) {
+                        $scope.newitem.user = uid;
+                        $scope.list[idx].data.push($scope.newitem);
+                        $scope.list[idx].modified = true;
+
+                        // add input into showing info
+                        var idxs = -1;
+                        for (i in $scope.itemlist) {
+                            if ($scope.itemlist[i]._id == $scope.selectedItem._id) {
+                                idxs = i;
+                            }
+                        }
+                        if (idxs > -1 && idxs < $scope.itemlist.length) {
+                            $scope.itemlist[idxs].data.push($scope.newitem);
+                        }
+                        else {
+                            $scope.itemlist.push($scope.list[idx]);
+                        }
+
+                        // return to initial state
+                        $scope.showNewItemForm = false;
+                        $scope.selectedItem = null;
+
+                    }
+
+                    $scope.errormessage = "";
+                }
+                else {
+                    $scope.errormessage = "輸入無效";
+                }
+            };
+
+            $scope.deleteTimestep = function (item, t) {
+                var indexs = $scope.list.indexOf(item);
+                var index = item.data.indexOf(t);
+                if (index > -1) {
+                    item.data.splice(index, 1);
+                }
+                if (indexs > -1) {
+                    $scope.list[indexs].data.splice(index, 1);
+                    $scope.list[indexs].modified = true;
+                }
+
+            }
+            $scope.downloadFile = function () {
+                $window.open("/download/" + uid);
             }
             $scope.Logout = function () {
                 $http.post('/users/logout', {})
@@ -405,120 +459,6 @@
                         $window.location.href = '/';
                     });
             };
-
-            $scope.download = function (index) {
-                if (index === 1) {
-                    $window.open("/resourcenew/application.pdf");
-                }
-                else if (index == 2) {
-                    $window.open("/resourcenew/letter.pdf");
-                }
-                else if (index == 3) {
-                    $window.open("/resourcenew/info.pdf")
-                }
-                else if (index == 4) {
-                    $window.open("/resourcenew/timetable.pdf")
-                }
-            }
-            $scope.addData = function (item) {
-                // check input format
-                if ($scope.checkInput(item.newitem)) {
-                    item.newitem.user = uid;
-                    item.newitem.show = true;
-                    item.data.push(item.newitem);
-                    $scope.showdetail(item);
-                }
-                else {
-                    item.showerror = true;
-                }
-            }
-            /*
-            $scope.addData = function(newitem) {
-                if (!$scope.userstatus) {
-                    // check input format
-                    if ($scope.checkInput(newitem)) {
-                        newitem.user = uid;
-                        newitem.show = true;
-                        $scope.newitemlist.push(newitem);
-
-                        $scope.newitem = {
-                            target: "",
-                            maxteacher: "",
-                            ratio: "",
-                            date: "",
-                            options: "",
-                            timestart: "",
-                            timeend: "",
-                            user: "",
-                            show: false,
-                        }
-                        // $scope.showdetail(item);
-                    }
-                    else {
-                        console.log("Not valid input!");
-                        showerror = true;
-                    }
-                }
-
-            }
-            */
-            $scope.deleteData = function (item) {
-                var index = $scope.newitemlist.indexOf(item);
-                if (index > -1) {
-                    $scope.newitemlist.splice(index, 1);
-                }
-            }
-            $scope.deleteTimestep = function (item, t) {
-                var index = item.data.indexOf(t);
-                if (index > -1) {
-                    item.data.splice(index, 1);
-                }
-            }
-            $scope.addNewItem = function (item) {
-
-                if (!$scope.userstatus) {
-                    if (item.modified == true) {
-                        // remove newitem
-                        while (true) {
-                            //remove all element in item.data
-                            var haveElement = false;
-                            for (idx in item.data) {
-                                if (item.data[idx].user === uid) {
-                                    haveElement = true;
-                                    item.data.splice(idx, 1);
-                                    break;
-                                }
-                            }
-                            if (haveElement == false) {
-                                break;
-                            }
-
-                        }
-                        item.modified = false;
-                    }
-                    else {
-                        for (idx in $scope.newitemlist) {
-                            var newitem = $scope.newitemlist[idx];
-                            if ($scope.checkInput(newitem)) {
-                                item.data.push(newitem);
-                                item.modified = true;
-                            }
-                        }
-                    }
-
-
-                }
-
-            }
-            $scope.getColor = function (item) {
-                if (item.user === uid) {
-                    return "blue";
-                }
-                else {
-                    return "black";
-                }
-            }
-
             $scope.checkInput = function (item) {
                 var reg = /^[a-zA-Z0-9-:,.，。()（）/ \u4E00-\u9FCC][a-zA-Z0-9-:,.，。()（）/ \u4E00-\u9FCC]*$/;
                 var numreg = /^[0-9.:][0-9.:]*$/;
@@ -544,32 +484,31 @@
                     return false;
                 }
                 return true;
-            }
-            $scope.linkToEditPage = function() {
-                $window.location.href = "/select.html";
-            }
-        });
-        app.directive('specialCharDirective', function () {
-            function link(scope, elem, attrs, ngModel) {
-                ngModel.$parsers.push(function (viewValue) {
-                    var reg = /^[a-zA-Z0-9-:,.，。()（）/ \u4E00-\u9FCC]*$/;
-                    if (viewValue.match(reg)) {
-                        return viewValue;
-                    }
-                    var transformedValue = ngModel.$modelValue;
-                    ngModel.$setViewValue(transformedValue);
-                    ngModel.$render();
-                    return transformedValue;
-                });
-            }
-            return {
-                restrict: 'A',
-                require: 'ngModel',
-                link: link
             };
-        });
+        })
+            .directive('specialCharDirective', function () {
+                function link(scope, elem, attrs, ngModel) {
+                    ngModel.$parsers.push(function (viewValue) {
+                        var reg = /^[a-zA-Z0-9]*$/;
+                        if (viewValue.match(reg)) {
+                            return viewValue;
+                        }
+                        var transformedValue = ngModel.$modelValue;
+                        ngModel.$setViewValue(transformedValue);
+                        ngModel.$render();
+                        return transformedValue;
+                    });
+                }
+
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: link
+                };
+            });
     </script>
-    <script src="/css/src/js/angular-datepicker.js"></script>
+        <script src="/css/src/js/angular-datepicker.js"></script>
+
 </body>
 
 </html>
