@@ -440,10 +440,15 @@
             };
 
             $scope.deleteTimestep = function (item, t) {
-                var indexs = $scope.list.indexOf(item);
                 var index = item.data.indexOf(t);
                 if (index > -1) {
                     item.data.splice(index, 1);
+                }
+                var indexs = -1;
+                for (i in $scope.list) {
+                    if (item._id == $scope.list[i]._id) {
+                        indexs = i;
+                    }
                 }
                 if (indexs > -1) {
                     $scope.list[indexs].data.splice(index, 1);
