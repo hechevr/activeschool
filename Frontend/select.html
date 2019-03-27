@@ -291,31 +291,7 @@
                                     $scope.list[idx].data = [];
                                 }
                             }
-                            for (idx in response.data.itemlist) {
-
-                                var hasUser = false;
-                                for (i in response.data.itemlist[idx].data) {
-                                    if (response.data.itemlist[idx].data[i].user === uid) {
-                                        hasUser = true;
-                                    }
-                                }
-                                if (hasUser == true) {
-                                    var item = {
-                                        _id: response.data.itemlist[idx]._id,
-                                        organization: response.data.itemlist[idx].organization,
-                                        No: response.data.itemlist[idx].No,
-                                        activity: response.data.itemlist[idx].activity,
-                                        data: [],
-                                    };
-                                    for (i in response.data.itemlist[idx].data) {
-                                        if (response.data.itemlist[idx].data[i].user == uid) {
-                                            item.data.push(response.data.itemlist[idx].data[i]);
-                                        }
-                                    }
-                                    $scope.itemlist.push(item);
-
-                                }
-                            }
+                            $scope.itemlist = $scope.refreshItemList();
                         });
                 });
 
@@ -349,7 +325,36 @@
             $scope.showItemlist = function () {
                 $window.location.href = "/itemlist.html";
             }
-            
+            $scope.refreshItemList = function () {
+                var itemlist = [];
+                for (idx in $scope.list) {
+
+                    var hasUser = false;
+                    for (i in $scope.list[idx].data) {
+                        if ($scope.list[idx].data[i].user === uid) {
+                            hasUser = true;
+                        }
+                    }
+                    if (hasUser == true) {
+                        var item = {
+                            _id: $scope.list[idx]._id,
+                            organization: $scope.list[idx].organization,
+                            No: $scope.list[idx].No,
+                            activity: $scope.list[idx].activity,
+                            data: [],
+                        };
+                        for (i in $scope.list[idx].data) {
+                            if ($scope.list[idx].data[i].user == uid) {
+                                item.data.push($scope.list[idx].data[i]);
+                            }
+                        }
+                        itemlist.push(item);
+
+                    }
+                }
+                return itemlist;
+            }
+
             $scope.submit = function () {
                 // console.log("click submit");
                 var items = [];
@@ -373,7 +378,7 @@
                         }
                     });
             };
-            
+
             $scope.addNewItem = function () {
 
                 // check selection
@@ -413,6 +418,8 @@
                         $scope.list[idx].modified = true;
 
                         // add input into showing info
+                        $scope.itemlist = $scope.refreshItemList();
+                        /*
                         var idxs = -1;
                         for (i in $scope.itemlist) {
                             if ($scope.itemlist[i]._id == $scope.selectedItem._id) {
@@ -425,6 +432,7 @@
                         else {
                             $scope.itemlist.push($scope.list[idx]);
                         }
+                        */
 
                         // return to initial state
                         $scope.showNewItemForm = false;
@@ -454,6 +462,7 @@
                     $scope.list[indexs].data.splice(index, 1);
                     $scope.list[indexs].modified = true;
                 }
+                $scope.itemlist = $scope.refreshItemList();
 
             }
             $scope.downloadFile = function () {
@@ -515,7 +524,7 @@
                 };
             });
     </script>
-        <script src="/css/src/js/angular-datepicker.js"></script>
+    <script src="/css/src/js/angular-datepicker.js"></script>
 
 </body>
 
