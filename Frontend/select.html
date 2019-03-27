@@ -287,6 +287,9 @@
                             for (idx in $scope.list) {
                                 $scope.list[idx].value = $scope.list[idx].organization + " " + $scope.list[idx].No + " " + $scope.list[idx].activity;
                                 $scope.list[idx].modified = false;
+                                if ($scope.list[idx].data == undefined) {
+                                    $scope.list[idx].data = [];
+                                }
                             }
                             for (idx in response.data.itemlist) {
 
