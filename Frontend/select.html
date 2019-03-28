@@ -111,7 +111,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tr class="table-active" ng-repeat-start="item in itemlist" ng-click="showdetail(item)">
+                <tr class="table-active" ng-repeat="item in itemlist">
 
                     <td ng-bind="item.organization"></td>
                     <td ng-bind="item.No"></td>
@@ -131,9 +131,21 @@
                             <col width="40px">
                             <tr ng-repeat="t in item.data" style="border:none;">
                                 <td style="border:none;">
-                                    <button type="button" ng-show="!userstatus" style="float:right; background-color: transparent; border: none;" ng-click="deleteTimestep(item, t)">
-                                        <i class="fa fa-minus fa-xs"></i>
-                                    </button>
+
+                                    <div ng-show="!userstatus">
+
+                                        <!--
+                                        <button class="btn" style="padding:1px; margin:0;font-size:2px; background-color: transparent; border-color: #33a6cc; color:#33a6cc"
+                                            ng-click="linkToEditPage()">編輯</button>
+
+                                        <button class="btn" style="padding:1px; margin:0;font-size:2px; background-color: transparent; border-color: #33a6cc; color:#33a6cc"
+                                            ng-click="deleteTimestep(item, t)">確認</button>
+                                        -->
+                                        <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="deleteTimestep(item, t)">
+                                            <i class="fa fa-minus fa-xs"></i>
+                                        </button>
+
+                                    </div>
                                 </td>
                                 <td style="border:none;">
                                     <span ng-bind="t.target"></span>
@@ -163,49 +175,106 @@
                                     </div>
                                 </td>
                             </tr>
+                            <tr style="border:none;" ng-show="!item.show && !userstatus">
+                                <td style="border:none;">
+                                    <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="showdetail(item)">
+                                        <i class="fa fa-plus fa-xs"></i>
+                                    </button>
+
+                                </td>
+                                <td style="border:none;"></td>
+                                <td style="border:none;"></td>
+                                <td style="border:none;"></td>
+                                <td style="border:none;"></td>
+                                <td style="border:none;"></td>
+                                <td style="border:none;"></td>
+                            </tr>
+                            <tr class="table-active" ng-show="item.show">
+                                    <td>
+                                        <button class="btn" style="float:right; padding:1px; margin:0;font-size:2px; background-color: transparent; border-color: green; color:green"
+                                            ng-click="addData(item)">確認</button>
+                                        <!--
+                                        <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="addData(item)">
+                                            <i class="fa fa-plus fa-xs"></i>
+                                        </button>
+                                            -->
+                
+                                    </td>
+                                    <td>
+                                        <input style="width:100%; padding:2px;;" ng-model="item.newitem.target" maxlength="10">
+                                    </td>
+                                    <td>
+                                        <input style="width:100%; padding:2px;" ng-model="item.newitem.maxteacher" maxlength="10">
+                                    </td>
+                                    <td>
+                                        <input style="width:100%; padding:2px;" ng-model="item.newitem.ratio" maxlength="10">
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <datepicker date-format="dd/MM/yyyy">
+                                                <input style="width:100%; padding:2px;" ng-model="item.newitem.date" type="text" style="float: left" />
+                                            </datepicker>
+                                        </div>
+                
+                                    </td>
+                                    <td>
+                                        <input ng-model="item.newitem.options" style="width:100%; padding:2px; word-wrap: break-word;" maxlength="200">
+                                    </td>
+                                    <td>
+                                        <div style="display:flex; flex-direction:row;">
+                                            <input ng-model="item.newitem.timestart" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
+                                            <span> - </span>
+                                            <input ng-model="item.newitem.timeend" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
+                                        </div>
+                                    </td>
+                                </tr>
+                            
                         </table>
                     </td>
                 </tr>
-
-                <tr ng-repeat-end class="table-active" ng-show="item.show">
+<!--
+<tr ng-repeat-end class="table-active" ng-show="item.show">
                     <td colspan="3">
                         <span ng-show="showerror">
                             Not valid input
                         </span>
                     </td>
                     <td>
-                        <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="addData(item)">
-                            <i class="fa fa-plus fa-xs"></i>
-                        </button>
-                    </td>
-                    <td>
-                        <input style="width:100%; padding:2px;;" ng-model="item.newitem.target" maxlength="10">
-                    </td>
-                    <td>
-                        <input style="width:100%; padding:2px;" ng-model="item.newitem.maxteacher" maxlength="10">
-                    </td>
-                    <td>
-                        <input style="width:100%; padding:2px;" ng-model="item.newitem.ratio" maxlength="10">
-                    </td>
-                    <td>
-                        <div>
-                            <datepicker date-format="dd/MM/yyyy">
-                                <input style="width:100%; padding:2px;" ng-model="item.newitem.date" type="text" style="float: left" />
-                            </datepicker>
-                        </div>
+                        <button class="btn" style="float:right; padding:1px; margin:0;font-size:2px; background-color: transparent; border-color: green; color:green"
+                            ng-click="addData(item)">確認</button>
 
-                    </td>
-                    <td>
-                        <input ng-model="item.newitem.options" style="width:100%; padding:2px; word-wrap: break-word;" maxlength="200">
-                    </td>
-                    <td>
-                        <div style="display:flex; flex-direction:row;">
-                            <input ng-model="item.newitem.timestart" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
-                            <span> - </span>
-                            <input ng-model="item.newitem.timeend" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
-                        </div>
-                    </td>
-                </tr>
+                        </td>
+                        <td>
+                            <input style="width:100%; padding:2px;;" ng-model="item.newitem.target" maxlength="10">
+                        </td>
+                        <td>
+                            <input style="width:100%; padding:2px;" ng-model="item.newitem.maxteacher" maxlength="10">
+                        </td>
+                        <td>
+                            <input style="width:100%; padding:2px;" ng-model="item.newitem.ratio" maxlength="10">
+                        </td>
+                        <td>
+                            <div>
+                                <datepicker date-format="dd/MM/yyyy">
+                                    <input style="width:100%; padding:2px;" ng-model="item.newitem.date" type="text" style="float: left" />
+                                </datepicker>
+                            </div>
+    
+                        </td>
+                        <td>
+                            <input ng-model="item.newitem.options" style="width:100%; padding:2px; word-wrap: break-word;" maxlength="200">
+                        </td>
+                        <td>
+                            <div style="display:flex; flex-direction:row;">
+                                <input ng-model="item.newitem.timestart" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
+                                <span> - </span>
+                                <input ng-model="item.newitem.timeend" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
+                            </div>
+                        </td>
+                    </tr>
+
+-->
+                
 
 
 
@@ -218,11 +287,19 @@
                         </div>
                     </td>
                     <td>
-                        <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="addData2()">
-                            <i class="fa fa-plus fa-xs"></i>
-                        </button>
+                        <button class="btn" style="float:right; padding:1px; margin:0;font-size:2px; background-color: transparent; border-color: green; color:green"
+                            ng-click="addData2()">確認</button>
+
+                        <!--
+                                            <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="addData2()">
+                                                <i class="fa fa-plus fa-xs"></i>
+                                            </button>
+                    
+                                                -->
+
                     </td>
                     <td>
+
                         <input style="width:100%; padding:2px;;" ng-model="newitem.target" maxlength="10">
                     </td>
                     <td>
@@ -249,6 +326,7 @@
                             <input ng-model="newitem.timeend" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
                         </div>
                     </td>
+
                 </tr>
                 <tr class="table-active" ng-show="!userstatus">
                     <td colspan="3">
@@ -260,6 +338,8 @@
                         <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="addNewItem()">
                             <i class="fa fa-plus fa-xs"></i>
                         </button>
+
+
                     </td>
                     <td colspan="6">
                         <span style="color:red" ng-bind="errormessage"></span>
@@ -525,6 +605,7 @@
                 }
                 else {
                     item.showerror = true;
+                    $scope.showdetail(item);
                 }
             }
 
