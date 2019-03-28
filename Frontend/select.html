@@ -111,7 +111,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tr class="table-active" ng-repeat="item in itemlist">
+                <tr class="table-active" ng-repeat-start="item in itemlist" ng-click="showdetail(item)">
 
                     <td ng-bind="item.organization"></td>
                     <td ng-bind="item.No"></td>
@@ -131,7 +131,7 @@
                             <col width="40px">
                             <tr ng-repeat="t in item.data" style="border:none;">
                                 <td style="border:none;">
-                                    <button type="button" ng-show="!userstatus" style="float:left; background-color: transparent; border: none;" ng-click="deleteTimestep(item, t)">
+                                    <button type="button" ng-show="!userstatus" style="float:right; background-color: transparent; border: none;" ng-click="deleteTimestep(item, t)">
                                         <i class="fa fa-minus fa-xs"></i>
                                     </button>
                                 </td>
@@ -167,6 +167,48 @@
                     </td>
                 </tr>
 
+                <tr ng-repeat-end class="table-active" ng-show="item.show">
+                    <td colspan="3">
+                        <span ng-show="showerror">
+                            Not valid input
+                        </span>
+                    </td>
+                    <td>
+                        <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="addData(item)">
+                            <i class="fa fa-plus fa-xs"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <input style="width:100%; padding:2px;;" ng-model="item.newitem.target" maxlength="10">
+                    </td>
+                    <td>
+                        <input style="width:100%; padding:2px;" ng-model="item.newitem.maxteacher" maxlength="10">
+                    </td>
+                    <td>
+                        <input style="width:100%; padding:2px;" ng-model="item.newitem.ratio" maxlength="10">
+                    </td>
+                    <td>
+                        <div>
+                            <datepicker date-format="dd/MM/yyyy">
+                                <input style="width:100%; padding:2px;" ng-model="item.newitem.date" type="text" style="float: left" />
+                            </datepicker>
+                        </div>
+
+                    </td>
+                    <td>
+                        <input ng-model="item.newitem.options" style="width:100%; padding:2px; word-wrap: break-word;" maxlength="200">
+                    </td>
+                    <td>
+                        <div style="display:flex; flex-direction:row;">
+                            <input ng-model="item.newitem.timestart" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
+                            <span> - </span>
+                            <input ng-model="item.newitem.timeend" style="width:40%; padding:2px; margin: 2px;" maxlength="5">
+                        </div>
+                    </td>
+                </tr>
+
+
+
                 <tr class="table-active" ng-show="showNewItemForm">
                     <td ng-bind="selectedItem.organization"></td>
                     <td ng-bind="selectedItem.No"></td>
@@ -176,7 +218,7 @@
                         </div>
                     </td>
                     <td>
-                        <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="addData()">
+                        <button type="button" style="float:right; background-color: transparent; border: none;" ng-click="addData2()">
                             <i class="fa fa-plus fa-xs"></i>
                         </button>
                     </td>
@@ -222,12 +264,9 @@
                     <td colspan="6">
                         <span style="color:red" ng-bind="errormessage"></span>
                     </td>
-
                 </tr>
 
             </table>
-
-
 
             <div>
                 <button class="btn" style="background-color: transparent; color: green; border-color: green;" ng-click="submit()" ng-disabled="userstatus">提交</button>
@@ -315,6 +354,25 @@
                     $window.open("/resourcenew/timetable.pdf")
                 }
             }
+            $scope.showdetail = function (item) {
+                if (!$scope.userstatus) {
+                    item.show = !item.show
+                    // initialize new item
+                    item.newitem = {
+                        target: "",
+                        maxteacher: "",
+                        ratio: "",
+                        date: "",
+                        options: "",
+                        timestart: "",
+                        timeend: "",
+                        user: "",
+                        show: false,
+                    };
+                    item.modified = true;
+                    item.showerror = false;
+                }
+            }
 
             $scope.cancel = function () {
                 $window.history.back();
@@ -341,6 +399,7 @@
                             organization: $scope.list[idx].organization,
                             No: $scope.list[idx].No,
                             activity: $scope.list[idx].activity,
+                            show: false,
                             data: [],
                         };
                         for (i in $scope.list[idx].data) {
@@ -403,7 +462,7 @@
                 }
 
             }
-            $scope.addData = function () {
+            $scope.addData2 = function () {
                 // check input format
                 if ($scope.checkInput($scope.newitem)) {
                     var idx = -1;
@@ -446,6 +505,28 @@
                     $scope.errormessage = "輸入無效";
                 }
             };
+
+            $scope.addData = function (item) {
+                // check input format
+                if ($scope.checkInput(item.newitem)) {
+                    var idx = -1;
+                    for (i in $scope.list) {
+                        if ($scope.list[i]._id == item._id) {
+                            idx = i;
+                        }
+                    }
+                    item.newitem.user = uid;
+                    item.newitem.show = true;
+                    $scope.list[idx].data.push(item.newitem);
+                    $scope.list[idx].modified = true;
+                    console.log($scope.list[idx]);
+                    $scope.itemlist = $scope.refreshItemList();
+                    $scope.showdetail(item);
+                }
+                else {
+                    item.showerror = true;
+                }
+            }
 
             $scope.deleteTimestep = function (item, t) {
                 var index = item.data.indexOf(t);
