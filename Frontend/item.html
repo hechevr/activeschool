@@ -56,7 +56,7 @@ h1 {
                     <label>活動課程</label>
                     <input class="form-control" ng-model='itemactivity' special-char-directive required/>
                 </div>
-                <!--
+                
                 <div class="form-group">
                     <label>對象</label>
                     <input class="form-control" ng-model='itemtarget' special-char-directive required/>
@@ -93,7 +93,7 @@ h1 {
                     <label>備註</label>
                     <input class="form-control" ng-model='itemoptions' special-char-directive required/>
                 </div>
-                -->
+            
 
                 <div class="form-group">
                     <button type="submit" class="btn btn-success" ng-click='submit()' ng-disabled="itemform.$invalid">提交</button>
@@ -125,12 +125,12 @@ h1 {
                 organization: $scope.itemorgan,
                 No: $scope.itemno,
                 activity: $scope.itemactivity,
-                target: "",
-                maxteacher: "",
-                ratio: "",
-                date: "",
-                time: "",
-                options: "",
+                target: $scope.itemtarget,
+                maxteacher: $scope.itemmaxteacher,
+                ratio: $scope.itemratio,
+                date: $scope.itemdate,
+                time: $scope.times,
+                options: $scope.itemoptions,
                 data: []
             }).then(function(response) {
                 // console.log(response);

@@ -124,6 +124,44 @@
                             <span style="float:left;" ng-bind="item.activity"></span>
                         </div>
                     </td>
+                    <td style="border:none;">
+                    </td>
+                    <td style="border:none;">
+                        <span ng-bind="item.target"></span>
+                    </td>
+                    <td style="border:none;">
+                        <span ng-bind="item.maxteacher"></span>
+
+                    </td>
+                    <td style="border:none;">
+                        <span ng-bind="item.ratio"></span>
+                    </td>
+                    <td style="border:none;">
+                        <div>
+                            <span ng-bind="item.date" style="float: left"></span>
+                        </div>
+                    </td>
+                    <td style="border:none;">
+                        <span ng-bind="item.options">
+                        </span>
+                    </td>
+                    <td style="border:none;">
+                        <div ng-repeat="time in item.time">
+                                <span ng-bind="time.value"></span>
+                        </div>
+
+                        <!--
+                        <div>
+                            <span ng-bind="item.timestart"></span>
+                            <span>-</span>
+                            <span ng-bind="item.timeend"></span>
+
+                        </div>
+                        -->
+
+                    </td>
+
+                    <!--
                     <td colspan="7">
                         <table class="table borderless" style="border:none; table-layout:fixed; background: transparent;" cellspacing="0" cellpadding="0">
                             <col width="10px">
@@ -135,12 +173,6 @@
                             <col width="40px">
                             <tr ng-style="{color: getColor(t)}" ng-repeat="t in item.data" style="border:none;">
                                 <td style="border:none;">
-                                    <!--
-                                    <button type="button" style="float:left; background-color: transparent; border: none;" ng-click="deleteTimestep(item, t)"
-                                        ng-show="t.show && !userstatus">
-                                        <i class="fa fa-minus fa-xs"></i>
-                                    </button>
-                                    -->
                                 </td>
                                 <td style="border:none;">
                                     <span ng-bind="t.target"></span>
@@ -172,6 +204,9 @@
                             </tr>
                         </table>
                     </td>
+
+                    -->
+
 
                 </tr>
                 <!--
